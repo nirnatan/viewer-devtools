@@ -1,0 +1,12 @@
+<!--suppress CheckEmptyScriptTag -->
+<rt-require dependency="popup/component" as="Component"/>
+<div id="main">
+    <label class="search">
+        <input autoFocus="{true}" type="text" valueLink="{this.linkState('displayName')}" onKeyPress="{this.handleClick}"/>
+        <!--<button onClick="() => this.props.fire('search', this.state.displayName, this.handleSearchResults)">Search</button>-->
+    </label>
+
+    <div class="component-container">
+        <Component class="component-wrapper" comp="{comp}" key="{comp.id}" rt-repeat="comp in this.getComponents()"/>
+    </div>
+</div>

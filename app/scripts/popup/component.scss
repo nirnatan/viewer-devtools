@@ -1,0 +1,19 @@
+.component {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 20px;
+  line-height: 20px;
+
+  &:hover {
+    background-color: rgba(47, 119, 196, 0.5);
+  }
+
+  .name {
+    margin: 5px 10px;
+
+    & + div {
+      margin-top: 10px;
+      background-color: white;
+    }
+  }
+}

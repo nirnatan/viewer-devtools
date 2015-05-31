@@ -1,0 +1,28 @@
+#main {
+  .component-wrapper {
+    border: 1px solid black;
+    border-radius: 4px;
+    margin: 0 10px 10px;
+  }
+
+  .search {
+    display: block;
+    padding: 10px 10px 15px;
+    background-color: white;
+    position: fixed;
+    height: 40px;
+    width: 100%;
+
+    > input {
+      padding-left: 15px;
+      height: 30px;
+      line-height: 30px;
+      width: calc(100% - 45px);
+      font-size: 14px;
+    }
+  }
+
+  .component-container {
+    padding-top: 70px;
+  }
+}

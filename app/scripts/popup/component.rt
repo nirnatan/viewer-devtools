@@ -1,0 +1,9 @@
+<rt-require dependency="popup/jsonEditor" as="jsonEditor"/>
+<div class="component {this.props.className || ''}{this.state.props ? ' details' : ''}" title="{this.props.comp.id}"
+     onMouseOver="() => this.context.fire('markComponent', this.props.comp.id)"
+     onMouseOut="() => this.context.fire('markComponent', null)">
+    <div>
+        <div class="name" onClick="() => this.state.props ? this.setState({props: null}) : this.context.fire('selectComponent', this.props.comp.id, this.getProps)">{this.props.comp.name || this.props.comp.id}</div>
+        <jsonEditor rt-if="this.state.props" key="props" json="{this.state.props}"></jsonEditor>
+    </div>
+</div>

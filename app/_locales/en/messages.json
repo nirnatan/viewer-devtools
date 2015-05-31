@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "editor devtools",
+    "description": "The name of the application"
+  },
+  "appDescription": {
+    "message": "Editor 1.4 DevTools",
+    "description": "The description of the application"
+  }
+}
