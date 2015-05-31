@@ -151,14 +151,8 @@ require(['react', 'lodash'], function (React, _) {
                 return getId(comp) === id;
             });
 
-
-            var result = {
-                props: comp.props,
-                state: comp.state,
-                partData: comp.getDataByFullPath && comp.getDataByFullPath(comp.getPartApi().getPartData()),
-                proxyData: comp.proxyData,
-                contextPath: comp.contextPath
-            };
+            var result = _.pick(comp, ['props', 'state', 'proxyData', 'contextPath']);
+            result.partData = comp.getDataByFullPath && comp.getDataByFullPath(comp.getRootDataItemRef());
             return JSON.parse(JSON.prune(compactObject(result)));
         }
     };
