@@ -88,12 +88,31 @@ require(['react', 'lodash'], function (React, _) {
     }
 
     function getComponentBy(predicate) {
-        var windows = [window].concat(_.toArray(frames));
-        return _.reduce(windows, function (acc, win) {
-            var components = React.addons.TestUtils.findAllInRenderedTree(win.rendered, predicate);
+        var sameDomainFrames = _.filter(_.toArray(frames), function (frame) {
+            try {
+                return frame.document;
+            } catch (e) {
+                return false;
+            }
+        });
+
+        var reactComps = _([window].concat(sameDomainFrames))
+            .map(function (win) {
+                return _(win)
+                    .values()
+                    .compact()
+                    .filter(function (comp) {
+                        return comp !== window.selectedComponent && React.addons.TestUtils.isCompositeComponent(comp);
+                    })
+                    .value();
+            })
+            .flatten()
+            .value();
+
+        return _.reduce(reactComps, function (acc, comp) {
+            var components = React.addons.TestUtils.findAllInRenderedTree(comp, predicate);
             return components.length ? acc.concat(_.filter(components, 'getDOMNode')) : acc;
         }, []);
-
     }
 
     function getComponentsByName(displayName) {
