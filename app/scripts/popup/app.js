@@ -10,13 +10,7 @@ define(['react', 'lodash', 'popup/app.rt'], function (React, _, template) {
             };
         },
         componentWillMount: function () {
-            setTimeout(this.props.fire.bind(this, 'search', '', this.handleSearchResults), 0);
-        },
-        childContextTypes: {
-             fire: React.PropTypes.func.isRequired
-        },
-        getChildContext: function() {
-             return { fire: this.props.fire };
+            chrome.extension.getBackgroundPage().getComponents(this.handleSearchResults);
         },
         handleSearchResults: function (results) {
             this.setState({comps: results});
@@ -24,11 +18,11 @@ define(['react', 'lodash', 'popup/app.rt'], function (React, _, template) {
         getComponents: function () {
             return _.filter(this.state.comps, function (comp) {
                 return new RegExp(this.state.displayName, 'ig').test(comp.name || comp.id);
-            }, this)
+            }, this);
         },
-        handleClick: function (evt) {
-            if (evt.key === "Enter") {
-                this.props.fire('search', this.state.displayName, this.handleSearchResults);
+        handleKeyPress: function (evt) {
+            if (evt.key === 'Enter') {
+                chrome.extension.getBackgroundPage.search(this.state.displayName, this.handleSearchResults);
             }
         },
         render: template

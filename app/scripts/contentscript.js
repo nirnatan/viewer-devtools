@@ -10,14 +10,12 @@ injectedScripts.forEach(function (script) {
     };
 });
 
-if (!chrome.extension.onMessage.hasListeners()) {
-    chrome.extension.onMessage.addListener(function (msg, sender, sendResponse) {
-        var listener = function (evt) {
-            sendResponse(evt.detail);
-        };
+chrome.extension.onMessage.addListener(function (msg, sender, sendResponse) {
+    var listener = function (evt) {
+        sendResponse(evt.detail);
+    };
 
-        document.addEventListener('Editor_Response', listener);
+    document.addEventListener('Editor_Response', listener);
 
-        document.dispatchEvent(new CustomEvent('Editor_Command', {detail: msg}));
-    });
-}
+    document.dispatchEvent(new CustomEvent('Editor_Command', {detail: msg}));
+});

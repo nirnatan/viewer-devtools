@@ -1,9 +1,9 @@
 <rt-require dependency="popup/jsonEditor" as="jsonEditor"/>
-<div class="component {this.props.className || ''}{this.state.props ? ' details' : ''}" title="{this.props.comp.id}"
-     onMouseOver="() => this.context.fire('markComponent', this.props.comp.id)"
-     onMouseOut="() => this.context.fire('markComponent', null)">
+<div class="component {this.props.className || ''}{this.state.compProps ? ' details' : ''}" title="{this.props.comp.id}"
+     onMouseOver="() => chrome.extension.getBackgroundPage().markComponent(this.props.comp.id)"
+     onMouseOut="() => chrome.extension.getBackgroundPage().markComponent(null)">
     <div>
-        <div class="name" onClick="() => this.state.props ? this.setState({props: null}) : this.context.fire('selectComponent', this.props.comp.id, this.getProps)">{this.props.comp.name || this.props.comp.id}</div>
-        <jsonEditor rt-if="this.state.props" key="props" json="{this.state.props}"></jsonEditor>
+        <div class="name" onClick="{this.handleClick}">{this.props.comp.name || this.props.comp.id}</div>
+        <jsonEditor rt-if="this.state.compProps" key="props" domId="{this.props.comp.domId}" json="{this.state.compProps}" name="{this.props.comp.id}"></jsonEditor>
     </div>
 </div>

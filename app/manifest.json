@@ -1,6 +1,6 @@
 {
   "name": "__MSG_appName__",
-  "version": "0.0.20",
+  "version": "0.0.24",
   "manifest_version": 2,
   "description": "__MSG_appDescription__",
   "icons": {
@@ -15,6 +15,12 @@
     },
     "default_title": "editor devtools",
     "default_popup": "popup.html"
+  },
+  "background": {
+    "scripts": [
+      "scripts/background/eventPage.js"
+    ],
+    "persistent": false
   },
   "content_scripts": [
     {
@@ -33,6 +39,7 @@
     "scripts/contentActions.js",
     "scripts/utils/jsonUtils.js"
   ],
+  "devtools_page": "packages/devtools/panel.html",
   "permissions": [
     "tabs",
     "http://*/*",

@@ -6,10 +6,13 @@ define(['react', 'lodash', 'jsoneditor', 'popup/jsonEditor.rt'], function (React
         componentDidMount: function () {
             var options = {
                 mode: 'view',
-                search: false
+                search: false,
+                name: this.props.name
             };
-            this.editor = new JSONEditor(this.getDOMNode(), options);
-            this.editor.set(this.props.json);
+            this.editor = new JSONEditor(this.refs.json.getDOMNode(), options, _.merge({}, this.props.json));
+        },
+        inspectElement: function () {
+            chrome.extension.getBackgroundPage().inspectElement(this.props.domId);
         },
         render: template
     });
