@@ -3,7 +3,10 @@
      onMouseOver="() => chrome.extension.getBackgroundPage().markComponent(this.props.comp.id)"
      onMouseOut="() => chrome.extension.getBackgroundPage().markComponent(null)">
     <div>
-        <div class="name" onClick="{this.handleClick}">{this.props.comp.name || this.props.comp.id}</div>
+        <div class="name" onClick="{this.handleClick}">
+            <span class="component-name">{this.props.comp.name || this.props.comp.id}</span>
+            <span class="inspect-button" onClick="{this.inspectElement}">Inspect</span>
+        </div>
         <jsonEditor rt-if="this.state.compProps" key="props" domId="{this.props.comp.domId}" json="{this.state.compProps}" name="{this.props.comp.id}"></jsonEditor>
     </div>
 </div>

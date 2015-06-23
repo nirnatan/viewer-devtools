@@ -18,6 +18,13 @@ define(['react', 'popup/component.rt'], function (React, template) {
                 this.setState({compProps: props});
             }.bind(this));
         },
+        inspectElement: function () {
+            var backgroundPage = chrome.extension.getBackgroundPage();
+            backgroundPage.selectComponent(this.props.comp.id, function () {
+                chrome.extension.getBackgroundPage().inspectElement();
+            });
+            backgroundPage.markComponent(null);
+        },
         render: template
     });
 });

@@ -15,5 +15,21 @@
       margin-top: 10px;
       background-color: white;
     }
+
+    .component-name {
+      margin-right: 15px;
+    }
+
+    .inspect-button {
+      float: right;
+      cursor: pointer;
+      border: 1px solid black;
+      border-radius: 4px;
+      padding: 0 5px;
+
+      &:hover {
+        background-color: #71a9ff;
+      }
+    }
   }
 }
