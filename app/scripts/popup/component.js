@@ -20,8 +20,8 @@ define(['react', 'popup/component.rt'], function (React, template) {
         },
         inspectElement: function () {
             var backgroundPage = chrome.extension.getBackgroundPage();
-            backgroundPage.selectComponent(this.props.comp.id, function () {
-                chrome.extension.getBackgroundPage().inspectElement();
+            backgroundPage.selectComponent(this.props.comp.id, function (props) {
+                chrome.extension.getBackgroundPage().inspectElement(props);
             });
             backgroundPage.markComponent(null);
         },

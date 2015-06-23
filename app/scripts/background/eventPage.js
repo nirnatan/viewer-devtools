@@ -48,9 +48,9 @@
         });
     });
 
-    window.inspectElement = function inspectElement(domId) {
+    window.inspectElement = function inspectElement(props) {
         ports.forEach(function (port) {
-            port.postMessage({type: 'inspectElement', id: domId});
+            port.postMessage({type: 'inspectElement', props: props});
         });
     };
 }());
