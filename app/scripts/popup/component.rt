@@ -5,7 +5,7 @@
     <div>
         <div class="name" onClick="{this.handleClick}">
             <span class="component-name">{this.props.comp.name || this.props.comp.id}</span>
-            <span class="inspect-button" onClick="{this.inspectElement}">Inspect</span>
+            <span class="inspect-button" onClick="{this.inspectElement}">Inspect Element</span>
         </div>
         <jsonEditor rt-if="this.state.compProps" key="props" domId="{this.props.comp.domId}" json="{this.state.compProps}" name="{this.props.comp.id}"></jsonEditor>
     </div>
