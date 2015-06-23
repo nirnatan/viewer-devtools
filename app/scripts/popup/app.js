@@ -17,13 +17,8 @@ define(['react', 'lodash', 'popup/app.rt'], function (React, _, template) {
         },
         getComponents: function () {
             return _.filter(this.state.comps, function (comp) {
-                return new RegExp(this.state.displayName, 'ig').test(comp.name || comp.id);
+                return new RegExp(this.state.displayName, 'ig').test(comp.name || comp.id || comp.domId);
             }, this);
-        },
-        handleKeyPress: function (evt) {
-            if (evt.key === 'Enter') {
-                chrome.extension.getBackgroundPage.search(this.state.displayName, this.handleSearchResults);
-            }
         },
         render: template
     });
