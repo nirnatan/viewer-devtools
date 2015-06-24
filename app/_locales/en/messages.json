@@ -1,10 +1,10 @@
 {
   "appName": {
-    "message": "editor devtools",
+    "message": "Santa DevTools",
     "description": "The name of the application"
   },
   "appDescription": {
-    "message": "Editor 1.4 DevTools",
-    "description": "The description of the application"
+    "message": "Helper for debugging Santa or Santa Editor",
+    "description": "Helper for debugging Santa or Santa Editor components"
   }
 }
