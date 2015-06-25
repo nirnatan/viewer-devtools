@@ -1,11 +1,17 @@
 <!--suppress CheckEmptyScriptTag -->
 <rt-require dependency="popup/component" as="Component"/>
-<div id="main">
-    <label class="search">
-        <input autoFocus="{true}" type="text" valueLink="{this.linkState('displayName')}" />
-    </label>
-
-    <div class="component-container" rt-scope="this.getComponents() as comps">
+<div id="main" rt-scope="this.getComponents() as comps">
+    <div class="search-container">
+        <div>
+            <span>Auto Redirect: </span>
+            <input type="checkbox" checked="{this.props.autoRedirect}" onChange="() => this.props.onRedirectChange(!this.props.autoRedirect)"/>
+            <span class="warning" rt-if="!this.props.autoRedirect && _.isEmpty(comps)" key="debug-message">Make sure you are in debug mode</span>
+        </div>
+        <div class="search">
+            <input autoFocus="{true}" type="text" valueLink="{this.linkState('displayName')}"/>
+        </div>
+    </div>
+    <div class="component-container">
         <Component class="component-wrapper" comp="{comp}" key="{comp.id}" rt-repeat="comp in comps"/>
     </div>
 </div>

@@ -3,6 +3,9 @@ define(['react', 'lodash', 'popup/app.rt'], function (React, _, template) {
     return React.createClass({
         displayName: 'Editor DevTools',
         mixins: [React.addons.LinkedStateMixin],
+        propTypes: {
+            autoRedirect: React.PropTypes.bool
+        },
         getInitialState: function () {
             return {
                 displayName: '',
