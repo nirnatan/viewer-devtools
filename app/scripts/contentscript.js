@@ -98,12 +98,11 @@
                 sendMessageToActionScript({type: 'isDebuggable'}, null, function (debuggable) {
                     if (!validated) {
                         validated = true;
-                        return;
+                        if (!debuggable) {
+                            addDebugToUrl();
+                        }
                     }
 
-                    if (!debuggable) {
-                        addDebugToUrl();
-                    }
                 });
             }
         });
