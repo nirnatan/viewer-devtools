@@ -26,6 +26,14 @@
         sendToContentPage({type: 'markComponent', params: domId});
     };
 
+    window.setState = function markComponent(domId, state) {
+        var params = {
+            id: domId,
+            state: state
+        };
+        sendToContentPage({type: 'setState', params: params});
+    };
+
     var ports = [];
     chrome.runtime.onConnect.addListener(function (port) {
         if (port.name !== 'devtools') {
@@ -51,6 +59,12 @@
     window.inspectElement = function inspectElement(props) {
         ports.forEach(function (port) {
             port.postMessage({type: 'inspectElement', props: props});
+        });
+    };
+
+    window.isDevToolsOpen = function () {
+        return ports.some(function(port) {
+            return port.name === 'devtools';
         });
     };
 }());

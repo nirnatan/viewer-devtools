@@ -1,12 +1,21 @@
 <rt-require dependency="popup/jsonEditor" as="jsonEditor"/>
-<div class="component {this.props.className || ''}{this.state.compProps ? ' details' : ''}" title="{this.props.comp.id}"
+<div class="component {this.props.className || ''}{this.state.selectedComp ? ' details' : ''}" title="{this.props.comp.id}"
      onMouseOver="() => chrome.extension.getBackgroundPage().markComponent(this.props.comp.id)"
      onMouseOut="() => chrome.extension.getBackgroundPage().markComponent(null)">
     <div>
         <div class="name" onClick="{this.handleClick}">
             <span class="component-name">{this.props.comp.name || this.props.comp.id}</span>
-            <span class="inspect-button" onClick="{this.inspectElement}">Inspect Element</span>
+            <span rt-if="this.state.devtoolsOpen" key="inspectElement" class="inspect-button" onClick="{this.inspectElement}">Inspect Element</span>
         </div>
-        <jsonEditor rt-if="this.state.compProps" key="props" domId="{this.props.comp.domId}" json="{this.state.compProps}" name="{this.props.comp.id}"></jsonEditor>
+        <div rt-if="this.state.selectedComp" key="props">
+            <button class="set-state" onClick="{this.setCompState}">Set State</button>
+            <jsonEditor ref="propJson"
+                        editable="{this.isEditable}"
+                        type="tree"
+                        domId="{this.props.comp.domId}"
+                        json="{this.props.comp.compProps}"
+                        name="{this.props.comp.id}">
+            </jsonEditor>
+        </div>
     </div>
 </div>

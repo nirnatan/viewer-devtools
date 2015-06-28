@@ -58,6 +58,13 @@
 
         var components, hoveredComponent;
 
+        function getCompProps(comp) {
+            var result = _.pick(comp, ['props', 'state', 'proxyData', 'contextPath']);
+            result.partData = comp.getDataByFullPath && comp.getDataByFullPath(comp.getRootDataItemRef());
+            var props = JSON.parse(JSON.prune(compactObject(result)));
+            return props;
+        }
+
         events = {
             getComponents: function () {
                 components = _(getComponentsByName('')).filter(function (comp) {
@@ -70,7 +77,8 @@
                     acc.push({
                         name: comp.constructor.displayName,
                         id: id,
-                        domId: comp.getDOMNode().id
+                        domId: comp.getDOMNode().id,
+                        compProps: getCompProps(comp)
                     });
                 }, []);
             },
@@ -96,13 +104,15 @@
             },
             selectComponent: function (id) {
                 var comp = window.selectedComponent = components[id];
-
-                var result = _.pick(comp, ['props', 'state', 'proxyData', 'contextPath']);
-                result.partData = comp.getDataByFullPath && comp.getDataByFullPath(comp.getRootDataItemRef());
-                return JSON.parse(JSON.prune(compactObject(result)));
+                return getCompProps(comp);
             },
             isDebuggable: function () {
                 return _.has(React.addons, 'TestUtils');
+            },
+            setState: function (params) {
+                if (_.has(components, params.id)) {
+                    components[params.id].setState(params.state);
+                }
             }
         };
 
