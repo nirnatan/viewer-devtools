@@ -79,12 +79,25 @@
         document.dispatchEvent(new CustomEvent('Editor_Command', {detail: msg}));
     }
 
+    var injected = false;
     chrome.extension.onMessage.addListener(function (msg, sender, sendResponse) {
+        if (!injected) {
+            injectScripts(function () {
+                sendMessageToActionScript(msg, sender, sendResponse);
+            });
+            injected = true;
+            return;
+        }
+
         sendMessageToActionScript(msg, sender, sendResponse);
     });
 
     function addDebugToUrl() {
         var params = querystring.parse(window.location.search);
+        if (params.debug && (params.debug === 'react' || params.debug.indexOf('react') !== -1)) {
+            return;
+        }
+
         params.debug = [].concat(params.debug || [], 'react');
 
         window.location.search = querystring.stringify(params);
@@ -110,13 +123,19 @@
 
     document.addEventListener('scriptReady', scriptReady);
 
-    var injectedScripts = ['scripts/contentActions.js', 'scripts/utils/jsonUtils.js'];
-    injectedScripts.forEach(function (script) {
-        var s = document.createElement('script');
-        s.src = chrome.extension.getURL(script);
-        (document.head || document.documentElement).appendChild(s);
-        s.onload = function () {
-            s.parentNode.removeChild(s);
-        };
-    });
+    function injectScripts(callback) {
+        var injectedScripts = ['scripts/contentActions.js', 'scripts/utils/jsonUtils.js'];
+        var loadedScripts = 0;
+        injectedScripts.forEach(function (script) {
+            var s = document.createElement('script');
+            s.src = chrome.extension.getURL(script);
+            document.body.appendChild(s);
+            s.onload = function () {
+                s.parentNode.removeChild(s);
+                if (++loadedScripts === injectedScripts.length) {
+                    callback();
+                }
+            };
+        });
+    }
 }());
