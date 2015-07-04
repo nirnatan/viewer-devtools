@@ -16,28 +16,21 @@
         }
 
         function getComponentBy(predicate) {
-            var sameDomainFrames = _.filter(_.toArray(frames), function (frame) {
+            var reactFrames = _.filter(_.toArray(frames).concat(window), function (frame) {
                 try {
-                    return frame.document;
+                    return frame.__REACT_DEVTOOLS_GLOBAL_HOOK__._reactRuntime;
                 } catch (e) {
                     return false;
                 }
             });
 
-            var reactComps = _([window].concat(sameDomainFrames))
-                .map(function (win) {
-                    return _(win)
-                        .values()
-                        .compact()
-                        .filter(function (comp) {
-                            return comp !== window.selectedComponent && React.addons.TestUtils.isCompositeComponent(comp);
-                        })
-                        .value();
+            var reactRootComps = _(reactFrames)
+                .map(function (frame) {
+                    return _.toArray(frame.__REACT_DEVTOOLS_GLOBAL_HOOK__._reactRuntime.Mount._instancesByReactRootID);
                 })
-                .flatten()
-                .value();
+                .flatten();
 
-            return _.reduce(reactComps, function (acc, comp) {
+            return reactRootComps.reduce(function (acc, comp) {
                 var components = React.addons.TestUtils.findAllInRenderedTree(comp, predicate);
                 return components.length ? acc.concat(_.filter(components, 'getDOMNode')) : acc;
             }, []);
