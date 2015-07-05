@@ -11,7 +11,17 @@
             <input autoFocus="{true}" type="text" valueLink="{this.linkState('displayName')}"/>
         </div>
     </div>
-    <div class="component-container">
-        <Component class="component-wrapper" comp="{comp}" key="{comp.id}" rt-repeat="comp in comps"/>
+    <div rt-class="{'component-container': true, loading: this.state.loading}">
+        <div class="bubblingG" rt-if="this.state.loading" key="loadingAnim">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <Component class="component-wrapper"
+                   rt-repeat="comp in comps"
+                   rt-if="!this.state.loading"
+                   comp="{comp}"
+                   key="{comp.id}"/>
     </div>
 </div>

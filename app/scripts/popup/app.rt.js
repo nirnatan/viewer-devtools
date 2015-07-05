@@ -28,8 +28,17 @@ define([
             'valueLink': this.linkState('displayName')
         }))), React.createElement.apply(this, [
             'div',
-            { 'className': 'component-container' },
-            _.map(comps, repeatComp2.bind(this, comps))
+            {
+                'className': _.keys(_.pick({
+                    'component-container': true,
+                    loading: this.state.loading
+                }, _.identity)).join(' ')
+            },
+            this.state.loading ? React.createElement('div', {
+                'className': 'bubblingG',
+                'key': 'loadingAnim'
+            }, React.createElement('span', {}), React.createElement('span', {}), React.createElement('span', {})) : null,
+            !this.state.loading ? _.map(comps, repeatComp2.bind(this, comps)) : null
         ]));
     }
     return function () {

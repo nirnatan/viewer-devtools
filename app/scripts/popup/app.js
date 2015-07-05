@@ -9,14 +9,15 @@ define(['react', 'lodash', 'popup/app.rt'], function (React, _, template) {
         getInitialState: function () {
             return {
                 displayName: '',
-                comps: []
+                comps: [],
+                loading: true
             };
         },
         componentWillMount: function () {
             chrome.extension.getBackgroundPage().getComponents(this.handleSearchResults);
         },
         handleSearchResults: function (results) {
-            this.setState({comps: results});
+            this.setState({comps: results, loading: false});
         },
         getComponents: function () {
             return _.filter(this.state.comps, function (comp) {
