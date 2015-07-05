@@ -86,7 +86,7 @@
                 sendMessageToActionScript(msg, sender, sendResponse);
             });
             injected = true;
-            return;
+            return true;
         }
 
         sendMessageToActionScript(msg, sender, sendResponse);
