@@ -1,6 +1,6 @@
 {
   "name": "__MSG_appName__",
-  "version": "0.0.42",
+  "version": "0.0.43",
   "manifest_version": 2,
   "description": "__MSG_appDescription__",
   "icons": {
@@ -24,14 +24,22 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["injected/GlobalHook.js"],
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "injected/GlobalHook.js"
+      ],
       "run_at": "document_start",
       "all_frames": true
     },
     {
-      "matches": ["<all_urls>"],
-      "js": ["scripts/contentscript.js"],
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "scripts/contentscript.js"
+      ],
       "run_at": "document_end"
     }
   ],

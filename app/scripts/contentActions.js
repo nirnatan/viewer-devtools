@@ -24,23 +24,24 @@
                 }
             });
 
-            var reactRootComps = _(reactFrames)
+            return _(reactFrames)
                 .map(function (frame) {
-                    return _.toArray(frame.__REACT_DEVTOOLS_GLOBAL_HOOK__._reactRuntime.Mount._instancesByReactRootID);
+                    return _.map(frame.__REACT_DEVTOOLS_GLOBAL_HOOK__._reactRuntime.Mount._instancesByReactRootID, function (root) {
+                        return root.getPublicInstance ? root.getPublicInstance() : root;
+                    });
                 })
-                .flatten();
-
-            return reactRootComps.reduce(function (acc, comp) {
-                var components = React.addons.TestUtils.findAllInRenderedTree(comp, predicate);
-                return components.length ? acc.concat(_.filter(components, 'getDOMNode')) : acc;
-            }, []);
+                .flatten()
+                .reduce(function (acc, comp) {
+                    var components = React.addons.TestUtils.findAllInRenderedTree(comp, predicate);
+                    return components.length ? acc.concat(_.filter(components, 'getDOMNode')) : acc;
+                }, []);
         }
 
         function getComponentsByName(displayName) {
             var regExp = new RegExp(displayName, 'ig');
             return getComponentBy(function (component) {
                 var displayName = component.constructor.displayName;
-                return displayName !== 'ReactDOMComponent' && regExp.test(displayName);
+                return regExp.test(displayName);
             });
         }
 
@@ -61,7 +62,8 @@
         events = {
             getComponents: function () {
                 components = _(getComponentsByName('')).filter(function (comp) {
-                    return comp.isMounted() && comp.getDOMNode();
+                    var displayName = comp.constructor.displayName;
+                    return (displayName && displayName.indexOf('ReactDOM') !== 0) && !comp.tagName && comp.isMounted() && comp.getDOMNode();
                 }).transform(function (acc, comp) {
                     acc[getId(comp)] = comp;
                 }, {}).value();
