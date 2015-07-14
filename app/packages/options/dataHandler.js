@@ -4,12 +4,6 @@ define(['lodash', 'json!experiments/santa.json', 'json!experiments/santa-editor.
     var experiments = _.zipObject(viewerExp.concat(editorExp));
     var callbacks = [];
 
-    function fireChangeEvent(change) {
-        _.each(callbacks, function (callback) {
-            callback(change);
-        });
-    }
-
     chrome.storage.onChanged.addListener(function (changes) {
         var result = {};
         if (_.has(changes, 'settings.autoRedirect')) {
