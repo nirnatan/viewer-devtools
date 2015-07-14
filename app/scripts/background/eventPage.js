@@ -1,5 +1,5 @@
 'use strict';
-require(['dataHandler', 'utils/urlUtils'], function (dataHandler, urlUtils) {
+require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, urlUtils) {
     var sendToContentPage = function (request, sendResponse) {
         chrome.tabs.getSelected(null, function (tab) {
             chrome.tabs.sendMessage(tab.id, request, function () {
@@ -95,9 +95,9 @@ require(['dataHandler', 'utils/urlUtils'], function (dataHandler, urlUtils) {
             }
         },
         {
-            urls: ["http://*/*"]
+            urls: ['http://*/*']
         },
-        ["blocking"]);
+        ['blocking']);
 
     function applyEditorParams(url) {
         if (!autoRedirect) {

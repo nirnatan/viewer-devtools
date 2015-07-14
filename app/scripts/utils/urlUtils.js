@@ -99,14 +99,14 @@ define('utils/urlUtils', ['lodash'], function (_) {
     }
 
     function setUrlParam(url, paramName, value) {
-        var urlParts = url.split("?");
+        var urlParts = url.split('?');
         var paramList = [];
         var replaced = false;
         if (urlParts.length > 1) {
-            paramList = urlParts[1].split("&");
+            paramList = urlParts[1].split('&');
             _.find(paramList, function (param, i, params) {
-                if (param.indexOf(paramName + "=") === 0) {
-                    params[i] = paramName + "=" + String(value);
+                if (param.indexOf(paramName + '=') === 0) {
+                    params[i] = paramName + '=' + String(value);
                     replaced = true;
                     return true;
                 }
@@ -114,11 +114,11 @@ define('utils/urlUtils', ['lodash'], function (_) {
         }
 
         if (!replaced) {
-            paramList.push(paramName + "=" + String(value));
+            paramList.push(paramName + '=' + String(value));
         }
 
-        urlParts[1] = paramList.join("&");
-        url = urlParts.join("?");
+        urlParts[1] = paramList.join('&');
+        url = urlParts.join('?');
         return url;
     }
 
@@ -215,7 +215,7 @@ define('utils/urlUtils', ['lodash'], function (_) {
 
         isSame: isSameUrl,
         getRunningExperimentsString: function (experimentsObj, current) {
-            return _(experimentsObj).pick(Boolean).keys().union(current ? current.split(',') : []).join(',')
+            return _(experimentsObj).pick(Boolean).keys().union(current ? current.split(',') : []).join(',');
         },
         getEditorQueryString: function (experiments, queryObj) {
             queryObj = queryObj || {};
