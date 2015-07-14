@@ -1,7 +1,7 @@
 <div class="app">
     <div>
         <label>
-            <input type="checkbox" checked="{this.state.autoRedirect}" onChange="{this.onRedirectChanged}">Auto Redirect
+            <input type="checkbox" checked="{this.state.settings.autoRedirect}" onChange="() => this.updateSettings({autoRedirect: !this.state.settings.autoRedirect})">Auto Redirect
         </label>
     </div>
     <div class="experiment">

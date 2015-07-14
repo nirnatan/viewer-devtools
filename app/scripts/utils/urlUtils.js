@@ -217,7 +217,7 @@ define('utils/urlUtils', ['lodash'], function (_) {
         getRunningExperimentsString: function (experimentsObj, current) {
             return _(experimentsObj).pick(Boolean).keys().union(current ? current.split(',') : []).join(',');
         },
-        getEditorQueryString: function (experiments, queryObj) {
+        getEditorQueryString: function (experiments, settings, queryObj) {
             queryObj = queryObj || {};
 
             var runningExperimentsString = this.getRunningExperimentsString(experiments, queryObj.experiments);

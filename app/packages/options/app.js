@@ -4,22 +4,23 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
     return React.createClass({
         displayName: 'options',
         getInitialState: function () {
-            Promise.all([dataHandler.getExperiments(), dataHandler.autoRedirect.get()])
+            Promise.all([dataHandler.getExperiments(), dataHandler.settings.get()])
                 .then(function (state) {
                     this.setState({
                         experiments: state[0],
-                        autoRedirect: state[1]
+                        settings: state[1]
                     });
                 }.bind(this));
 
             return {
                 experiments: [],
-                autoRedirect: false
+                settings: {}
             };
         },
-        onRedirectChanged: function () {
-            dataHandler.autoRedirect.set(!this.state.autoRedirect);
-            this.setState({autoRedirect: !this.state.autoRedirect});
+        updateSettings: function (settings) {
+            var newState = _.defaults(settings, this.state.settings);
+            dataHandler.settings.set(newState);
+            this.setState(newState);
         },
         onExperimentChanged: function (name, enabled) {
             enabled = !!enabled;

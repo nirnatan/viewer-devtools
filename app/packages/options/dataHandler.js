@@ -4,6 +4,16 @@ define(['lodash', 'json!experiments/santa.json', 'json!experiments/santa-editor.
     var experiments = _.zipObject(viewerExp.concat(editorExp));
     var callbacks = [];
 
+    var localSettings = {
+        autoRedirect: false
+    };
+
+    function storageSettings() {
+        return _.transform(localSettings, function (acc, value, key) {
+            acc['settings.' + key] = value;
+        });
+    }
+
     chrome.storage.onChanged.addListener(function (changes) {
         var result = {};
         if (_.has(changes, 'settings.autoRedirect')) {
@@ -45,17 +55,22 @@ define(['lodash', 'json!experiments/santa.json', 'json!experiments/santa-editor.
             return defer.promise;
         },
 
-        autoRedirect: {
+        settings: {
             get: function () {
                 var defer = Promise.defer();
-                chrome.storage.local.get('settings.autoRedirect', function (result) {
-                    defer.resolve(!!result['settings.autoRedirect']);
+                chrome.storage.local.get(_.keys(storageSettings()), function (result) {
+                    localSettings = _.transform(result, function (acc, value, key) {
+                        acc[key.split('.')[1]] = value;
+                    });
+
+                    defer.resolve(localSettings);
                 });
 
                 return defer.promise;
             },
-            set: function (enable) {
-                chrome.storage.local.set({'settings.autoRedirect': enable}, _.noop);
+            set: function (settings) {
+                _.assign(localSettings, settings);
+                chrome.storage.local.set(storageSettings(), _.noop);
             }
         },
 

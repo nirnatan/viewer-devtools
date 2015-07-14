@@ -68,10 +68,10 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
         });
     };
 
-    var autoRedirect = false;
-    dataHandler.autoRedirect.get()
+    var settings = {};
+    dataHandler.settings.get()
         .then(function (result) {
-            autoRedirect = result;
+            settings = result;
         });
 
     var experiments;
@@ -100,12 +100,12 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
         ['blocking']);
 
     function applyEditorParams(url) {
-        if (!autoRedirect) {
+        if (!settings.autoRedirect) {
             return url;
         }
 
         var urlObj = urlUtils.parseUrl(url);
-        urlObj.search = urlUtils.getEditorQueryString(experiments, urlObj.query);
+        urlObj.search = urlUtils.getEditorQueryString(experiments, settings, urlObj.query);
 
         return urlUtils.buildFullUrl(urlObj);
     }
