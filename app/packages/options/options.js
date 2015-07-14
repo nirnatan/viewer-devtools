@@ -1,0 +1,7 @@
+'use strict';
+
+requirejs(['react', 'lodash', 'options/app'], function (React, _, app) {
+    var appElement = React.createElement(app);
+    React.render(appElement, document.getElementById('root'));
+});
+

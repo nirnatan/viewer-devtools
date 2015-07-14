@@ -18,7 +18,10 @@
   },
   "background": {
     "scripts": [
-      "scripts/background/eventPage.js"
+      "bower_components/requirejs/require.js",
+      "scripts/require-config.js",
+      "scripts/background/eventPage.js",
+      "scripts/utils/urlUtils.js"
     ],
     "persistent": true
   },
@@ -47,11 +50,14 @@
     "scripts/contentActions.js",
     "scripts/utils/jsonUtils.js"
   ],
+  "options_page": "packages/options/options.html",
   "devtools_page": "packages/devtools/panel.html",
   "permissions": [
+    "http://*/*",
+    "https://*/*",
     "storage",
     "tabs",
-    "http://*/*",
-    "https://*/*"
+    "webRequest",
+    "webRequestBlocking"
   ]
 }

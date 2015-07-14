@@ -9,6 +9,8 @@
 
 module.exports = function (grunt) {
 
+  require('./grunt/grunt-experiments')(grunt);
+
   // Load grunt tasks automatically
   require('load-grunt-tasks')(grunt);
 
@@ -322,7 +324,18 @@ module.exports = function (grunt) {
               ext: '.css'
             }]
         }
+      },
+
+    experiments: {
+      santa: {
+        src: ['../santa/packages/**/*.js'],
+        dest: 'app/packages/options/experiments/santa.json'
+      },
+      'santa-editor': {
+        src: ['../santa-editor/packages/**/*.js'],
+        dest: 'app/packages/options/experiments/santa-editor.json'
       }
+    }
   });
 
   grunt.loadNpmTasks('grunt-contrib-sass');
@@ -351,6 +364,8 @@ module.exports = function (grunt) {
     'concurrent:dist',
     //'cssmin',
     //'concat',
+    'experiments:santa',
+    'experiments:santa-editor',
     'uglify',
     'copy',
     //'usemin',

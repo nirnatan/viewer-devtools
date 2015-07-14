@@ -2,11 +2,6 @@
 <rt-require dependency="popup/component" as="Component"/>
 <div id="main" rt-scope="this.getComponents() as comps">
     <div class="search-container">
-        <div>
-            <span>Auto Redirect: </span>
-            <input type="checkbox" checked="{this.props.autoRedirect}" onChange="() => this.props.onRedirectChange(!this.props.autoRedirect)"/>
-            <span class="warning" rt-if="!this.props.autoRedirect && _.isEmpty(comps)" key="debug-message">Make sure you are in debug mode</span>
-        </div>
         <div class="search">
             <input autoFocus="{true}" type="text" valueLink="{this.linkState('displayName')}"/>
         </div>

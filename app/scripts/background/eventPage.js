@@ -1,5 +1,5 @@
 'use strict';
-(function () {
+require(['dataHandler', 'utils/urlUtils'], function (dataHandler, urlUtils) {
     var sendToContentPage = function (request, sendResponse) {
         chrome.tabs.getSelected(null, function (tab) {
             chrome.tabs.sendMessage(tab.id, request, function () {
@@ -63,8 +63,50 @@
     };
 
     window.isDevToolsOpen = function () {
-        return ports.some(function(port) {
+        return ports.some(function (port) {
             return port.name === 'devtools';
         });
     };
-}());
+
+    var autoRedirect = false;
+    dataHandler.autoRedirect.get()
+        .then(function (result) {
+            autoRedirect = result;
+        });
+
+    var experiments;
+    dataHandler.getExperiments()
+        .then(function (experimentsObj) {
+            experiments = experimentsObj;
+        });
+
+    dataHandler.registerForChanges(function (changes) {
+        autoRedirect = _.has(changes, 'autoRedirect') ? changes.autoRedirect : autoRedirect;
+        experiments = _.has(changes, 'experiments') ? changes.experiments : experiments;
+    });
+
+    chrome.webRequest.onBeforeRequest.addListener(function (details) {
+            var editor = /wix.*\.com/g;
+            if (editor.test(details.url)) {
+                return {
+                    redirectUrl: applyEditorParams(details.url)
+
+                };
+            }
+        },
+        {
+            urls: ["http://*/*"]
+        },
+        ["blocking"]);
+
+    function applyEditorParams(url) {
+        if (!autoRedirect) {
+            return url;
+        }
+
+        var urlObj = urlUtils.parseUrl(url);
+        urlObj.search = urlUtils.getEditorQueryString(experiments, urlObj.query);
+
+        return urlUtils.buildFullUrl(urlObj);
+    }
+});

@@ -1,0 +1,13 @@
+<div class="app">
+    <div>
+        <label>
+            <input type="checkbox" checked="{this.state.autoRedirect}" onChange="{this.onRedirectChanged}">Auto Redirect
+        </label>
+    </div>
+    <div class="experiment">
+        <h1>Experiments</h1>
+        <label rt-repeat="exp in this.state.experiments">
+            <input type="checkbox" checked="{exp}" onChange="() => this.onExperimentChanged(expIndex, !exp)">{expIndex}
+        </label>
+    </div>
+</div>
