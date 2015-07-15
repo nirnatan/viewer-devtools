@@ -1,4 +1,4 @@
-define(['lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json!generated/santa-editor.json', 'json!generated/packages.json'], function (_, urlUtils, viewerExp, editorExp, packagesNames) {
+define(['jquery', 'lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json!generated/santa-editor.json', 'json!generated/packages.json'], function ($, _, urlUtils, viewerExp, editorExp, packagesNames) {
     'use strict';
 
     var localStore = {
@@ -12,6 +12,16 @@ define(['lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json!generated
                     .value(),
         settings: {
             autoRedirect: false
+        },
+        ReactSource: {
+            enabled: false,
+            local: false,
+            version: ''
+        },
+        EditorSource: {
+            enabled: false,
+            local: false,
+            version: ''
         }
     };
 
@@ -69,6 +79,21 @@ define(['lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json!generated
             }
         }, handler);
         handler.isReady = handler.isReady || false;
+        handler.updateLatestVersions = function (callback) {
+            $.ajax({
+                url: 'http://itayjiraapp.appspot.com/api/v1/santa/setsantarc?getlink',
+                success: function (queryString) {
+                    var queryObj = urlUtils.parseUrlParams(queryString);
+                    handler.ReactSource.set({
+                        version: queryObj.ReactSource.replace('\n', '')
+                    });
+                    handler.EditorSource.set({
+                        version: queryObj.EditorSource.replace('\n', '')
+                    });
+                    callback();
+                }
+            });
+        }
     }
     init();
 

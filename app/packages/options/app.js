@@ -1,49 +1,64 @@
 define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataHandler, template) {
     'use strict';
 
+    function updateData(name, newValue) {
+        var value = _.assign({}, this.state[name], newValue);
+        dataHandler[name].set(value);
+
+        var state = {};
+        state[name] = value;
+        this.setState(state);
+    }
+
     return React.createClass({
         displayName: 'options',
         getInitialState: function () {
-            if (dataHandler.isReady) {
-                return {
-                    experiments: dataHandler.experiments.get(),
-                    settings: dataHandler.settings.get(),
-                    packages: dataHandler.packages.get()
-                };
-            }
-
             var emptyState = {
                 experiments: {},
                 settings: {},
-                packages: {}
+                packages: {},
+                ReactSource: {},
+                EditorSource: {}
             };
 
             setTimeout(function () {
                 this.setState({
                     experiments: dataHandler.experiments.get(),
                     settings: dataHandler.settings.get(),
-                    packages: dataHandler.packages.get()
+                    packages: dataHandler.packages.get(),
+                    ReactSource: dataHandler.ReactSource.get(),
+                    EditorSource: dataHandler.EditorSource.get()
                 });
             }.bind(this), 100);
 
             return emptyState;
         },
         updateSettings: function (settings) {
-            var newState = _.assign({}, this.state.settings, settings);
-            dataHandler.settings.set(newState);
-            this.setState(newState);
+            updateData.call(this, 'settings', settings);
         },
         onExperimentChanged: function (name) {
-            var experiments = _.clone(this.state.experiments);
-            experiments[name] = !experiments[name];
-            dataHandler.experiments.set(experiments);
-            this.setState({experiments: experiments});
+            var value = {};
+            value[name] = !this.state.experiments[name];
+            updateData.call(this, 'experiments', value);
         },
         onPackageChanged: function (name) {
-            var packages = _.clone(this.state.packages);
-            packages[name] = !packages[name];
-            dataHandler.packages.set(packages);
-            this.setState({packages: packages});
+            var value = {};
+            value[name] = !this.state.packages[name];
+            updateData.call(this, 'packages', value);
+        },
+        updateReactSource: function (newValue) {
+            updateData.call(this, 'ReactSource', newValue);
+        },
+        updateEditorSource: function (newValue) {
+            updateData.call(this, 'EditorSource', newValue);
+        },
+        updateVersions: function () {
+            dataHandler.updateLatestVersions(function() {
+                var state = _.pick(this.state, ['ReactSource', 'EditorSource']);
+                state.ReactSource.version = dataHandler.ReactSource.get().version;
+                state.EditorSource.version = dataHandler.EditorSource.get().version;
+                this.setState(state);
+            }.bind(this));
         },
         selectAll: function (type) {
             var current = _.all(this.state[type]);

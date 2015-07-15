@@ -225,6 +225,22 @@ define('utils/urlUtils', ['lodash'], function (_) {
                 queryObj.debug = _.all(packages) ? 'all' : _(packages).pick(Boolean).keys().join(',');
                 queryObj.petri_ovr = 'specs.DisableNewRelicScriptsSantaEditor:true';
             }
+            var reactSource = dataHandler.ReactSource.get();
+            if (reactSource.enabled && (reactSource.local || reactSource.version)) {
+                if (reactSource.local) {
+                    queryObj.SantaVersions = 'http://localhost/target';
+                } else {
+                    queryObj.ReactSource = reactSource.version;
+                }
+            }
+            var editorSource = dataHandler.EditorSource.get();
+            if (editorSource.enabled && (editorSource.local || editorSource.version)) {
+                if (editorSource.local) {
+                    queryObj.SantaEditorVersions = 'http://localhost/editor-base/target';
+                } else {
+                    queryObj.EditorSource = editorSource.version;
+                }
+            }
             var runningExperimentsString = this.getRunningExperimentsString(dataHandler.experiments.get(), queryObj.experiments);
             if (runningExperimentsString) {
                 queryObj.experiments = runningExperimentsString;
