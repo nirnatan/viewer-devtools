@@ -69,8 +69,8 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
     };
 
     chrome.webRequest.onBeforeRequest.addListener(function (details) {
-            var editor = /wix.*\.com/g;
-            if (editor.test(details.url)) {
+            var wix = /wix.*\.com/g;
+            if (details.type !== 'xmlhttprequest' && wix.test(details.url)) {
                 return {
                     redirectUrl: applyEditorParams(details.url)
 
