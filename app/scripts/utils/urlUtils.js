@@ -217,10 +217,14 @@ define('utils/urlUtils', ['lodash'], function (_) {
         getRunningExperimentsString: function (experimentsObj, current) {
             return _(experimentsObj).pick(Boolean).keys().union(current ? current.split(',') : []).join(',');
         },
-        getEditorQueryString: function (experiments, settings, queryObj) {
+        getEditorQueryString: function (dataHandler, queryObj) {
             queryObj = queryObj || {};
 
-            var runningExperimentsString = this.getRunningExperimentsString(experiments, queryObj.experiments);
+            var packages = dataHandler.packages.get();
+            if (_.any(packages)) {
+                queryObj.debug = _.all(packages) ? 'all' : _(packages).pick(Boolean).keys().join(',');
+            }
+            var runningExperimentsString = this.getRunningExperimentsString(dataHandler.experiments.get(), queryObj.experiments);
             if (runningExperimentsString) {
                 queryObj.experiments = runningExperimentsString;
             } else {

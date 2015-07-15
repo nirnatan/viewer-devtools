@@ -10,6 +10,7 @@
 module.exports = function (grunt) {
 
   require('./grunt/grunt-experiments')(grunt);
+  require('./grunt/grunt-packages')(grunt);
 
   // Load grunt tasks automatically
   require('load-grunt-tasks')(grunt);
@@ -329,11 +330,18 @@ module.exports = function (grunt) {
     experiments: {
       santa: {
         src: ['../santa/packages/**/*.js'],
-        dest: 'app/packages/options/experiments/santa.json'
+        dest: 'app/packages/options/generated/santa.json'
       },
       'santa-editor': {
         src: ['../santa-editor/packages/**/*.js'],
-        dest: 'app/packages/options/experiments/santa-editor.json'
+        dest: 'app/packages/options/generated/santa-editor.json'
+      }
+    },
+
+    packages: {
+      all: {
+        src: ['../santa/packages/**/*.js', '../santa-editor/packages/**/*.js'],
+        dest: 'app/packages/options/generated/packages.json'
       }
     }
   });
@@ -366,6 +374,7 @@ module.exports = function (grunt) {
     //'concat',
     'experiments:santa',
     'experiments:santa-editor',
+    'packages',
     'uglify',
     'copy',
     //'usemin',

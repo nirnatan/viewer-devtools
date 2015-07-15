@@ -1,82 +1,76 @@
-define(['lodash', 'json!experiments/santa.json', 'json!experiments/santa-editor.json'], function (_, viewerExp, editorExp) {
+define(['lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json!generated/santa-editor.json', 'json!generated/packages.json'], function (_, urlUtils, viewerExp, editorExp, packagesNames) {
     'use strict';
 
-    var experiments = _.zipObject(viewerExp.concat(editorExp));
-    var callbacks = [];
-
-    var localSettings = {
-        autoRedirect: false
+    var localStore = {
+        experiments: _(viewerExp.concat(editorExp))
+            .zipObject()
+            .mapValues(Boolean)
+            .value(),
+        packages: _(['react'].concat(packagesNames))
+                    .zipObject()
+                    .mapValues(Boolean)
+                    .value(),
+        settings: {
+            autoRedirect: false
+        }
     };
 
-    function storageSettings() {
-        return _.transform(localSettings, function (acc, value, key) {
-            acc['settings.' + key] = value;
+    function addPrefix(prefix, object) {
+        return _.transform(object, function (acc, value, key) {
+            acc[prefix + '.' + key] = value;
         });
     }
 
-    chrome.storage.onChanged.addListener(function (changes) {
-        var result = {};
-        if (_.has(changes, 'settings.autoRedirect')) {
-            result.autoRedirect = changes['settings.autoRedirect'].newValue;
-        }
-
-        var experimentChanges = _.omit(changes, ['settings.autoRedirect']);
-        if (!_.isEmpty(experimentChanges)) {
-            _.each(experimentChanges, function (value, expName) {
-                experiments[expName] = value.newValue;
-            });
-            result.experiments = experiments;
-        }
-
-        _.each(callbacks, function (callback) {
-            callback(result);
-        })
-    });
-
-    return {
-        getExperiments: function () {
-            var defer = Promise.defer();
-            chrome.storage.local.get(viewerExp.concat(editorExp), function (result) {
-                _.assign(experiments, result);
-                defer.resolve(experiments);
-            });
-
-            return defer.promise;
-        },
-
-        toggleExperiment: function (name, enabled) {
-            experiments[name] = _.isUndefined(enabled) ? !experiments[name] : enabled;
-
-            var defer = Promise.defer();
-            chrome.storage.local.set(_.pick(experiments, [name]), function () {
-                defer.resolve(experiments[name]);
-            });
-
-            return defer.promise;
-        },
-
-        settings: {
-            get: function () {
-                var defer = Promise.defer();
-                chrome.storage.local.get(_.keys(storageSettings()), function (result) {
-                    localSettings = _.transform(result, function (acc, value, key) {
-                        acc[key.split('.')[1]] = value;
-                    });
-
-                    defer.resolve(localSettings);
-                });
-
-                return defer.promise;
-            },
-            set: function (settings) {
-                _.assign(localSettings, settings);
-                chrome.storage.local.set(storageSettings(), _.noop);
-            }
-        },
-
-        registerForChanges: function (callback) {
-            callbacks.push(callback);
-        }
+    function removePrefix(prefix, object) {
+        return _.transform(object, function (acc, value, key) {
+            acc[key.slice(prefix.length + 1)] = value;
+        });
     }
 
+    chrome.storage.onChanged.addListener(function () {
+        updateDataFromStorage();
+    });
+
+    function updateDataFromStorage() {
+        return Promise.all(_.map(localStore, function (value, key) {
+            var defer = Promise.defer();
+            chrome.storage.local.get(_.keys(addPrefix(key, value)), function (result) {
+                var storage = removePrefix(key, result);
+                _.assign(value, storage);
+                defer.resolve();
+            });
+
+            return defer.promise;
+        }));
+    }
+
+    var handler = {};
+    function init() {
+        updateDataFromStorage()
+            .then(function () {
+                handler.isReady = true;
+            });
+        handler = _.transform(localStore, function (acc, value, key) {
+            acc[key] = {
+                get: function () {
+                    return localStore[key];
+                },
+                set: function (value) {
+                    var storage;
+                    if (_.isObject(value)) {
+                        _.assign(localStore[key], value);
+                        storage = addPrefix(key, localStore[key]);
+                    } else {
+                        localStore[key] = value;
+                        storage = _.pick(localStore, [key]);
+                    }
+                    chrome.storage.local.set(storage, _.noop);
+                }
+            }
+        }, handler);
+        handler.isReady = handler.isReady || false;
+    }
+    init();
+
+    return handler
 });

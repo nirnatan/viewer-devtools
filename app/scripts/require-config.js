@@ -8,7 +8,7 @@ requirejs.config({
         text: '/bower_components/requirejs-plugins/lib/text',
         json: '/bower_components/requirejs-plugins/src/json',
         dataHandler: '/packages/options/dataHandler',
-        experiments: '/packages/options/experiments',
+        generated: '/packages/options/generated',
         options: '/packages/options',
         popup: 'scripts/popup',
         utils: 'scripts/utils'

@@ -2,10 +2,24 @@
   margin: 30px;
 }
 
-.experiment {
+.main {
+  display: flex;
+  flex-direction: row;
+
+  > div {
+    flex: 1;
+    max-width: 300px;
+  }
+}
+
+.experiment, .packages {
   margin-left: 15px;
 
   label {
     display: block;
+  }
+
+  .select-all {
+    margin-bottom: 5px;
   }
 }

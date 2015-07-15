@@ -1,13 +1,27 @@
 <div class="app">
     <div>
         <label>
-            <input type="checkbox" checked="{this.state.settings.autoRedirect}" onChange="() => this.updateSettings({autoRedirect: !this.state.settings.autoRedirect})">Auto Redirect
+            <input type="checkbox" checked="{this.state.settings.autoRedirect}" onChange="() => this.updateSettings({autoRedirect: !this.state.settings.autoRedirect})">Enabled
         </label>
     </div>
-    <div class="experiment">
-        <h1>Experiments</h1>
-        <label rt-repeat="exp in this.state.experiments">
-            <input type="checkbox" checked="{exp}" onChange="() => this.onExperimentChanged(expIndex, !exp)">{expIndex}
-        </label>
+    <div class="main">
+        <div class="experiment">
+            <h1>Experiments</h1>
+            <label class="select-all">
+                <input type="checkbox" checked="{_.all(this.state.experiments)}" onChange="() => this.selectAll('experiments')">Select All
+            </label>
+            <label rt-repeat="exp in this.state.experiments" key="{expIndex}">
+                <input type="checkbox" checked="{exp}" onChange="() => this.onExperimentChanged(expIndex)">{expIndex}
+            </label>
+        </div>
+        <div class="packages">
+            <h1>Debug</h1>
+            <label class="select-all">
+                <input type="checkbox" checked="{_.all(this.state.packages)}" onChange="() => this.selectAll('packages')">Select All
+            </label>
+            <label rt-repeat="pkg in this.state.packages" key="{pkgIndex}">
+                <input type="checkbox" checked="{pkg}" onChange="() => this.onPackageChanged(pkgIndex)">{pkgIndex}
+            </label>
+        </div>
     </div>
 </div>

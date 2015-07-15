@@ -68,23 +68,6 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
         });
     };
 
-    var settings = {};
-    dataHandler.settings.get()
-        .then(function (result) {
-            settings = result;
-        });
-
-    var experiments;
-    dataHandler.getExperiments()
-        .then(function (experimentsObj) {
-            experiments = experimentsObj;
-        });
-
-    dataHandler.registerForChanges(function (changes) {
-        autoRedirect = _.has(changes, 'autoRedirect') ? changes.autoRedirect : autoRedirect;
-        experiments = _.has(changes, 'experiments') ? changes.experiments : experiments;
-    });
-
     chrome.webRequest.onBeforeRequest.addListener(function (details) {
             var editor = /wix.*\.com/g;
             if (editor.test(details.url)) {
@@ -100,12 +83,12 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
         ['blocking']);
 
     function applyEditorParams(url) {
-        if (!settings.autoRedirect) {
+        if (!dataHandler.settings.get().autoRedirect) {
             return url;
         }
 
         var urlObj = urlUtils.parseUrl(url);
-        urlObj.search = urlUtils.getEditorQueryString(experiments, settings, urlObj.query);
+        urlObj.search = urlUtils.getEditorQueryString(dataHandler, urlObj.query);
 
         return urlUtils.buildFullUrl(urlObj);
     }
