@@ -4,15 +4,25 @@ define([
     'popup/component'
 ], function (React, _, Component) {
     'use strict';
-    function repeatComp1(comps, comp, compIndex) {
+    function onChange1(comps) {
+        this.props.onRedirectChange(!this.props.autoRedirect);
+    }
+    function repeatComp2(comps, comp, compIndex) {
         return React.createElement(Component, {
             'className': 'component-wrapper',
             'comp': comp,
             'key': comp.id
         });
     }
-    function scopeComps2(comps) {
-        return React.createElement('div', { 'id': 'main' }, React.createElement('div', { 'className': 'search-container' }, React.createElement('div', { 'className': 'search' }, React.createElement('input', {
+    function scopeComps3(comps) {
+        return React.createElement('div', { 'id': 'main' }, React.createElement('div', { 'className': 'search-container' }, React.createElement('div', {}, React.createElement('span', {}, 'Enable'), React.createElement('input', {
+            'type': 'checkbox',
+            'checked': this.props.autoRedirect,
+            'onChange': onChange1.bind(this, comps)
+        }), !this.props.autoRedirect && _.isEmpty(comps) ? React.createElement('span', {
+            'className': 'warning',
+            'key': 'debug-message'
+        }, 'Make sure you are in debug mode') : null), React.createElement('div', { 'className': 'search' }, React.createElement('input', {
             'autoFocus': true,
             'type': 'text',
             'valueLink': this.linkState('displayName')
@@ -28,10 +38,10 @@ define([
                 'className': 'bubblingG',
                 'key': 'loadingAnim'
             }, React.createElement('span', {}), React.createElement('span', {}), React.createElement('span', {})) : null,
-            !this.state.loading ? _.map(comps, repeatComp1.bind(this, comps)) : null
+            !this.state.loading ? _.map(comps, repeatComp2.bind(this, comps)) : null
         ]));
     }
     return function () {
-        return scopeComps2.apply(this, [this.getComponents()]);
+        return scopeComps3.apply(this, [this.getComponents()]);
     };
 });
