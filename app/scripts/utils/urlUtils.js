@@ -223,7 +223,7 @@ define('utils/urlUtils', ['lodash'], function (_) {
             var packages = dataHandler.packages.get();
             if (_.any(packages)) {
                 queryObj.debug = _.all(packages) ? 'all' : _(packages).pick(Boolean).keys().join(',');
-                queryObj.petri_ovr = 'specs.DisableNewRelicScriptsSantaEditor:true';
+                queryObj.petri_ovr = 'specs.DisableNewRelicScriptsSantaEditor:true'; // jshint ignore:line
             }
             var reactSource = dataHandler.ReactSource.get();
             if (reactSource.enabled && (reactSource.local || reactSource.version)) {
