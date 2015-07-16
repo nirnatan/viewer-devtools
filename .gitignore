@@ -10,3 +10,4 @@ package
 **/*.rt.js
 **/*.css
 **/*.css.map
+**/generated/*.*
