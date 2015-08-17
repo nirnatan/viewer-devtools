@@ -1,11 +1,10 @@
 <!--suppress CheckEmptyScriptTag -->
 <rt-require dependency="popup/component" as="Component"/>
+<rt-require dependency="dataHandler" as="dataHandler"/>
 <div id="main" rt-scope="this.getComponents() as comps">
     <div class="search-container">
         <div>
-            <span>Enable</span>
-            <input type="checkbox" checked="{this.props.autoRedirect}" onChange="() => this.props.onRedirectChange(!this.props.autoRedirect)"/>
-            <span class="warning" rt-if="!this.props.autoRedirect && _.isEmpty(comps)" key="debug-message">Make sure you are in debug mode</span>
+            <button onClick="{this.redirectUrl}" class="start-debug-btn">Debug this site</button>
         </div>
         <div class="search">
             <input autoFocus="{true}" type="text" valueLink="{this.linkState('displayName')}"/>

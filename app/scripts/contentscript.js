@@ -81,6 +81,10 @@
 
     var injected = false;
     chrome.extension.onMessage.addListener(function (msg, sender, sendResponse) {
+        if (msg.type === 'redirect') {
+            window.location.href = msg.url;
+        }
+
         if (!injected) {
             injectScripts(function () {
                 sendMessageToActionScript(msg, sender, sendResponse);

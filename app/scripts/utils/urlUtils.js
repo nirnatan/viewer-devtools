@@ -21,13 +21,13 @@ define('utils/urlUtils', ['lodash'], function (_) {
     }
 
     function toQueryParam(key, val) {
-        if (_.contains([undefined, null, ''], val)){
-          return encodeURIComponent(key);
+        if (_.contains([undefined, null, ''], val)) {
+            return encodeURIComponent(key);
         }
         if (_.isArray(val)) {
-          return val.map(function (innerVal) {
-            return encodeURIComponent(key) + '=' + encodeURIComponent(innerVal);
-          }).join('&');
+            return val.map(function (innerVal) {
+                return encodeURIComponent(key) + '=' + encodeURIComponent(innerVal);
+            }).join('&');
         }
         return encodeURIComponent(key) + '=' + encodeURIComponent(val);
     }
@@ -173,6 +173,7 @@ define('utils/urlUtils', ['lodash'], function (_) {
         function simplifyUrl(url) {
             return url && url.replace(/[?&#/]+$/, '').toLowerCase();
         }
+
         return simplifyUrl(url1) === simplifyUrl(url2);
     }
 
@@ -217,14 +218,14 @@ define('utils/urlUtils', ['lodash'], function (_) {
         getRunningExperimentsString: function (experimentsObj, current) {
             return _(experimentsObj).pick(Boolean).keys().union(current ? current.split(',') : []).join(',');
         },
-        getEditorQueryString: function (dataHandler, queryObj) {
-            queryObj = queryObj || {};
+        getEditorQueryString: function (dataHandler, urlObj) {
+            var queryObj = urlObj.query || {};
 
             var packages = dataHandler.packages.get();
-            if (_.any(packages)) {
-                queryObj.debug = _.all(packages) ? 'all' : _(packages).pick(Boolean).keys().join(',');
-                queryObj.petri_ovr = 'specs.DisableNewRelicScriptsSantaEditor:true'; // jshint ignore:line
-            }
+            packages.react = true;
+            queryObj.debug = _.all(packages) ? 'all' : _(packages).pick(Boolean).keys().join(',');
+            queryObj.petri_ovr = 'specs.DisableNewRelicScriptsSantaEditor:true'; // jshint ignore:line
+
             var reactSource = dataHandler.ReactSource.get();
             if (reactSource.enabled && (reactSource.local || reactSource.version)) {
                 if (reactSource.local) {
@@ -248,7 +249,24 @@ define('utils/urlUtils', ['lodash'], function (_) {
                 delete queryObj.experiments;
             }
 
-            return this.toQueryString(queryObj);
+            var params = [], remainingParams = queryObj;
+            if (urlObj.search) {
+                var originalParams = _.map(urlObj.search.substring(1).split('&'), function(p) {
+                    return _.first(p.split('='));
+                });
+
+                params = _.map(originalParams, function (key) {
+                    return key + '=' + queryObj[key];
+                });
+
+                remainingParams = _.omit(queryObj, originalParams);
+            }
+
+            params = _.transform(remainingParams, function (acc, value, key) {
+                acc.push(key + '=' + value);
+            }, params);
+
+            return params.join('&');
         }
     };
 

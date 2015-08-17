@@ -6,7 +6,7 @@ define(['jquery', 'lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json
             .zipObject()
             .mapValues(Boolean)
             .value(),
-        packages: _(['react'].concat(packagesNames))
+        packages: _(packagesNames)
                     .zipObject()
                     .mapValues(Boolean)
                     .value(),

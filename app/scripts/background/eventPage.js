@@ -22,6 +22,12 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
         sendToContentPage({type: 'getComponents'}, callback);
     };
 
+    window.startDebug = function startDebug() {
+        chrome.tabs.getSelected(null, function (tab) {
+            sendToContentPage({type: 'redirect', url: applyEditorParams(tab.url)});
+        });
+    };
+
     window.markComponent = function markComponent(domId) {
         sendToContentPage({type: 'markComponent', params: domId});
     };
@@ -69,8 +75,9 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
     };
 
     chrome.webRequest.onBeforeRequest.addListener(function (details) {
+            var autoRedirect = dataHandler.settings.get().autoRedirect;
             var wix = /wix.*\.com/g;
-            if (details.type !== 'xmlhttprequest' && wix.test(details.url)) {
+            if (details.type !== 'xmlhttprequest' && wix.test(details.url) && autoRedirect) {
                 return {
                     redirectUrl: applyEditorParams(details.url)
 
@@ -83,12 +90,8 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
         ['blocking']);
 
     function applyEditorParams(url) {
-        if (!dataHandler.settings.get().autoRedirect) {
-            return url;
-        }
-
         var urlObj = urlUtils.parseUrl(url);
-        urlObj.search = urlUtils.getEditorQueryString(dataHandler, urlObj.query);
+        urlObj.search = urlUtils.getEditorQueryString(dataHandler, urlObj);
 
         return urlUtils.buildFullUrl(urlObj);
     }

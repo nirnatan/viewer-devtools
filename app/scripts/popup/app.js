@@ -21,6 +21,9 @@ define(['react', 'lodash', 'popup/app.rt'], function (React, _, template) {
                 return new RegExp(this.state.displayName, 'ig').test(comp.name || comp.id || comp.domId);
             }, this);
         },
+        redirectUrl: function () {
+            chrome.extension.getBackgroundPage().startDebug();
+        },
         render: template
     });
 });
