@@ -31,16 +31,6 @@
         "<all_urls>"
       ],
       "js": [
-        "injected/GlobalHook.js"
-      ],
-      "run_at": "document_start",
-      "all_frames": true
-    },
-    {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
         "scripts/contentscript.js"
       ],
       "run_at": "document_end"

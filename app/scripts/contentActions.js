@@ -16,25 +16,35 @@
         }
 
         function getComponentBy(predicate) {
-            var reactFrames = _.filter(_.toArray(frames).concat(window), function (frame) {
+            var sameDomainFrames = _.filter(_.toArray(frames), function (frame) {
                 try {
-                    return frame.__REACT_DEVTOOLS_GLOBAL_HOOK__._reactRuntime;
+                    return frame.document;
                 } catch (e) {
                     return false;
                 }
             });
 
-            return _(reactFrames)
-                .map(function (frame) {
-                    return _.map(frame.__REACT_DEVTOOLS_GLOBAL_HOOK__._reactRuntime.Mount._instancesByReactRootID, function (root) {
-                        return root.getPublicInstance ? root.getPublicInstance() : root;
-                    });
+            var reactComps = _([window].concat(sameDomainFrames))
+                .map(function (win) {
+                    return _(win)
+                        .values()
+                        .compact()
+                        .filter(function (comp) {
+                            try {
+                                return comp !== window.selectedComponent && React.addons.TestUtils.isCompositeComponent(comp);
+                            } catch (e) {
+                                return false;
+                            }
+                        })
+                        .value();
                 })
                 .flatten()
-                .reduce(function (acc, comp) {
-                    var components = React.addons.TestUtils.findAllInRenderedTree(comp, predicate);
-                    return components.length ? acc.concat(_.filter(components, 'getDOMNode')) : acc;
-                }, []);
+                .value();
+
+            return _.reduce(reactComps, function (acc, comp) {
+                var components = React.addons.TestUtils.findAllInRenderedTree(comp, predicate);
+                return components.length ? acc.concat(_.filter(components, 'getDOMNode')) : acc;
+            }, []);
         }
 
         function getComponentsByName(displayName) {
