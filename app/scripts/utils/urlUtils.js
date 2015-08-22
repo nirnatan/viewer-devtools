@@ -1,5 +1,6 @@
-'use strict';
 define('utils/urlUtils', ['lodash'], function (_) {
+    'use strict';
+
     function addProtocolIfMissing(url) {
         var beginsWithProtocol = /^(ftps|ftp|http|https):.*$/.test(url),
             beginsWithDoubleSlash = /^\/\//.test(url);

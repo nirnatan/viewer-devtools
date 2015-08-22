@@ -1,5 +1,5 @@
-'use strict';
 (function () {
+    'use strict';
     if (!window.require) {
         return;
     }
@@ -50,8 +50,8 @@
         function getComponentsByName(displayName) {
             var regExp = new RegExp(displayName, 'ig');
             return getComponentBy(function (component) {
-                var displayName = component.constructor.displayName;
-                return regExp.test(displayName);
+                var compDisplayName = component.constructor.displayName;
+                return regExp.test(compDisplayName);
             });
         }
 

@@ -1,5 +1,5 @@
-'use strict';
 require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, urlUtils) {
+    'use strict';
     var sendToContentPage = function (request, sendResponse) {
         chrome.tabs.getSelected(null, function (tab) {
             chrome.tabs.sendMessage(tab.id, request, function () {

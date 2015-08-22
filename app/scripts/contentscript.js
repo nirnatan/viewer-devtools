@@ -27,8 +27,7 @@
                     if (eqPos >= 0) {
                         keyValue = element.substr(0, eqPos);
                         elValue = element.substr(eqPos + 1);
-                    }
-                    else {
+                    } else {
                         keyValue = element;
                         elValue = '';
                     }
@@ -37,11 +36,9 @@
 
                     if (parsed[keyValue] === undefined) {
                         parsed[keyValue] = elValue;
-                    }
-                    else if (parsed[keyValue] instanceof Array) {
+                    } else if (parsed[keyValue] instanceof Array) {
                         parsed[keyValue].push(elValue);
-                    }
-                    else {
+                    } else {
                         parsed[keyValue] = [parsed[keyValue], elValue];
                     }
                 }
@@ -58,8 +55,7 @@
                         for (var i = 0, length = obj[prop].length; i < length; i++) {
                             string.push([encodeURIComponent(prop), encodeURIComponent(obj[prop][i])].join('='));
                         }
-                    }
-                    else {
+                    } else {
                         string.push([encodeURIComponent(prop), encodeURIComponent(obj[prop])].join('='));
                     }
                 }

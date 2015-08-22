@@ -65,18 +65,18 @@ define(['jquery', 'lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json
                 get: function () {
                     return localStore[key];
                 },
-                set: function (value) {
+                set: function (newValue) {
                     var storage;
-                    if (_.isObject(value)) {
-                        _.assign(localStore[key], value);
+                    if (_.isObject(newValue)) {
+                        _.assign(localStore[key], newValue);
                         storage = addPrefix(key, localStore[key]);
                     } else {
-                        localStore[key] = value;
+                        localStore[key] = newValue;
                         storage = _.pick(localStore, [key]);
                     }
                     chrome.storage.local.set(storage, _.noop);
                 }
-            }
+            };
         }, handler);
         handler.isReady = handler.isReady || false;
         handler.updateLatestVersions = function (callback) {
@@ -93,9 +93,9 @@ define(['jquery', 'lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json
                     callback();
                 }
             });
-        }
+        };
     }
     init();
 
-    return handler
+    return handler;
 });

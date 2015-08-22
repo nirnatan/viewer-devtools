@@ -1,5 +1,5 @@
-'use strict';
 define(['react', 'lodash', 'popup/component.rt'], function (React, _, template) {
+    'use strict';
 
     return React.createClass({
         displayName: 'Wix Component',

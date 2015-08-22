@@ -1,21 +1,24 @@
-var sidePanel;
-chrome.devtools.panels.elements.createSidebarPane("Component Props",
-    function(sidebarPane) {
-        sidePanel = sidebarPane;
+(function () {
+    'use strict';
+
+    var sidePanel;
+    chrome.devtools.panels.elements.createSidebarPane('Component Props',
+        function (sidebarPane) {
+            sidePanel = sidebarPane;
+        }
+    );
+
+    function inspectElement(props) {
+        chrome.devtools.inspectedWindow.eval('inspect(selectedComponent.getDOMNode())'); // eslint-disable-line no-eval
+        sidePanel.setObject(props);
     }
-);
 
-function inspectElement(props) {
-    chrome.devtools.inspectedWindow.eval('inspect(selectedComponent.getDOMNode())');
-    sidePanel.setObject(props);
-}
-
-var port = chrome.runtime.connect({name: 'devtools'});
-port.onMessage.addListener(function (msg) {
-    switch (msg.type) {
-        case 'inspectElement':
-            inspectElement(msg.props);
-            break;
-    }
-});
-
+    var port = chrome.runtime.connect({name: 'devtools'});
+    port.onMessage.addListener(function (msg) {
+        switch (msg.type) {
+            case 'inspectElement':
+                inspectElement(msg.props);
+                break;
+        }
+    });
+}());
