@@ -41,7 +41,7 @@
     "scripts/utils/jsonUtils.js"
   ],
   "options_page": "scripts/options/options.html",
-  "devtools_page": "packages/devtools/panel.html",
+  "devtools_page": "scripts/devtools/panel.html",
   "permissions": [
     "http://*/*",
     "https://*/*",
