@@ -40,7 +40,7 @@
     "scripts/contentActions.js",
     "scripts/utils/jsonUtils.js"
   ],
-  "options_page": "packages/options/options.html",
+  "options_page": "scripts/options/options.html",
   "devtools_page": "packages/devtools/panel.html",
   "permissions": [
     "http://*/*",
