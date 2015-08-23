@@ -1,43 +1,88 @@
-<div class="app">
-    <div>
-        <label>
-            <input type="checkbox" checked="{this.state.settings.autoRedirect}" onChange="() => this.updateSettings({autoRedirect: !this.state.settings.autoRedirect})"><span>Automatically Debug (by checking this it will try to debug any <b>*.wix.com</b> site)</span>
-        </label>
-    </div>
-    <div class="main">
-        <div class="version">
-            <h1>Versions</h1>
-            <div>
-                <h3>Santa Viewer</h3>
-                <label><input type="checkbox" checked="{this.state.ReactSource.enabled}" onChange="() => this.updateReactSource({enabled: !this.state.ReactSource.enabled})"/>Enable</label>
-                <label><input type="checkbox" disabled="{!this.state.ReactSource.enabled}" checked="{this.state.ReactSource.local}" onChange="() => this.updateReactSource({local: !this.state.ReactSource.local})"/>Local</label>
-                <label rt-class="{disabled: this.state.ReactSource.local}">Version: <input disabled="{!this.state.ReactSource.enabled && this.state.ReactSource.local}" type="text" value="{this.state.ReactSource.version}" onChange="(e) => this.updateReactSource({version: e.target.value})"/></label>
-            </div>
-            <div>
-                <h3>Santa Editor</h3>
-                <label><input type="checkbox" checked="{this.state.EditorSource.enabled}" onChange="() => this.updateEditorSource({enabled: !this.state.EditorSource.enabled})"/>Enable</label>
-                <label><input type="checkbox" disabled="{!this.state.EditorSource.enabled}"  checked="{this.state.EditorSource.local}" onChange="() => this.updateEditorSource({local: !this.state.EditorSource.local})"/>Local</label>
-                <label rt-class="{disabled: this.state.EditorSource.local}">Version: <input disabled="{!this.state.EditorSource.enabled && this.state.EditorSource.local}" type="text" value="{this.state.EditorSource.version}" onChange="(e) => this.updateEditorSource({version: e.target.value})"/></label>
-            </div>
-            <button onClick="{this.updateVersions}">Refresh Versions</button>
-        </div>
-        <div class="experiment">
-            <h1>Experiments</h1>
-            <label class="select-all">
-                <input type="checkbox" checked="{_.all(this.state.experiments)}" onChange="() => this.selectAll('experiments')">Select All
-            </label>
-            <label rt-repeat="exp in this.state.experiments" key="{expIndex}">
-                <input type="checkbox" checked="{exp}" onChange="() => this.onExperimentChanged(expIndex)">{expIndex}
-            </label>
-        </div>
-        <div class="packages">
-            <h1>Debug</h1>
-            <label class="select-all">
-                <input type="checkbox" checked="{_.all(this.state.packages)}" onChange="() => this.selectAll('packages')">Select All
-            </label>
-            <label rt-repeat="pkg in this.state.packages" key="{pkgIndex}">
-                <input type="checkbox" checked="{pkg}" onChange="() => this.onPackageChanged(pkgIndex)">{pkgIndex}
-            </label>
-        </div>
-    </div>
+<rt-require dependency="react-bootstrap" as="baseUI"/>
+<div>
+    <baseUI.Panel class="app">
+        <baseUI.Input type="checkbox"
+                      label="Automatically Debug (by checking this it will try to debug any *.wix.com site)"
+                      checked="{this.state.settings.autoRedirect}"
+                      onChange="() => this.updateSettings({autoRedirect: !this.state.settings.autoRedirect})">
+        </baseUI.Input>
+        <baseUI.Grid>
+            <baseUI.Row>
+                <baseUI.Col class="col-menu" lg={2}>
+                    <div class="version">
+                        <!--<h1>Versions</h1>-->
+
+                        <div>
+                            <h3>Santa Viewer</h3>
+                            <baseUI.Input type="checkbox"
+                                          label="Custom Version"
+                                          checked="{this.state.ReactSource.enabled}"
+                                          onChange="() => this.updateReactSource({enabled: !this.state.ReactSource.enabled})"/>
+                            <baseUI.Input type="checkbox"
+                                          label="Local"
+                                          disabled="{!this.state.ReactSource.enabled}"
+                                          checked="{this.state.ReactSource.local}"
+                                          onChange="() => this.updateReactSource({local: !this.state.ReactSource.local})"/>
+                            <baseUI.Input type="text"
+                                          label="Version:"
+                                          disabled="{!this.state.ReactSource.enabled || this.state.ReactSource.local}"
+                                          value="{this.state.ReactSource.version}"
+                                          onChange="(e) => this.updateReactSource({version: e.target.value})"/>
+                        </div>
+                        <div>
+                            <h3>Santa Editor</h3>
+                            <baseUI.Input type="checkbox"
+                                          label="Custom Version"
+                                          checked="{this.state.EditorSource.enabled}"
+                                          onChange="() => this.updateEditorSource({enabled: !this.state.EditorSource.enabled})"/>
+                            <baseUI.Input type="checkbox"
+                                          label="Local"
+                                          disabled="{!this.state.EditorSource.enabled}"
+                                          checked="{this.state.EditorSource.local}"
+                                          onChange="() => this.updateEditorSource({local: !this.state.EditorSource.local})"/>
+                            <baseUI.Input type="text"
+                                          label="Version:"
+                                          disabled="{!this.state.EditorSource.enabled || this.state.EditorSource.local}"
+                                          value="{this.state.EditorSource.version}"
+                                          onChange="(e) => this.updateEditorSource({version: e.target.value})"/>
+                        </div>
+                        <baseUI.Button bsStyle='primary'
+                                       onClick="{this.updateVersions}">
+                            Refresh Versions
+                        </baseUI.Button>
+                    </div>
+                </baseUI.Col>
+                <baseUI.Col class="col-menu" lg={9}>
+                    <baseUI.TabbedArea defaultActiveKey={1}>
+                        <baseUI.TabPane eventKey={1} tab='Experiments'>
+                            <baseUI.Input type="checkbox"
+                                          checked="{_.all(this.state.experiments)}"
+                                          onChange="() => this.selectAll('experiments')"
+                                          label="Select All"/>
+                            <div class="col-3">
+                                <baseUI.Input rt-repeat="exp in this.state.experiments" key="{expIndex}"
+                                              type="checkbox"
+                                              checked="{exp}"
+                                              onChange="() => this.onExperimentChanged(expIndex)"
+                                              label="{expIndex}"/>
+                            </div>
+                        </baseUI.TabPane>
+                        <baseUI.TabPane eventKey={2} tab='Debug Packages'>
+                            <baseUI.Input type="checkbox"
+                                          label="Select All"
+                                          checked="{_.all(this.state.packages)}"
+                                          onChange="() => this.selectAll('packages')"/>
+                            <div class="col-3">
+                                <baseUI.Input rt-repeat="pkg in this.state.packages" key="{pkgIndex}"
+                                              type="checkbox"
+                                              label="{pkgIndex}"
+                                              checked="{pkg}"
+                                              onChange="() => this.onPackageChanged(pkgIndex)"/>
+                            </div>
+                        </baseUI.TabPane>
+                    </baseUI.TabbedArea>
+                </baseUI.Col>
+            </baseUI.Row>
+        </baseUI.Grid>
+    </baseUI.Panel>
 </div>

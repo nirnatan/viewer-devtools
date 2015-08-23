@@ -2,7 +2,7 @@ requirejs.config({
     'baseUrl': '/',
     'paths': {
         jquery: '/bower_components/jquery/dist/jquery.min',
-        react: '/bower_components/react/react-with-addons.min',
+        react: '/bower_components/react/react-with-addons',
         lodash: '/bower_components/lodash/lodash.min',
         jsoneditor: '/bower_components/jsoneditor/dist/jsoneditor',
         text: '/bower_components/requirejs-plugins/lib/text',
@@ -11,6 +11,7 @@ requirejs.config({
         generated: '/scripts/generated',
         options: '/scripts/options',
         popup: 'scripts/popup',
-        utils: 'scripts/utils'
+        utils: 'scripts/utils',
+        'react-bootstrap': '/bower_components/react-bootstrap/react-bootstrap'
     }
 });

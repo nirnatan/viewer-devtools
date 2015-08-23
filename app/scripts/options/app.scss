@@ -1,39 +1,44 @@
 .app {
-  margin: 30px;
-}
+  margin: 10px 30px;
 
-.main {
-  display: flex;
-  flex-direction: row;
+  .panel-body {
 
-  > div {
-    flex: 1;
-    max-width: 350px;
+    > .form-group {
+      .checkbox {
+        margin-left: 20px;
+      }
+    }
+
+    .container {
+      width: 95%;
+    }
+
+    .col-menu {
+      &:first-of-type {
+        margin-right: 20px;
+        border: 1px solid black;
+        border-radius: 10px;
+
+        button {
+          margin: 15px 0;
+        }
+      }
+
+      height: 100%;
+
+      .tab-content {
+        padding: 0 10px 10px;
+        border: 1px solid #ddd;
+        border-radius: 0 0 10px 10px;
+      }
+
+      .col-3 {
+        -webkit-column-count: 3;
+      }
+
+      .form-group {
+        margin-bottom: 0;
+      }
+    }
   }
-}
-
-.experiment, .packages {
-  margin-left: 15px;
-
-  label {
-    display: block;
-  }
-
-  .select-all {
-    margin-bottom: 5px;
-  }
-}
-
-.version {
-  label {
-    display: block;
-  }
-
-  > button {
-    margin-top: 10px;
-  }
-}
-
-.disabled * {
-  text-decoration: line-through;
 }
