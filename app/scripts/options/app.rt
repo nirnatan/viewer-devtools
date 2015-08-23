@@ -1,4 +1,5 @@
 <rt-require dependency="react-bootstrap" as="baseUI"/>
+<rt-require dependency="./versionSelector" as="versionSelector"/>
 <div>
     <baseUI.Panel class="app">
         <baseUI.Input type="checkbox"
@@ -11,41 +12,16 @@
                 <baseUI.Col class="col-menu" lg={2}>
                     <div class="version">
                         <!--<h1>Versions</h1>-->
-
-                        <div>
-                            <h3>Santa Viewer</h3>
-                            <baseUI.Input type="checkbox"
-                                          label="Custom Version"
-                                          checked="{this.state.ReactSource.enabled}"
-                                          onChange="() => this.updateReactSource({enabled: !this.state.ReactSource.enabled})"/>
-                            <baseUI.Input type="checkbox"
-                                          label="Local"
-                                          disabled="{!this.state.ReactSource.enabled}"
-                                          checked="{this.state.ReactSource.local}"
-                                          onChange="() => this.updateReactSource({local: !this.state.ReactSource.local})"/>
-                            <baseUI.Input type="text"
-                                          label="Version:"
-                                          disabled="{!this.state.ReactSource.enabled || this.state.ReactSource.local}"
-                                          value="{this.state.ReactSource.version}"
-                                          onChange="(e) => this.updateReactSource({version: e.target.value})"/>
-                        </div>
-                        <div>
-                            <h3>Santa Editor</h3>
-                            <baseUI.Input type="checkbox"
-                                          label="Custom Version"
-                                          checked="{this.state.EditorSource.enabled}"
-                                          onChange="() => this.updateEditorSource({enabled: !this.state.EditorSource.enabled})"/>
-                            <baseUI.Input type="checkbox"
-                                          label="Local"
-                                          disabled="{!this.state.EditorSource.enabled}"
-                                          checked="{this.state.EditorSource.local}"
-                                          onChange="() => this.updateEditorSource({local: !this.state.EditorSource.local})"/>
-                            <baseUI.Input type="text"
-                                          label="Version:"
-                                          disabled="{!this.state.EditorSource.enabled || this.state.EditorSource.local}"
-                                          value="{this.state.EditorSource.version}"
-                                          onChange="(e) => this.updateEditorSource({version: e.target.value})"/>
-                        </div>
+                        <versionSelector label="Santa Viewer"
+                                         enabled="{this.state.ReactSource.enabled}"
+                                         local="{this.state.ReactSource.local}"
+                                         version="{this.state.ReactSource.version}"
+                                         updateSource="{this.updateReactSource}" />
+                        <versionSelector label="Santa Editor"
+                                         enabled="{this.state.EditorSource.enabled}"
+                                         local="{this.state.EditorSource.local}"
+                                         version="{this.state.EditorSource.version}"
+                                         updateSource="{this.updateEditorSource}" />
                         <baseUI.Button bsStyle='primary'
                                        onClick="{this.updateVersions}">
                             Refresh Versions
