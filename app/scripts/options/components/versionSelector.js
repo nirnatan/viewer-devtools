@@ -1,4 +1,4 @@
-define(['react', 'lodash', './versionSelector.rt'], function (React, _, template) {
+define(['react', 'lodash', 'options/components/versionSelector.rt'], function (React, _, template) {
     'use strict';
 
     return React.createClass({

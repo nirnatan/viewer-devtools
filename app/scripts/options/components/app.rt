@@ -1,5 +1,5 @@
 <rt-require dependency="react-bootstrap" as="baseUI"/>
-<rt-require dependency="./versionSelector" as="versionSelector"/>
+<rt-require dependency="options/components/versionSelector" as="versionSelector"/>
 <div>
     <baseUI.Panel class="app">
         <baseUI.Input type="checkbox"

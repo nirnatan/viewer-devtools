@@ -1,4 +1,4 @@
-requirejs(['react', 'lodash', 'options/app'], function (React, _, app) {
+requirejs(['react', 'lodash', 'options/components/app'], function (React, _, app) {
     'use strict';
     
     var appElement = React.createElement(app);
