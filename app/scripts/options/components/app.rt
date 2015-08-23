@@ -1,5 +1,6 @@
 <rt-require dependency="react-bootstrap" as="baseUI"/>
 <rt-require dependency="options/components/versionSelector" as="versionSelector"/>
+<rt-require dependency="options/components/multiSelector" as="multiSelector"/>
 <div>
     <baseUI.Panel class="app">
         <baseUI.Input type="checkbox"
@@ -10,51 +11,31 @@
         <baseUI.Grid>
             <baseUI.Row>
                 <baseUI.Col class="col-menu" lg={2}>
-                    <div class="version">
-                        <!--<h1>Versions</h1>-->
-                        <versionSelector label="Santa Viewer"
-                                         enabled="{this.state.ReactSource.enabled}"
-                                         local="{this.state.ReactSource.local}"
-                                         version="{this.state.ReactSource.version}"
-                                         updateSource="{this.updateReactSource}" />
-                        <versionSelector label="Santa Editor"
-                                         enabled="{this.state.EditorSource.enabled}"
-                                         local="{this.state.EditorSource.local}"
-                                         version="{this.state.EditorSource.version}"
-                                         updateSource="{this.updateEditorSource}" />
-                        <baseUI.Button bsStyle='primary'
-                                       onClick="{this.updateVersions}">
-                            Refresh Versions
-                        </baseUI.Button>
-                    </div>
+                    <versionSelector label="Santa Viewer"
+                                     enabled="{this.state.ReactSource.enabled}"
+                                     local="{this.state.ReactSource.local}"
+                                     version="{this.state.ReactSource.version}"
+                                     updateSource="{this.updateReactSource}" />
+                    <versionSelector label="Santa Editor"
+                                     enabled="{this.state.EditorSource.enabled}"
+                                     local="{this.state.EditorSource.local}"
+                                     version="{this.state.EditorSource.version}"
+                                     updateSource="{this.updateEditorSource}" />
+                    <baseUI.Button bsStyle='primary' onClick="{this.updateVersions}">Refresh Versions</baseUI.Button>
                 </baseUI.Col>
                 <baseUI.Col class="col-menu" lg={9}>
                     <baseUI.TabbedArea defaultActiveKey={1}>
                         <baseUI.TabPane eventKey={1} tab='Experiments'>
-                            <baseUI.Input type="checkbox"
-                                          checked="{_.all(this.state.experiments)}"
-                                          onChange="() => this.selectAll('experiments')"
-                                          label="Select All"/>
-                            <div class="col-3">
-                                <baseUI.Input rt-repeat="exp in this.state.experiments" key="{expIndex}"
-                                              type="checkbox"
-                                              checked="{exp}"
-                                              onChange="() => this.onExperimentChanged(expIndex)"
-                                              label="{expIndex}"/>
-                            </div>
+                            <multiSelector label="experiments"
+                                           items="{this.state.experiments}"
+                                           selectAll="{this.selectAll.bind(this, 'experiments')}"
+                                           onItemChanged="{this.onExperimentChanged}" />
                         </baseUI.TabPane>
                         <baseUI.TabPane eventKey={2} tab='Debug Packages'>
-                            <baseUI.Input type="checkbox"
-                                          label="Select All"
-                                          checked="{_.all(this.state.packages)}"
-                                          onChange="() => this.selectAll('packages')"/>
-                            <div class="col-3">
-                                <baseUI.Input rt-repeat="pkg in this.state.packages" key="{pkgIndex}"
-                                              type="checkbox"
-                                              label="{pkgIndex}"
-                                              checked="{pkg}"
-                                              onChange="() => this.onPackageChanged(pkgIndex)"/>
-                            </div>
+                            <multiSelector label="packages"
+                                           items="{this.state.packages}"
+                                           selectAll="{this.selectAll.bind(this, 'packages')}"
+                                           onItemChanged="{this.onPackageChanged}" />
                         </baseUI.TabPane>
                     </baseUI.TabbedArea>
                 </baseUI.Col>

@@ -1,0 +1,14 @@
+<rt-require dependency="react-bootstrap" as="baseUI"/>
+<div>
+    <baseUI.Input type="checkbox"
+                  checked="{_.all(this.props.items)}"
+                  onChange="{this.props.selectAll}"
+                  label="Select All"/>
+    <div class="col-3">
+        <baseUI.Input rt-repeat="item in this.props.items" key="{itemIndex}"
+                      type="checkbox"
+                      checked="{item}"
+                      onChange="() => this.props.onItemChanged(itemIndex)"
+                      label="{itemIndex}"/>
+    </div>
+</div>
