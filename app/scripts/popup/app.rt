@@ -1,26 +1,23 @@
 <!--suppress CheckEmptyScriptTag -->
+<rt-require dependency="react-bootstrap" as="baseUI"/>
 <rt-require dependency="popup/component" as="Component"/>
-<rt-require dependency="dataHandler" as="dataHandler"/>
-<div id="main" rt-scope="this.getComponents() as comps">
-    <div class="search-container">
-        <div>
-            <button onClick="{this.redirectUrl}" class="start-debug-btn">Debug this site</button>
-        </div>
-        <div class="search">
-            <input autoFocus="{true}" type="text" valueLink="{this.linkState('displayName')}"/>
-        </div>
-    </div>
-    <div rt-class="{'component-container': true, loading: this.state.loading}">
-        <div class="bubblingG" rt-if="this.state.loading" key="loadingAnim">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-
+<div id="main">
+    <baseUI.Button bsStyle='success' onClick="{this.redirectUrl}">Debug this site</baseUI.Button>
+    <baseUI.Input autoFocus type="text" valueLink="{this.linkState('displayName')}"/>
+    <div class="components" rt-if="!this.state.loading" key="components">
         <Component class="component-wrapper"
-                   rt-repeat="comp in comps"
-                   rt-if="!this.state.loading"
+                   rt-repeat="comp in this.getComponents()"
+                   selectedComp="{this.state.selectedComp}"
+                   onSelectionChanged="(selectedComp) => this.setState({selectedComp: selectedComp})"
                    comp="{comp}"
                    key="{comp.id}"/>
+    </div>
+
+    <div rt-if="this.state.loading" class="loading" key="loading">
+        <div class="bubblingG" key="loadingAnim">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
     </div>
 </div>

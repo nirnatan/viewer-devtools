@@ -7,7 +7,7 @@ define(['react', 'lodash', 'jsoneditor', 'popup/jsonEditor.rt'], function (React
             var options = {
                 mode: this.props.type || 'view',
                 search: false,
-                name: this.props.name,
+                name: this.props.name.substring(0, 30),
                 editable: this.props.editable
             };
             this.editor = new JSONEditor(this.refs.json.getDOMNode(), options, _.merge({}, this.props.json));

@@ -8,7 +8,8 @@ define(['react', 'lodash', 'popup/app.rt'], function (React, _, template) {
             return {
                 displayName: '',
                 comps: [],
-                loading: true
+                loading: true,
+                selectedComp: null
             };
         },
         componentWillMount: function () {

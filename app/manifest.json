@@ -14,7 +14,7 @@
       "38": "images/icon-38.png"
     },
     "default_title": "Santa DevTools",
-    "default_popup": "popup.html"
+    "default_popup": "scripts/popup/popup.html"
   },
   "background": {
     "scripts": [

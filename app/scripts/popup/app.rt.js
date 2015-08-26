@@ -1,41 +1,43 @@
 define([
     'react',
     'lodash',
-    'popup/component',
-    'dataHandler'
-], function (React, _, Component, dataHandler) {
+    'react-bootstrap',
+    'popup/component'
+], function (React, _, baseUI, Component) {
     'use strict';
-    function repeatComp1(comps, comp, compIndex) {
+    function onSelectionChanged1(comp, compIndex, selectedComp) {
+        this.setState({ selectedComp: selectedComp });
+    }
+    function repeatComp2(comp, compIndex) {
         return React.createElement(Component, {
             'className': 'component-wrapper',
+            'selectedComp': this.state.selectedComp,
+            'onSelectionChanged': onSelectionChanged1.bind(this, comp, compIndex),
             'comp': comp,
             'key': comp.id
         });
     }
-    function scopeComps2(comps) {
-        return React.createElement('div', { 'id': 'main' }, React.createElement('div', { 'className': 'search-container' }, React.createElement('div', {}, React.createElement('button', {
-            'onClick': this.redirectUrl,
-            'className': 'start-debug-btn'
-        }, 'Debug this site')), React.createElement('div', { 'className': 'search' }, React.createElement('input', {
+    return function () {
+        return React.createElement('div', { 'id': 'main' }, React.createElement(baseUI.Button, {
+            'bsStyle': 'success',
+            'onClick': this.redirectUrl
+        }, 'Debug this site'), React.createElement(baseUI.Input, {
             'autoFocus': true,
             'type': 'text',
             'valueLink': this.linkState('displayName')
-        }))), React.createElement.apply(this, [
+        }), !this.state.loading ? React.createElement.apply(this, [
             'div',
             {
-                'className': _.keys(_.pick({
-                    'component-container': true,
-                    loading: this.state.loading
-                }, _.identity)).join(' ')
+                'className': 'components',
+                'key': 'components'
             },
-            this.state.loading ? React.createElement('div', {
-                'className': 'bubblingG',
-                'key': 'loadingAnim'
-            }, React.createElement('span', {}), React.createElement('span', {}), React.createElement('span', {})) : null,
-            !this.state.loading ? _.map(comps, repeatComp1.bind(this, comps)) : null
-        ]));
-    }
-    return function () {
-        return scopeComps2.apply(this, [this.getComponents()]);
+            _.map(this.getComponents(), repeatComp2.bind(this))
+        ]) : null, this.state.loading ? React.createElement('div', {
+            'className': 'loading',
+            'key': 'loading'
+        }, React.createElement('div', {
+            'className': 'bubblingG',
+            'key': 'loadingAnim'
+        }, React.createElement('span', {}), React.createElement('span', {}), React.createElement('span', {}))) : null);
     };
 });
