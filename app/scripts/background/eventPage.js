@@ -130,20 +130,6 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
         });
     };
 
-    //chrome.webRequest.onBeforeRequest.addListener(function (details) {
-    //        var autoRedirect = dataHandler.settings.get().autoRedirect;
-    //        if (details.type !== 'xmlhttprequest' && autoRedirect) {
-    //            return {
-    //                redirectUrl: applyEditorParams(details.url)
-    //
-    //            };
-    //        }
-    //    },
-    //    {
-    //        urls: ['http://*/*']
-    //    },
-    //    ['blocking']);
-
     function applyEditorParams(url) {
         var urlObj = urlUtils.parseUrl(url);
         urlObj.search = urlUtils.getEditorQueryString(dataHandler, urlObj);
