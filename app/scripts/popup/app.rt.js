@@ -18,11 +18,17 @@ define([
         });
     }
     return function () {
-        return React.createElement('div', { 'id': 'main' }, React.createElement(baseUI.Button, {
+        return React.createElement('div', { 'id': 'main' }, !this.state.active ? React.createElement(baseUI.Button, {
             'bsStyle': 'success',
-            'onClick': this.redirectUrl
-        }, 'Debug this site'), React.createElement(baseUI.Input, {
+            'onClick': this.redirectUrl,
+            'key': 'enableBtn'
+        }, 'Apply options') : null, React.createElement(baseUI.Input, {
+            'className': _.keys(_.pick({
+                'search-box': true,
+                'only-search': this.state.active
+            }, _.identity)).join(' '),
             'autoFocus': true,
+            'disabled': !this.state.active,
             'type': 'text',
             'valueLink': this.linkState('displayName')
         }), !this.state.loading ? React.createElement.apply(this, [

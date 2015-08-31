@@ -1,5 +1,39 @@
 require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, urlUtils) {
     'use strict';
+    function isWix() {
+        var wix = /editor\.wix.*\.com/g;
+        if (wix.test(window.location.href)) {
+            return true;
+        }
+
+        var elms = document.getElementsByTagName('meta');
+        for (var i = 0; i < elms.length; i++) {
+            var el = elms[i];
+            if (el.getAttribute('http-equiv') === "X-Wix-Renderer-Server") {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    function getRedirectCode(newUrl) {
+        function redirect(url) {
+            window.location.href = url;
+        }
+
+        return '(' + redirect.toString() + ')("' + newUrl + '")';
+    }
+
+    chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
+        var isLoading = changeInfo.status === 'loading';
+        var changeUrl = changeInfo.url;
+        var shouldRedirect = dataHandler.settings.get().autoRedirect && changeUrl !== applyEditorParams(changeUrl);
+        if (isLoading && shouldRedirect && changeUrl && !changeUrl.startsWith('chrome://')) {
+            window.redirect(applyEditorParams(changeUrl), tabId);
+        }
+    });
+
     var sendToContentPage = function (request, sendResponse) {
         chrome.tabs.getSelected(null, function (tab) {
             chrome.tabs.sendMessage(tab.id, request, function () {
@@ -7,6 +41,22 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
                     sendResponse.apply(this, arguments);
                 }
             });
+        });
+    };
+
+    window.redirect = function redirect(url, tabId) {
+        if (!tabId) {
+            chrome.tabs.getSelected(null, function (tab) {
+                window.redirect(url, tab.id);
+            });
+            return;
+        }
+
+        var code = '(' + isWix.toString() + ')()';
+        chrome.tabs.executeScript(tabId, {code: code, allFrames: true}, function (isWixPage) {
+            if (isWixPage && isWixPage.indexOf(true) !== -1) {
+                chrome.tabs.executeScript(tabId, {code: getRedirectCode(url)});
+            }
         });
     };
 
@@ -24,7 +74,7 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
 
     window.startDebug = function startDebug() {
         chrome.tabs.getSelected(null, function (tab) {
-            sendToContentPage({type: 'redirect', url: applyEditorParams(tab.url)});
+            window.redirect(applyEditorParams(tab.url));
         });
     };
 
@@ -74,20 +124,25 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
         });
     };
 
-    chrome.webRequest.onBeforeRequest.addListener(function (details) {
-            var autoRedirect = dataHandler.settings.get().autoRedirect;
-            var wix = /wix.*\.com/g;
-            if (details.type !== 'xmlhttprequest' && wix.test(details.url) && autoRedirect) {
-                return {
-                    redirectUrl: applyEditorParams(details.url)
+    window.isActive = function isActive(callback) {
+        chrome.tabs.getSelected(null, function (tab) {
+            callback(tab.url === applyEditorParams(tab.url));
+        });
+    };
 
-                };
-            }
-        },
-        {
-            urls: ['http://*/*']
-        },
-        ['blocking']);
+    //chrome.webRequest.onBeforeRequest.addListener(function (details) {
+    //        var autoRedirect = dataHandler.settings.get().autoRedirect;
+    //        if (details.type !== 'xmlhttprequest' && autoRedirect) {
+    //            return {
+    //                redirectUrl: applyEditorParams(details.url)
+    //
+    //            };
+    //        }
+    //    },
+    //    {
+    //        urls: ['http://*/*']
+    //    },
+    //    ['blocking']);
 
     function applyEditorParams(url) {
         var urlObj = urlUtils.parseUrl(url);

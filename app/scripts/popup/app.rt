@@ -2,8 +2,8 @@
 <rt-require dependency="react-bootstrap" as="baseUI"/>
 <rt-require dependency="popup/component" as="Component"/>
 <div id="main">
-    <baseUI.Button bsStyle='success' onClick="{this.redirectUrl}">Debug this site</baseUI.Button>
-    <baseUI.Input autoFocus type="text" valueLink="{this.linkState('displayName')}"/>
+    <baseUI.Button rt-if="!this.state.active" bsStyle='success' onClick="{this.redirectUrl}" key="enableBtn">Apply options</baseUI.Button>
+    <baseUI.Input rt-class="{'search-box': true, 'only-search': this.state.active}" autoFocus disabled="{!this.state.active}" type="text" valueLink="{this.linkState('displayName')}"/>
     <div class="components" rt-if="!this.state.loading" key="components">
         <Component class="component-wrapper"
                    rt-repeat="comp in this.getComponents()"

@@ -5,8 +5,12 @@
     margin: 10px 0;
   }
 
-  > div {
+  .search-box {
     margin-bottom: 10px;
+
+    &.only-search {
+      margin-top: 10px;
+    }
   }
 
   .components {
