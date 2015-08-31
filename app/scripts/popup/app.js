@@ -30,6 +30,7 @@ define(['react', 'lodash', 'popup/app.rt'], function (React, _, template) {
         },
         redirectUrl: function () {
             chrome.extension.getBackgroundPage().startDebug();
+            window.close();
         },
         render: template
     });
