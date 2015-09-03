@@ -18,11 +18,15 @@ define([
         });
     }
     return function () {
-        return React.createElement('div', { 'id': 'main' }, !this.state.active ? React.createElement(baseUI.Button, {
+        return React.createElement('div', { 'id': 'main' }, React.createElement(baseUI.ButtonToolbar, {}, !this.state.active ? React.createElement(baseUI.Button, {
             'bsStyle': 'success',
             'onClick': this.redirectUrl,
             'key': 'enableBtn'
-        }, 'Apply options') : null, React.createElement(baseUI.Input, {
+        }, 'Apply options') : null, !this.state.isEditor ? React.createElement(baseUI.Button, {
+            'bsStyle': 'success',
+            'onClick': this.openEditor,
+            'key': 'openEditorBtn'
+        }, 'Open Editor') : null), React.createElement(baseUI.Input, {
             'className': _.keys(_.pick({
                 'search-box': true,
                 'only-search': this.state.active

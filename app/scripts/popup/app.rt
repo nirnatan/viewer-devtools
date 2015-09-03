@@ -2,7 +2,11 @@
 <rt-require dependency="react-bootstrap" as="baseUI"/>
 <rt-require dependency="popup/component" as="Component"/>
 <div id="main">
-    <baseUI.Button rt-if="!this.state.active" bsStyle='success' onClick="{this.redirectUrl}" key="enableBtn">Apply options</baseUI.Button>
+    <baseUI.ButtonToolbar>
+        <baseUI.Button rt-if="!this.state.active" bsStyle='success' onClick="{this.redirectUrl}" key="enableBtn">Apply options</baseUI.Button>
+        <baseUI.Button rt-if="!this.state.isEditor" bsStyle='success' onClick="{this.openEditor}" key="openEditorBtn">Open Editor</baseUI.Button>
+    </baseUI.ButtonToolbar>
+
     <baseUI.Input rt-class="{'search-box': true, 'only-search': this.state.active}" autoFocus disabled="{!this.state.active}" type="text" valueLink="{this.linkState('displayName')}"/>
     <div class="components" rt-if="!this.state.loading" key="components">
         <Component class="component-wrapper"

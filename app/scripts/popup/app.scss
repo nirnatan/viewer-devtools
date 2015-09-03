@@ -1,8 +1,12 @@
 #main {
   padding: 0 10px;
 
-  > button {
+  .btn-toolbar {
     margin: 10px 0;
+
+    .btn {
+      margin: 0 5px;
+    }
   }
 
   .search-box {

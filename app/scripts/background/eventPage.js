@@ -1,20 +1,50 @@
 require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, urlUtils) {
     'use strict';
-    function isWix() {
-        var wix = /editor\.wix.*\.com/g;
-        if (wix.test(window.location.href)) {
-            return true;
-        }
-
-        var elms = document.getElementsByTagName('meta');
-        for (var i = 0; i < elms.length; i++) {
-            var el = elms[i];
-            if (el.getAttribute('http-equiv') === "X-Wix-Renderer-Server") {
-                return true;
+    function getMetaId() {
+        //Get the meta side id for the link
+        var metaElements = document.getElementsByTagName('meta');
+        for (var i = 0; i < metaElements.length; i++) {
+            if (metaElements[i].getAttribute('http-equiv') === "X-Wix-Meta-Site-Id") {
+                return metaElements[i].getAttribute('content');
             }
         }
+        return "noMetaSiteId";
+    }
 
-        return false;
+    function getAppId() {
+        var metaElements = document.getElementsByTagName('meta');
+        for (var i = 0; i < metaElements.length; i++) {
+            if (metaElements[i].getAttribute('http-equiv') === "X-Wix-Application-Instance-Id") {
+                return metaElements[i].getAttribute('content');
+            }
+        }
+        return "noAppInstanceId";
+    }
+
+    function isEditorSite() {
+        var metaElements = document.getElementsByTagName('meta');
+        for (var i = 0; i < metaElements.length; i++) {
+            if (metaElements[i].getAttribute('http-equiv') === "X-Wix-Editor-Server") {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    function isViewerSite() {
+        var metaElements = document.getElementsByTagName('meta');
+        for (var i = 0; i < metaElements.length; i++) {
+            if (metaElements[i].getAttribute('http-equiv') === "X-Wix-Renderer-Server") {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    function openEditorPage(metaSiteId, siteId) {
+        var queryString = window.location.search ? window.location.search.substring(1) : '';
+        var url = "http://editor.wix.com/html/editor/web/renderer/edit/" + siteId + "?metaSiteId=" + metaSiteId + (queryString ? '&' + queryString : '');
+        window.open(url);
     }
 
     function getRedirectCode(newUrl) {
@@ -30,11 +60,38 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
         var changeUrl = changeInfo.url;
         var shouldRedirect = dataHandler.settings.get().autoRedirect && changeUrl !== applyEditorParams(changeUrl);
         if (isLoading && shouldRedirect && changeUrl && !changeUrl.startsWith('chrome://')) {
-            window.redirect(applyEditorParams(changeUrl), tabId);
+            var isWixCode = '(function () { ' + isEditorSite.toString() + '\n' + isViewerSite.toString() + '\n return isEditorSite() || isViewerSite();\n})()';
+            chrome.tabs.executeScript(tabId, {code: isWixCode, allFrames: true}, function (isWixPage) {
+                if (isWixPage && isWixPage.indexOf(true) !== -1) {
+                    window.redirect(applyEditorParams(changeUrl), tabId);
+                }
+            });
         }
     });
 
-    var sendToContentPage = function (request, sendResponse) {
+    var ports = [];
+    chrome.runtime.onConnect.addListener(function (port) {
+        if (port.name !== 'devtools') {
+            return;
+        }
+
+        ports.push(port);
+
+        // Remove port when destroyed (eg when devtools instance is closed)
+        port.onDisconnect.addListener(function () {
+            var i = ports.indexOf(port);
+            if (i !== -1) {
+                ports.splice(i, 1);
+            }
+        });
+
+        port.onMessage.addListener(function (msg) {
+            // Received message from devtools. Do something:
+            console.log('Received message from devtools page', msg);
+        });
+    });
+
+    function sendToContentPage(request, sendResponse) {
         chrome.tabs.getSelected(null, function (tab) {
             chrome.tabs.sendMessage(tab.id, request, function () {
                 if (sendResponse) {
@@ -42,7 +99,7 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
                 }
             });
         });
-    };
+    }
 
     window.redirect = function redirect(url, tabId) {
         if (!tabId) {
@@ -52,12 +109,7 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
             return;
         }
 
-        var code = '(' + isWix.toString() + ')()';
-        chrome.tabs.executeScript(tabId, {code: code, allFrames: true}, function (isWixPage) {
-            if (isWixPage && isWixPage.indexOf(true) !== -1) {
-                chrome.tabs.executeScript(tabId, {code: getRedirectCode(url)});
-            }
-        });
+        chrome.tabs.executeScript(tabId, {code: getRedirectCode(url)});
     };
 
     window.selectComponent = function selectComponent(id, callback) {
@@ -90,28 +142,6 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
         sendToContentPage({type: 'setState', params: params});
     };
 
-    var ports = [];
-    chrome.runtime.onConnect.addListener(function (port) {
-        if (port.name !== 'devtools') {
-            return;
-        }
-
-        ports.push(port);
-
-        // Remove port when destroyed (eg when devtools instance is closed)
-        port.onDisconnect.addListener(function () {
-            var i = ports.indexOf(port);
-            if (i !== -1) {
-                ports.splice(i, 1);
-            }
-        });
-
-        port.onMessage.addListener(function (msg) {
-            // Received message from devtools. Do something:
-            console.log('Received message from devtools page', msg);
-        });
-    });
-
     window.inspectElement = function inspectElement(props) {
         ports.forEach(function (port) {
             port.postMessage({type: 'inspectElement', props: props});
@@ -127,6 +157,27 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
     window.isActive = function isActive(callback) {
         chrome.tabs.getSelected(null, function (tab) {
             callback(tab.url === applyEditorParams(tab.url));
+        });
+    };
+
+    window.isEditor = function isViewer(callback) {
+        chrome.tabs.getSelected(null, function (tab) {
+            var isEditorUrl = /^https?:\/\/editor\.wix\.com\//.test(tab.url);
+            console.log('isEditor = ', isEditorUrl, ' (', tab.url, ')');
+            callback(isEditorUrl);
+        });
+    };
+
+    window.openEditor = function openEditor() {
+        chrome.tabs.getSelected(null, function (tab) {
+            console.log('openEditor: ' + tab.url);
+            var code = '(function() {' +
+                getMetaId.toString() + '\n' +
+                getAppId.toString() + '\n' +
+                isViewerSite.toString() + '\n' +
+                openEditorPage.toString() + '\n ' +
+                'if(isViewerSite()) { openEditorPage(getMetaId(), getAppId()); }})();';
+            chrome.tabs.executeScript(tab.id, {code: code});
         });
     };
 
