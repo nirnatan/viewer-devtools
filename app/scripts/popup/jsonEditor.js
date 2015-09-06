@@ -13,7 +13,7 @@ define(['react', 'lodash', 'jsoneditor', 'popup/jsonEditor.rt'], function (React
             this.editor = new JSONEditor(this.refs.json.getDOMNode(), options, _.merge({}, this.props.json));
         },
         inspectElement: function () {
-            chrome.extension.getBackgroundPage().inspectElement(this.props.domId);
+            chrome.extension.getBackgroundPage().Utils.inspectElement(this.props.domId);
         },
         get: function () {
             return this.editor.get();

@@ -1,75 +1,24 @@
 require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, urlUtils) {
     'use strict';
-    function getMetaId() {
-        //Get the meta side id for the link
-        var metaElements = document.getElementsByTagName('meta');
-        for (var i = 0; i < metaElements.length; i++) {
-            if (metaElements[i].getAttribute('http-equiv') === "X-Wix-Meta-Site-Id") {
-                return metaElements[i].getAttribute('content');
+
+    var ports = [];
+    var tabId, currentUrl;
+
+    chrome.tabs.onActiveChanged.addListener(function (id) {
+        chrome.tabs.get(id, function (tab) {
+            if (tab.url.indexOf('chrome-devtools') !== 0) {
+                currentUrl = tab.url;
+                tabId = id;
             }
-        }
-        return "noMetaSiteId";
-    }
+        });
+    });
 
-    function getAppId() {
-        var metaElements = document.getElementsByTagName('meta');
-        for (var i = 0; i < metaElements.length; i++) {
-            if (metaElements[i].getAttribute('http-equiv') === "X-Wix-Application-Instance-Id") {
-                return metaElements[i].getAttribute('content');
-            }
-        }
-        return "noAppInstanceId";
-    }
-
-    function isEditorSite() {
-        var metaElements = document.getElementsByTagName('meta');
-        for (var i = 0; i < metaElements.length; i++) {
-            if (metaElements[i].getAttribute('http-equiv') === "X-Wix-Editor-Server") {
-                return 1;
-            }
-        }
-        return 0;
-    }
-
-    function isViewerSite() {
-        var metaElements = document.getElementsByTagName('meta');
-        for (var i = 0; i < metaElements.length; i++) {
-            if (metaElements[i].getAttribute('http-equiv') === "X-Wix-Renderer-Server") {
-                return 1;
-            }
-        }
-        return 0;
-    }
-
-    function openEditorPage(metaSiteId, siteId) {
-        var queryString = window.location.search ? window.location.search.substring(1) : '';
-        var url = "http://editor.wix.com/html/editor/web/renderer/edit/" + siteId + "?metaSiteId=" + metaSiteId + (queryString ? '&' + queryString : '');
-        window.open(url);
-    }
-
-    function getRedirectCode(newUrl) {
-        function redirect(url) {
-            window.location.href = url;
-        }
-
-        return '(' + redirect.toString() + ')("' + newUrl + '")';
-    }
-
-    chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
-        var isLoading = changeInfo.status === 'loading';
-        var changeUrl = changeInfo.url;
-        var shouldRedirect = dataHandler.settings.get().autoRedirect && changeUrl !== applyEditorParams(changeUrl);
-        if (isLoading && shouldRedirect && changeUrl && !changeUrl.startsWith('chrome://')) {
-            var isWixCode = '(function () { ' + isEditorSite.toString() + '\n' + isViewerSite.toString() + '\n return isEditorSite() || isViewerSite();\n})()';
-            chrome.tabs.executeScript(tabId, {code: isWixCode, allFrames: true}, function (isWixPage) {
-                if (isWixPage && isWixPage.indexOf(true) !== -1) {
-                    window.redirect(applyEditorParams(changeUrl), tabId);
-                }
-            });
+    chrome.tabs.onUpdated.addListener(function (id, changeInfo, tab) {
+        if (tabId === id) {
+            currentUrl = changeInfo.url || tab.url;
         }
     });
 
-    var ports = [];
     chrome.runtime.onConnect.addListener(function (port) {
         if (port.name !== 'devtools') {
             return;
@@ -91,95 +40,36 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
         });
     });
 
-    function sendToContentPage(request, sendResponse) {
-        chrome.tabs.getSelected(null, function (tab) {
-            chrome.tabs.sendMessage(tab.id, request, function () {
-                if (sendResponse) {
-                    sendResponse.apply(this, arguments);
-                }
-            });
+    function getMetaElements(metaElementsCallback) {
+        function getMetaElementsByTag(mapper) {
+            return [].map.call(document.getElementsByTagName('meta'), mapper);
+        }
+
+        function getContentOfElements(element) {
+            return {
+                httpEquiv: element.getAttribute('http-equiv'),
+                content: element.getAttribute('content')
+            };
+        }
+
+        var code = '(function() {' +
+            getMetaElementsByTag.toString() + '\n' +
+            getContentOfElements.toString() + '\n' +
+            'return getMetaElementsByTag(getContentOfElements);' +
+            '})();';
+
+        chrome.tabs.executeScript(tabId, {code: code}, function (metaElementsResult) {
+            metaElementsCallback(metaElementsResult[0]);
         });
     }
 
-    window.redirect = function redirect(url, tabId) {
-        if (!tabId) {
-            chrome.tabs.getSelected(null, function (tab) {
-                window.redirect(url, tab.id);
-            });
-            return;
-        }
-
-        chrome.tabs.executeScript(tabId, {code: getRedirectCode(url)});
-    };
-
-    window.selectComponent = function selectComponent(id, callback) {
-        var request = {
-            type: 'selectComponent',
-            params: id
-        };
-        sendToContentPage(request, callback);
-    };
-
-    window.getComponents = function getComponents(callback) {
-        sendToContentPage({type: 'getComponents'}, callback);
-    };
-
-    window.startDebug = function startDebug() {
-        chrome.tabs.getSelected(null, function (tab) {
-            window.redirect(applyEditorParams(tab.url));
+    function sendToContentPage(request, sendResponse) {
+        chrome.tabs.sendMessage(tabId, request, function () {
+            if (sendResponse) {
+                sendResponse.apply(this, arguments);
+            }
         });
-    };
-
-    window.markComponent = function markComponent(domId) {
-        sendToContentPage({type: 'markComponent', params: domId});
-    };
-
-    window.setState = function markComponent(domId, state) {
-        var params = {
-            id: domId,
-            state: state
-        };
-        sendToContentPage({type: 'setState', params: params});
-    };
-
-    window.inspectElement = function inspectElement(props) {
-        ports.forEach(function (port) {
-            port.postMessage({type: 'inspectElement', props: props});
-        });
-    };
-
-    window.isDevToolsOpen = function () {
-        return ports.some(function (port) {
-            return port.name === 'devtools';
-        });
-    };
-
-    window.isActive = function isActive(callback) {
-        chrome.tabs.getSelected(null, function (tab) {
-            callback(tab.url === applyEditorParams(tab.url));
-        });
-    };
-
-    window.isEditor = function isViewer(callback) {
-        chrome.tabs.getSelected(null, function (tab) {
-            var isEditorUrl = /^https?:\/\/editor\.wix\.com\//.test(tab.url);
-            console.log('isEditor = ', isEditorUrl, ' (', tab.url, ')');
-            callback(isEditorUrl);
-        });
-    };
-
-    window.openEditor = function openEditor() {
-        chrome.tabs.getSelected(null, function (tab) {
-            console.log('openEditor: ' + tab.url);
-            var code = '(function() {' +
-                getMetaId.toString() + '\n' +
-                getAppId.toString() + '\n' +
-                isViewerSite.toString() + '\n' +
-                openEditorPage.toString() + '\n ' +
-                'if(isViewerSite()) { openEditorPage(getMetaId(), getAppId()); }})();';
-            chrome.tabs.executeScript(tab.id, {code: code});
-        });
-    };
+    }
 
     function applyEditorParams(url) {
         var urlObj = urlUtils.parseUrl(url);
@@ -187,4 +77,94 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
 
         return urlUtils.buildFullUrl(urlObj);
     }
+
+    var utils = {
+        selectComponent: function (id, callback) {
+            var request = {
+                type: 'selectComponent',
+                params: id
+            };
+            sendToContentPage(request, callback);
+        },
+
+        getComponents: function (callback) {
+            sendToContentPage({type: 'getComponents'}, callback);
+        },
+
+        startDebug: function () {
+            chrome.tabs.update(tabId, {url: applyEditorParams(currentUrl)});
+        },
+
+        markComponent: function (domId) {
+            sendToContentPage({type: 'markComponent', params: domId});
+        },
+
+        setState: function (domId, state) {
+            var params = {
+                id: domId,
+                state: state
+            };
+            sendToContentPage({type: 'setState', params: params});
+        },
+
+        inspectElement: function (props) {
+            ports.forEach(function (port) {
+                port.postMessage({type: 'inspectElement', props: props});
+            });
+        },
+
+        isDevToolsOpen: function () {
+            return ports.some(function (port) {
+                return port.name === 'devtools';
+            });
+        },
+
+        isActive: function () {
+            return currentUrl === applyEditorParams(currentUrl);
+        },
+
+        isViewer: function (callback) {
+            var metaElementsCallback = function (metaElements) {
+                var hasViewerMetaTag = metaElements.reduce(function (acc, element) {
+                    return acc || element.httpEquiv === 'X-Wix-Renderer-Server';
+                }, false);
+                callback(hasViewerMetaTag);
+            };
+
+            getMetaElements(metaElementsCallback);
+        },
+
+        isEditor: function (callback) {
+            var metaElementsCallback = function (metaElements) {
+                var hasEditorMetaTag = metaElements.reduce(function (acc, element) {
+                    return acc || element.httpEquiv === 'X-Wix-Editor-Server';
+                }, false);
+
+                callback(hasEditorMetaTag);
+            };
+
+            getMetaElements(metaElementsCallback);
+        },
+
+        openEditor: function () {
+            getMetaElements(function (metaElements) {
+                var metaSiteId, siteId;
+                metaElements.forEach(function (element) {
+                    if (element.httpEquiv === 'X-Wix-Meta-Site-Id') {
+                        metaSiteId = element.content;
+                    } else if (element.httpEquiv === 'X-Wix-Application-Instance-Id') {
+                        siteId = element.content;
+                    }
+                });
+
+                if (siteId && metaSiteId) {
+                    var baseEditorUrl = 'http://editor.wix.com/html/editor/web/renderer/edit/' + siteId + '?metaSiteId=' + metaSiteId;
+                    var editorUrl = urlUtils.setUrlParams(baseEditorUrl, urlUtils.parseUrl(currentUrl).query);
+                    chrome.tabs.create({url: editorUrl});
+                }
+            });
+        }
+    };
+
+    _.assign(window, {Utils: utils});
 });

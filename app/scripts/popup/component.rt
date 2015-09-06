@@ -1,8 +1,8 @@
 <rt-require dependency="react-bootstrap" as="baseUI"/>
 <rt-require dependency="popup/jsonEditor" as="jsonEditor"/>
 <div class="component {this.props.className || ''}{this.isSelected() ? ' selected' : ''}" title="{this.props.comp.id}"
-     onMouseOver="() => chrome.extension.getBackgroundPage().markComponent(this.props.comp.id)"
-     onMouseOut="() => chrome.extension.getBackgroundPage().markComponent(null)">
+     onMouseOver="() => chrome.extension.getBackgroundPage().Utils.markComponent(this.props.comp.id)"
+     onMouseOut="() => chrome.extension.getBackgroundPage().Utils.markComponent(null)">
     <baseUI.Panel collapsible
                   expanded="{this.isSelected()}"
                   header="{this.props.comp.name || this.props.comp.id}"

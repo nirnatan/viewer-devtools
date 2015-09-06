@@ -10,24 +10,23 @@ define(['react', 'lodash', 'popup/component.rt'], function (React, _, template) 
         },
         getInitialState: function () {
             return {
-                devtoolsOpen: chrome.extension.getBackgroundPage().isDevToolsOpen()
+                devtoolsOpen: chrome.extension.getBackgroundPage().Utils.isDevToolsOpen()
             };
         },
         handleClick: function () {
-            chrome.extension.getBackgroundPage().selectComponent(this.props.comp.id);
+            chrome.extension.getBackgroundPage().Utils.selectComponent(this.props.comp.id);
             this.props.onSelectionChanged(this.props.comp);
         },
         inspectElement: function () {
             var backgroundPage = chrome.extension.getBackgroundPage();
-            backgroundPage.selectComponent(this.props.comp.id, function (props) {
-                chrome.extension.getBackgroundPage().inspectElement(props);
+            backgroundPage.Utils.selectComponent(this.props.comp.id, function (props) {
+                chrome.extension.getBackgroundPage().Utils.inspectElement(props);
             });
-            backgroundPage.markComponent(null);
+            backgroundPage.Utils.markComponent(null);
         },
         setCompState: function () {
             var state = this.refs.propJson.get().state;
-            var backgroundPage = chrome.extension.getBackgroundPage();
-            backgroundPage.setState(this.props.comp.domId, state);
+            chrome.extension.getBackgroundPage().Utils.setState(this.props.comp.domId, state);
         },
         isSelected: function () {
             var selectedCompId = this.props.selectedComp && this.props.selectedComp.id;

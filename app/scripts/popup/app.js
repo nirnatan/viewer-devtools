@@ -5,19 +5,21 @@ define(['react', 'lodash', 'popup/app.rt'], function (React, _, template) {
         displayName: 'Editor DevTools',
         mixins: [React.addons.LinkedStateMixin],
         getInitialState: function () {
+            var backgroundPageUtils = chrome.extension.getBackgroundPage().Utils;
+
             return {
                 displayName: '',
                 comps: [],
                 loading: true,
-                active: false,
-                isEditor: false,
+                active: backgroundPageUtils.isActive(),
+                isEditor: true,
                 selectedComp: null
             };
         },
         componentWillMount: function () {
-            chrome.extension.getBackgroundPage().getComponents(this.handleSearchResults);
-            chrome.extension.getBackgroundPage().isActive(this.updateState.bind(this, 'active'));
-            chrome.extension.getBackgroundPage().isEditor(this.updateState.bind(this, 'isEditor'));
+            var backgroundPageUtils = chrome.extension.getBackgroundPage().Utils;
+            backgroundPageUtils.getComponents(this.handleSearchResults);
+            backgroundPageUtils.isEditor(this.updateState.bind(this, 'isEditor'));
         },
         handleSearchResults: function (results) {
             this.setState({comps: results, loading: false});
@@ -25,7 +27,6 @@ define(['react', 'lodash', 'popup/app.rt'], function (React, _, template) {
         updateState: function (property, value) {
             var state = {};
             state[property] = value;
-            console.log('updateState: ' + JSON.stringify(state, null, 4));
             this.setState(state);
         },
         getComponents: function () {
@@ -34,10 +35,10 @@ define(['react', 'lodash', 'popup/app.rt'], function (React, _, template) {
             }, this);
         },
         openEditor: function () {
-            chrome.extension.getBackgroundPage().openEditor();
+            chrome.extension.getBackgroundPage().Utils.openEditor();
         },
         redirectUrl: function () {
-            chrome.extension.getBackgroundPage().startDebug();
+            chrome.extension.getBackgroundPage().Utils.startDebug();
             window.close();
         },
         render: template
