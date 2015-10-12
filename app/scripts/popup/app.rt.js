@@ -18,7 +18,7 @@ define([
         });
     }
     return function () {
-        return React.createElement('div', { 'id': 'main' }, React.createElement(baseUI.ButtonToolbar, {}, !this.state.active ? React.createElement(baseUI.Button, {
+        return React.createElement('div', { 'id': 'main' }, React.createElement(baseUI.ButtonToolbar, {}, !this.state.optionsSet ? React.createElement(baseUI.Button, {
             'bsStyle': 'success',
             'onClick': this.redirectUrl,
             'key': 'enableBtn'

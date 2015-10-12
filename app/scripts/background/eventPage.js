@@ -120,6 +120,10 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
         },
 
         isActive: function () {
+            return urlUtils.hasParam(currentUrl, 'debug', 'react') || urlUtils.hasParam(currentUrl, 'debug', 'all');
+        },
+
+        isOptionsSet: function () {
             return currentUrl === applyEditorParams(currentUrl);
         },
 

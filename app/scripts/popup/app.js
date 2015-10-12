@@ -12,6 +12,7 @@ define(['react', 'lodash', 'popup/app.rt'], function (React, _, template) {
                 comps: [],
                 loading: true,
                 active: backgroundPageUtils.isActive(),
+                optionsSet: backgroundPageUtils.isOptionsSet(),
                 isEditor: true,
                 selectedComp: null
             };

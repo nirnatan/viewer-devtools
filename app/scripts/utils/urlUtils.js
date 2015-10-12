@@ -48,6 +48,13 @@ define('utils/urlUtils', ['lodash'], function (_) {
         uniqueCounter = 0;
     }
 
+    function hasParam(url, param, value) {
+        var parsedUrl = parseUrl(url);
+        var current = _.get(parsedUrl.query, param);
+
+        return (_.isArray(current) && _.contains(current, value)) || current === value;
+    }
+
     function parseUrl(url) {
         if (!url) {
             return {};
@@ -214,6 +221,7 @@ define('utils/urlUtils', ['lodash'], function (_) {
         parseUrl: parseUrl,
         parseUrlParams: parseUrlParams,
         buildFullUrl: buildFullUrl,
+        hasParam: hasParam,
 
         isSame: isSameUrl,
         getRunningExperimentsString: function (experimentsObj, current) {

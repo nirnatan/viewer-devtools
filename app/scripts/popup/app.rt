@@ -3,7 +3,7 @@
 <rt-require dependency="popup/component" as="Component"/>
 <div id="main">
     <baseUI.ButtonToolbar>
-        <baseUI.Button rt-if="!this.state.active" bsStyle='success' onClick="{this.redirectUrl}" key="enableBtn">Apply options</baseUI.Button>
+        <baseUI.Button rt-if="!this.state.optionsSet" bsStyle='success' onClick="{this.redirectUrl}" key="enableBtn">Apply options</baseUI.Button>
         <baseUI.Button rt-if="!this.state.isEditor" bsStyle='success' onClick="{this.openEditor}" key="openEditorBtn">Open Editor</baseUI.Button>
     </baseUI.ButtonToolbar>
 
