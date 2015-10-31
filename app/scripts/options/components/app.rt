@@ -24,20 +24,20 @@
                     <baseUI.Button bsStyle='primary' onClick="{this.updateVersions}">Refresh Versions</baseUI.Button>
                 </baseUI.Col>
                 <baseUI.Col class="col-menu" lg={9}>
-                    <baseUI.TabbedArea defaultActiveKey={1}>
-                        <baseUI.TabPane eventKey={1} tab='Experiments'>
+                    <baseUI.Tabs defaultActiveKey={1}>
+                        <baseUI.Tab eventKey={1} tab='Experiments'>
                             <multiSelector label="experiments"
                                            items="{this.state.experiments}"
                                            selectAll="{this.selectAll.bind(this, 'experiments')}"
                                            onItemChanged="{this.onExperimentChanged}" />
-                        </baseUI.TabPane>
-                        <baseUI.TabPane eventKey={2} tab='Debug Packages'>
+                        </baseUI.Tab>
+                        <baseUI.Tab eventKey={2} tab='Debug Packages'>
                             <multiSelector label="packages"
                                            items="{this.state.packages}"
                                            selectAll="{this.selectAll.bind(this, 'packages')}"
                                            onItemChanged="{this.onPackageChanged}" />
-                        </baseUI.TabPane>
-                    </baseUI.TabbedArea>
+                        </baseUI.Tab>
+                    </baseUI.Tabs>
                 </baseUI.Col>
             </baseUI.Row>
         </baseUI.Grid>

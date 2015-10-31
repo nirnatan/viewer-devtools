@@ -1,7 +1,7 @@
-requirejs(['react', 'lodash', 'options/components/app'], function (React, _, app) {
+requirejs(['react', 'react-dom', 'lodash', 'options/components/app'], function (React, ReactDOM, _, app) {
     'use strict';
     
     var appElement = React.createElement(app);
-    React.render(appElement, document.getElementById('root'));
+    ReactDOM.render(appElement, document.getElementById('root'));
 });
 

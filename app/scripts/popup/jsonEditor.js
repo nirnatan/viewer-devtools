@@ -1,4 +1,4 @@
-define(['react', 'lodash', 'jsoneditor', 'popup/jsonEditor.rt'], function (React, _, JSONEditor, template) {
+define(['react', 'lodash', 'react-dom', 'jsoneditor', 'popup/jsonEditor.rt'], function (React, _, ReactDOM, JSONEditor, template) {
     'use strict';
 
     return React.createClass({
@@ -10,7 +10,7 @@ define(['react', 'lodash', 'jsoneditor', 'popup/jsonEditor.rt'], function (React
                 name: this.props.name.substring(0, 30),
                 editable: this.props.editable
             };
-            this.editor = new JSONEditor(this.refs.json.getDOMNode(), options, _.merge({}, this.props.json));
+            this.editor = new JSONEditor(ReactDOM.findDOMNode(this.refs.json), options, _.merge({}, this.props.json));
         },
         inspectElement: function () {
             chrome.extension.getBackgroundPage().Utils.inspectElement(this.props.domId);

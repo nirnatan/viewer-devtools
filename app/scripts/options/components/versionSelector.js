@@ -7,8 +7,8 @@ define(['react', 'lodash', 'options/components/versionSelector.rt'], function (R
             label: React.PropTypes.string,
             enabled: React.PropTypes.bool,
             local: React.PropTypes.bool,
-            version: React.PropTypes.number,
-            updateSource: React.PropTypes.function
+            version: React.PropTypes.string,
+            updateSource: React.PropTypes.func
         },
         render: template
     });

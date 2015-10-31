@@ -5,7 +5,7 @@ define(['react', 'lodash', 'popup/component.rt'], function (React, _, template) 
         displayName: 'Wix Component',
         propTypes: {
             selectedComp: React.PropTypes.object,
-            onSelectionChanged: React.PropTypes.function,
+            onSelectionChanged: React.PropTypes.func,
             comp: React.PropTypes.object
         },
         getInitialState: function () {
