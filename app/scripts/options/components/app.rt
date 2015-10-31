@@ -25,13 +25,13 @@
                 </baseUI.Col>
                 <baseUI.Col class="col-menu" lg={9}>
                     <baseUI.Tabs defaultActiveKey={1}>
-                        <baseUI.Tab eventKey={1} tab='Experiments'>
+                        <baseUI.Tab eventKey={1} title="Experiments">
                             <multiSelector label="experiments"
                                            items="{this.state.experiments}"
                                            selectAll="{this.selectAll.bind(this, 'experiments')}"
                                            onItemChanged="{this.onExperimentChanged}" />
                         </baseUI.Tab>
-                        <baseUI.Tab eventKey={2} tab='Debug Packages'>
+                        <baseUI.Tab eventKey={2} title="Debug Packages">
                             <multiSelector label="packages"
                                            items="{this.state.packages}"
                                            selectAll="{this.selectAll.bind(this, 'packages')}"
