@@ -237,19 +237,11 @@ define('utils/urlUtils', ['lodash'], function (_) {
 
             var reactSource = dataHandler.ReactSource.get();
             if (reactSource.enabled && (reactSource.local || reactSource.version)) {
-                if (reactSource.local) {
-                    queryObj.SantaVersions = 'http://localhost/target';
-                } else {
-                    queryObj.ReactSource = reactSource.version;
-                }
+                queryObj.ReactSource = reactSource.local ? 'http://localhost' : reactSource.version;
             }
             var editorSource = dataHandler.EditorSource.get();
             if (editorSource.enabled && (editorSource.local || editorSource.version)) {
-                if (editorSource.local) {
-                    queryObj.SantaEditorVersions = 'http://localhost/editor-base/target';
-                } else {
-                    queryObj.EditorSource = editorSource.version;
-                }
+                queryObj.EditorSource = editorSource.local ? 'http://localhost/editor-base' : editorSource.version;
             }
             var runningExperimentsString = this.getRunningExperimentsString(dataHandler.experiments.get(), queryObj.experiments);
             if (runningExperimentsString) {
