@@ -3,11 +3,6 @@
 <rt-require dependency="options/components/multiSelector" as="multiSelector"/>
 <div>
     <baseUI.Panel class="app">
-        <baseUI.Input type="checkbox"
-                      label="Automatically Debug (works only on editor or wix sites)"
-                      checked="{this.state.settings.autoRedirect}"
-                      onChange="() => this.updateSettings({autoRedirect: !this.state.settings.autoRedirect})">
-        </baseUI.Input>
         <baseUI.Grid>
             <baseUI.Row>
                 <baseUI.Col class="col-menu" lg={2}>

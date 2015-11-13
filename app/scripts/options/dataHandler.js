@@ -11,7 +11,6 @@ define(['jquery', 'lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json
             .mapValues(Boolean)
             .value(),
         settings: {
-            autoRedirect: false
         },
         ReactSource: {
             enabled: false,
