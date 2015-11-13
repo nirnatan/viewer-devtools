@@ -5,6 +5,7 @@
     <baseUI.ButtonToolbar>
         <baseUI.Button rt-if="!this.state.optionsSet" bsStyle='success' onClick="{this.redirectUrl}" key="enableBtn">Apply options</baseUI.Button>
         <baseUI.Button rt-if="!this.state.isEditor" bsStyle='success' onClick="{this.openEditor}" key="openEditorBtn">Open Editor</baseUI.Button>
+        <img src="{chrome.extension.getURL('images/setting.png')}" title="Settings" onClick="{this.openSettings}" />
     </baseUI.ButtonToolbar>
 
     <baseUI.Input rt-class="{'search-box': true, 'only-search': this.state.active}" autoFocus disabled="{!this.state.active}" type="text" valueLink="{this.linkState('displayName')}"/>

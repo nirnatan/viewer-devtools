@@ -42,6 +42,10 @@ define(['react', 'lodash', 'popup/app.rt'], function (React, _, template) {
             chrome.extension.getBackgroundPage().Utils.startDebug();
             window.close();
         },
+        openSettings: function () {
+            var optionsURL = chrome.extension.getURL('scripts/options/options.html');
+            window.open(optionsURL);
+        },
         render: template
     });
 });

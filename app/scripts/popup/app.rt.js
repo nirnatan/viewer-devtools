@@ -1,5 +1,5 @@
 define([
-    'react',
+    'react/addons',
     'lodash',
     'react-bootstrap',
     'popup/component'
@@ -26,7 +26,11 @@ define([
             'bsStyle': 'success',
             'onClick': this.openEditor,
             'key': 'openEditorBtn'
-        }, 'Open Editor') : null), React.createElement(baseUI.Input, {
+        }, 'Open Editor') : null, React.createElement('img', {
+            'src': chrome.extension.getURL('images/setting.png'),
+            'title': 'Settings',
+            'onClick': this.openSettings
+        })), React.createElement(baseUI.Input, {
             'className': _.keys(_.pick({
                 'search-box': true,
                 'only-search': this.state.active
