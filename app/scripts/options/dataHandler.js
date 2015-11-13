@@ -7,20 +7,22 @@ define(['jquery', 'lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json
             .mapValues(Boolean)
             .value(),
         packages: _(packagesNames)
-                    .zipObject()
-                    .mapValues(Boolean)
-                    .value(),
+            .zipObject()
+            .mapValues(Boolean)
+            .value(),
         settings: {
             autoRedirect: false
         },
         ReactSource: {
             enabled: false,
             local: false,
+            versions: [],
             version: ''
         },
         EditorSource: {
             enabled: false,
             local: false,
+            versions: [],
             version: ''
         }
     };
@@ -80,21 +82,27 @@ define(['jquery', 'lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json
         }, handler);
         handler.isReady = handler.isReady || false;
         handler.updateLatestVersions = function (callback) {
-            $.ajax({
-                url: 'http://itayjiraapp.appspot.com/api/v1/santa/setsantarc?getlink',
-                success: function (queryString) {
-                    var queryObj = urlUtils.parseUrlParams(queryString);
-                    handler.ReactSource.set({
-                        version: queryObj.ReactSource.replace('\n', '')
-                    });
+            var editorRcs = $.get('http://rudolph.wixpress.com/services/availableRcs?project=santa-editor');
+            var editorGA = $.get('http://rudolph.wixpress.com/services/currentCommitedVersions?project=santa-editor');
+            var santaGA = $.get('http://rudolph.wixpress.com/services/currentCommitedVersions?project=santa-viewer');
+            var santaRcs = $.get('http://rudolph.wixpress.com/services/availableRcs?project=santa-viewer');
+            Promise.all([editorRcs, editorGA, santaRcs, santaGA])
+                .then(function (responses) {
+                    var editorVersions = ['local'].concat(_(responses[0].result).reverse().value());
                     handler.EditorSource.set({
-                        version: queryObj.EditorSource.replace('\n', '')
+                        version: localStore.EditorSource.version || responses[1].result.base,
+                        versions: editorVersions
+                    });
+                    var santaVersions = ['local'].concat(_(responses[2].result).reverse().value());
+                    handler.ReactSource.set({
+                        version: localStore.ReactSource.version || responses[3].result.base,
+                        versions: santaVersions
                     });
                     callback();
-                }
-            });
+                });
         };
     }
+
     init();
 
     return handler;

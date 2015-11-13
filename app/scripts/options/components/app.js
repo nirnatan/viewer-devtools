@@ -33,6 +33,14 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
 
             return emptyState;
         },
+        componentDidMount: function () {
+            dataHandler.updateLatestVersions(function() {
+                var state = _.pick(this.state, ['ReactSource', 'EditorSource']);
+                state.ReactSource.versions = dataHandler.ReactSource.get().versions;
+                state.EditorSource.versions = dataHandler.EditorSource.get().versions;
+                this.setState(state);
+            }.bind(this));
+        },
         updateSettings: function (settings) {
             updateData.call(this, 'settings', settings);
         },
@@ -51,14 +59,6 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
         },
         updateEditorSource: function (newValue) {
             updateData.call(this, 'EditorSource', newValue);
-        },
-        updateVersions: function () {
-            dataHandler.updateLatestVersions(function() {
-                var state = _.pick(this.state, ['ReactSource', 'EditorSource']);
-                state.ReactSource.version = dataHandler.ReactSource.get().version;
-                state.EditorSource.version = dataHandler.EditorSource.get().version;
-                this.setState(state);
-            }.bind(this));
         },
         selectAll: function (type) {
             var current = _.all(this.state[type]);

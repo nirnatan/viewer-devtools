@@ -1,18 +1,14 @@
-<rt-require dependency="react-bootstrap" as="baseUI"/>
+<rt-require dependency="react-bootstrap" as="baseUI" xmlns="http://www.w3.org/1999/html"/>
 <div>
     <h3>{this.props.label}</h3>
     <baseUI.Input type="checkbox"
                   label="Custom Version"
                   checked="{this.props.enabled}"
                   onChange="() => this.props.updateSource({enabled: !this.props.enabled})"/>
-    <baseUI.Input type="checkbox"
-                  label="Local"
-                  disabled="{!this.props.enabled}"
-                  checked="{this.props.local}"
-                  onChange="() => this.props.updateSource({local: !this.props.local})"/>
-    <baseUI.Input type="text"
-                  label="Version:"
-                  disabled="{!this.props.enabled || this.props.local}"
-                  value="{this.props.version}"
-                  onChange="(e) => this.props.updateSource({version: e.target.value})"/>
+    <baseUI.Input type="select"
+                  value="{this.props.selectedVersion}"
+                  placeholder="Select Version..."
+                  onChange="(evt) => this.props.updateSource({version: evt.target.value})">
+        <option rt-repeat="version in this.props.versions" key="{version}" value="{version}">{version}</option>
+    </baseUI.Input>
 </div>

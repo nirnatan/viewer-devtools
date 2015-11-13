@@ -236,12 +236,12 @@ define('utils/urlUtils', ['lodash'], function (_) {
             queryObj.petri_ovr = 'specs.DisableNewRelicScriptsSantaEditor:true'; // jshint ignore:line
 
             var reactSource = dataHandler.ReactSource.get();
-            if (reactSource.enabled && (reactSource.local || reactSource.version)) {
-                queryObj.ReactSource = reactSource.local ? 'http://localhost' : reactSource.version;
+            if (reactSource.enabled) {
+                queryObj.ReactSource = reactSource.version === 'local' ? 'http://localhost' : reactSource.version;
             }
             var editorSource = dataHandler.EditorSource.get();
-            if (editorSource.enabled && (editorSource.local || editorSource.version)) {
-                queryObj.EditorSource = editorSource.local ? 'http://localhost/editor-base' : editorSource.version;
+            if (editorSource.enabled) {
+                queryObj.EditorSource = editorSource.version === 'local' ? 'http://localhost/editor-base' : editorSource.version;
             }
             var runningExperimentsString = this.getRunningExperimentsString(dataHandler.experiments.get(), queryObj.experiments);
             if (runningExperimentsString) {

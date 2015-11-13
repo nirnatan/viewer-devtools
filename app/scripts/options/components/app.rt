@@ -11,17 +11,20 @@
         <baseUI.Grid>
             <baseUI.Row>
                 <baseUI.Col class="col-menu" lg={2}>
-                    <versionSelector label="Santa Viewer"
+                    <versionSelector rt-if="this.state.ReactSource.versions"
+                                     key="ReactSource.versions"
+                                     label="Santa Viewer"
                                      enabled="{this.state.ReactSource.enabled}"
-                                     local="{this.state.ReactSource.local}"
-                                     version="{this.state.ReactSource.version}"
+                                     selectedVersion="{this.state.ReactSource.version}"
+                                     versions="{this.state.ReactSource.versions}"
                                      updateSource="{this.updateReactSource}" />
-                    <versionSelector label="Santa Editor"
+                    <versionSelector rt-if="this.state.EditorSource.versions"
+                                     key="EditorSource.versions"
+                                     label="Santa Editor"
                                      enabled="{this.state.EditorSource.enabled}"
-                                     local="{this.state.EditorSource.local}"
-                                     version="{this.state.EditorSource.version}"
+                                     selectedVersion="{this.state.EditorSource.version}"
+                                     versions="{this.state.EditorSource.versions}"
                                      updateSource="{this.updateEditorSource}" />
-                    <baseUI.Button bsStyle='primary' onClick="{this.updateVersions}">Refresh Versions</baseUI.Button>
                 </baseUI.Col>
                 <baseUI.Col class="col-menu" lg={9}>
                     <baseUI.Tabs defaultActiveKey={1}>
