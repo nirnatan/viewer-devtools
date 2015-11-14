@@ -20,6 +20,9 @@
                                      selectedVersion="{this.state.EditorSource.version}"
                                      versions="{this.state.EditorSource.versions}"
                                      updateSource="{this.updateEditorSource}" />
+                    <div rt-if="this.state.updateFailed" class="error-msg" key="errorMsg">
+                        In order to get the latest versions list please connect to VPN
+                    </div>
                 </baseUI.Col>
                 <baseUI.Col class="col-menu" lg={9}>
                     <baseUI.Tabs defaultActiveKey={1}>

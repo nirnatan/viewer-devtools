@@ -18,7 +18,8 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
                 settings: {},
                 packages: {},
                 ReactSource: {},
-                EditorSource: {}
+                EditorSource: {},
+                updateFailed: false
             };
 
             setTimeout(function () {
@@ -34,12 +35,17 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
             return emptyState;
         },
         componentDidMount: function () {
-            dataHandler.updateLatestVersions(function() {
-                var state = _.pick(this.state, ['ReactSource', 'EditorSource']);
-                state.ReactSource.versions = dataHandler.ReactSource.get().versions;
-                state.EditorSource.versions = dataHandler.EditorSource.get().versions;
-                this.setState(state);
-            }.bind(this));
+            dataHandler.updateLatestVersions()
+                .then(this.onVersionsUpdated)
+                .catch(function () {
+                    this.setState({updateFailed: true});
+                }.bind(this));
+        },
+        onVersionsUpdated: function () {
+            var state = _.pick(this.state, ['ReactSource', 'EditorSource']);
+            state.ReactSource.versions = dataHandler.ReactSource.get().versions;
+            state.EditorSource.versions = dataHandler.EditorSource.get().versions;
+            this.setState(state);
         },
         updateSettings: function (settings) {
             updateData.call(this, 'settings', settings);
