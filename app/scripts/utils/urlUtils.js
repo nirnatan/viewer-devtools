@@ -233,7 +233,7 @@ define('utils/urlUtils', ['lodash'], function (_) {
             var packages = dataHandler.packages.get();
             packages.react = true;
             queryObj.debug = _.all(packages) ? 'all' : _(packages).pick(Boolean).keys().join(',');
-            queryObj.petri_ovr = 'specs.DisableNewRelicScriptsSantaEditor:true'; // jshint ignore:line
+            queryObj.petri_ovr = 'specs.DisableNewRelicScriptsSantaEditor:true;specs.EnableNewRelicInSanta:false'; // jshint ignore:line
 
             var reactSource = dataHandler.ReactSource.get();
             if (reactSource.enabled) {
