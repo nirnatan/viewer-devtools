@@ -2,7 +2,7 @@ var fs = require('fs');
 var _ = require('lodash');
 
 function collectExperiments(files, callback) {
-    var experimentRegex = /experiment!(.*?)['"]/g;
+    var experimentRegex = /experiment!(.*?)['"]|experiment\.isOpen\(['"](.*?)['"]\)/g;
     var result = [];
     var counter = files.length;
     files.forEach(function (file) {
@@ -13,7 +13,7 @@ function collectExperiments(files, callback) {
 
             var experiment = experimentRegex.exec(data);
             while (experiment) {
-                result.push(experiment[1]);
+                result.push(experiment[1] || experiment[2]);
                 experiment = experimentRegex.exec(data);
             }
 
@@ -25,7 +25,7 @@ function collectExperiments(files, callback) {
     });
 }
 
-module.exports = function (grunt, options) {
+module.exports = function (grunt) {
     grunt.registerMultiTask('experiments', 'creates an experiments file', function () {
         var done = this.async();
 
