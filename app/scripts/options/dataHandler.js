@@ -82,19 +82,19 @@ define(['jquery', 'lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json
         handler.isReady = handler.isReady || false;
         handler.updateLatestVersions = function () {
             var editorRcs = $.get('http://rudolph.wixpress.com/services/availableRcs?project=santa-editor');
-            var editorGA = $.get('http://rudolph.wixpress.com/services/currentCommitedVersions?project=santa-editor');
-            var santaGA = $.get('http://rudolph.wixpress.com/services/currentCommitedVersions?project=santa-viewer');
+            var editorGA = $.get('http://rudolph.wixpress.com/services/versionsProjectGa?project=santa-editor');
+            var santaGA = $.get('http://rudolph.wixpress.com/services/versionsProjectGa?project=santa-viewer');
             var santaRcs = $.get('http://rudolph.wixpress.com/services/availableRcs?project=santa-viewer');
             return Promise.all([editorRcs, editorGA, santaRcs, santaGA])
                 .then(function (responses) {
                     var editorVersions = ['local'].concat(_(responses[0].result).reverse().value());
                     handler.EditorSource.set({
-                        version: localStore.EditorSource.version || responses[1].result.base,
+                        version: localStore.EditorSource.version || responses[1].result,
                         versions: editorVersions
                     });
                     var santaVersions = ['local'].concat(_(responses[2].result).reverse().value());
                     handler.ReactSource.set({
-                        version: localStore.ReactSource.version || responses[3].result.base,
+                        version: localStore.ReactSource.version || responses[3].result,
                         versions: santaVersions
                     });
                 });
