@@ -20,7 +20,7 @@
                                      selectedVersion="{this.state.EditorSource.version}"
                                      versions="{this.state.EditorSource.versions}"
                                      updateSource="{this.updateEditorSource}" />
-                    <div  class="error-msg" key="errorMsg">
+                    <div rt-if="this.state.updateFailed" class="error-msg" key="errorMsg">
                         In order to get the latest versions list please connect to VPN
                         and login to <a href="http://rudolph.wixpress.com/" target="_blank">rudolph</a>
                     </div>
