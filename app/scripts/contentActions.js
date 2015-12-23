@@ -7,7 +7,7 @@
 
     var events, eventsQueue = [];
 
-    require(['react', 'lodash'], function (React, _) {
+    require(['react', 'lodash', 'reactDOM'], function (React, _, ReactDOM) {
         function compactObject(obj) {
             return _.transform(obj, function (acc, value, key) {
                 if (value) {
@@ -44,7 +44,7 @@
 
             return _.reduce(reactComps, function (acc, comp) {
                 var components = React.addons.TestUtils.findAllInRenderedTree(comp, predicate);
-                return components.length ? acc.concat(_.filter(components, 'getDOMNode')) : acc;
+                return components.length ? acc.concat(_.filter(components, ReactDOM ? ReactDOM.findDOMNode : 'getDOMNode')) : acc;
             }, []);
         }
 
@@ -56,8 +56,12 @@
             });
         }
 
+        function getComponentDOMNode(comp) {
+            return ReactDOM ? ReactDOM.findDOMNode(comp) : comp.getDOMNode();
+        }
+
         function getId(comp) {
-            var reactId = comp.getDOMNode().attributes['data-reactid'];
+            var reactId = getComponentDOMNode(comp).attributes['data-reactid'];
             return comp.props.id || (reactId && reactId.value);
         }
 
@@ -72,25 +76,28 @@
 
         events = {
             getComponents: function () {
-                components = _(getComponentsByName('')).filter(function (comp) {
-                    var displayName = comp.constructor.displayName;
-                    return (displayName && displayName.indexOf('ReactDOM') !== 0) && !comp.tagName && comp.isMounted() && comp.getDOMNode();
-                }).transform(function (acc, comp) {
-                    acc[getId(comp)] = comp;
-                }, {}).value();
+                components = _(getComponentsByName(''))
+                    .filter(function (comp) {
+                        var displayName = comp.constructor.displayName;
+                        return (displayName && displayName.indexOf('ReactDOM') !== 0) && !comp.tagName && comp.isMounted() && getComponentDOMNode(comp);
+                    })
+                    .transform(function (acc, comp) {
+                        acc[getId(comp)] = comp;
+                    }, {})
+                    .value();
 
                 return _.transform(components, function (acc, comp, id) {
                     acc.push({
                         name: comp.constructor.displayName,
                         id: id,
-                        domId: comp.getDOMNode().id,
+                        domId: getComponentDOMNode(comp).id,
                         compProps: getCompProps(comp)
                     });
                 }, []);
             },
             markComponent: function (id) {
                 if (hoveredComponent && hoveredComponent.isMounted()) {
-                    var selectedNode = hoveredComponent.getDOMNode();
+                    var selectedNode = getComponentDOMNode(hoveredComponent);
                     if (selectedNode) {
                         selectedNode.style.outline = '';
                     }
@@ -99,7 +106,7 @@
                 if (_.has(components, id)) {
                     var component = components[id];
                     hoveredComponent = component;
-                    var domNode = component.getDOMNode();
+                    var domNode = getComponentDOMNode(component);
                     domNode.style.outline = '#F00 dashed 3px';
                     //domNode.style.backgroundColor = ''
                     domNode.scrollIntoView();
