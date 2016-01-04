@@ -27,6 +27,12 @@
                 </baseUI.Col>
                 <baseUI.Col class="col-menu" lg={9}>
                     <baseUI.Tabs defaultActiveKey={1}>
+                        <baseUI.Tab eventKey={3} title="Settings">
+                            <baseUI.Input type="checkbox"
+                                          label="Disable Leave Page confirmation Popup"
+                                          checked="{this.state.settings.disableLeavePagePopUp}"
+                                          onChange="() => this.updateSettings({disableLeavePagePopUp: !this.state.settings.disableLeavePagePopUp})"/>
+                        </baseUI.Tab>
                         <baseUI.Tab eventKey={1} title="Experiments">
                             <multiSelector label="experiments"
                                            items="{this.state.experiments}"

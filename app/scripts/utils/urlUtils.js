@@ -235,6 +235,11 @@ define('utils/urlUtils', ['lodash'], function (_) {
             queryObj.debug = _.all(packages) ? 'all' : _(packages).pick(Boolean).keys().join(',');
             queryObj.petri_ovr = 'specs.DisableNewRelicScriptsSantaEditor:true;specs.EnableNewRelicInSanta:false'; // jshint ignore:line
 
+            var settings = dataHandler.settings.get();
+            if (settings.disableLeavePagePopUp) {
+                queryObj.leavePagePopUp = true;
+            }
+
             var reactSource = dataHandler.ReactSource.get();
             if (reactSource.enabled) {
                 queryObj.ReactSource = reactSource.version === 'local' ? 'http://localhost' : reactSource.version;
