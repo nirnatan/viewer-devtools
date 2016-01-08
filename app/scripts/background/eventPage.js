@@ -71,11 +71,31 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
         });
     }
 
-    function applyEditorParams(url) {
+    function applyOptions(url, viewrOnly) {
         var urlObj = urlUtils.parseUrl(url);
-        urlObj.search = urlUtils.getEditorQueryString(dataHandler, urlObj);
+        urlObj.query = urlUtils.getOptionsQueryString(dataHandler, urlObj, viewrOnly);
 
         return urlUtils.buildFullUrl(urlObj);
+    }
+
+    function createOrActivateEditorTab(siteId, metaSiteId) {
+        chrome.tabs.getAllInWindow(function(tabs) {
+            var baseEditorUrl = 'http://editor.wix.com/html/editor/web/renderer/edit/' + siteId;
+            var urlObj = urlUtils.parseUrl(currentUrl);
+            urlObj.query.metaSiteId = metaSiteId;
+            var editorUrl = urlUtils.setUrlParams(baseEditorUrl, urlUtils.getOptionsQueryString(dataHandler, urlObj));
+
+            var editorTab = _.find(tabs, function (tab) {
+                var tabUrlObj = urlUtils.parseUrl(tab.url);
+                return tabUrlObj.query.metaSiteId === metaSiteId && _.endsWith(tabUrlObj.path, siteId);
+            });
+
+            if (!editorTab) {
+                chrome.tabs.create({url: editorUrl});
+            } else {
+                chrome.tabs.update(editorTab.id, {selected: true});
+            }
+        });
     }
 
     var utils = {
@@ -92,7 +112,17 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
         },
 
         startDebug: function () {
-            chrome.tabs.update(tabId, {url: applyEditorParams(currentUrl)});
+            utils.isEditor(function (editor) {
+                if (editor) {
+                    chrome.tabs.update(tabId, {url: applyOptions(currentUrl, false)});
+                }
+            });
+
+            utils.isViewer(function (viewer) {
+                if (viewer) {
+                    chrome.tabs.update(tabId, {url: applyOptions(currentUrl, true)});
+                }
+            });
         },
 
         setMobileView: function (isMobile) {
@@ -139,7 +169,7 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
         },
 
         isOptionsSet: function () {
-            return currentUrl === applyEditorParams(currentUrl);
+            return currentUrl === applyOptions(currentUrl);
         },
 
         isViewer: function (callback) {
@@ -177,9 +207,7 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
                 });
 
                 if (siteId && metaSiteId) {
-                    var baseEditorUrl = 'http://editor.wix.com/html/editor/web/renderer/edit/' + siteId + '?metaSiteId=' + metaSiteId;
-                    var editorUrl = urlUtils.setUrlParams(baseEditorUrl, urlUtils.parseUrl(currentUrl).query);
-                    chrome.tabs.create({url: editorUrl});
+                    createOrActivateEditorTab(siteId, metaSiteId);
                 }
             });
         }

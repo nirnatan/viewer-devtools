@@ -11,7 +11,8 @@ define(['jquery', 'lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json
             .mapValues(Boolean)
             .value(),
         settings: {
-            disableLeavePagePopUp: false
+            disableLeavePagePopUp: false,
+            disableNewRelic: true
         },
         ReactSource: {
             enabled: false,

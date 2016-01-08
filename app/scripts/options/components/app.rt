@@ -1,6 +1,7 @@
 <rt-require dependency="react-bootstrap" as="baseUI"/>
 <rt-require dependency="options/components/versionSelector" as="versionSelector"/>
 <rt-require dependency="options/components/multiSelector" as="multiSelector"/>
+<rt-require dependency="options/components/settings" as="settings"/>
 <div>
     <baseUI.Panel class="app">
         <baseUI.Grid>
@@ -28,10 +29,7 @@
                 <baseUI.Col class="col-menu" lg={9}>
                     <baseUI.Tabs defaultActiveKey={1}>
                         <baseUI.Tab eventKey={3} title="Settings">
-                            <baseUI.Input type="checkbox"
-                                          label="Disable Leave Page confirmation Popup"
-                                          checked="{this.state.settings.disableLeavePagePopUp}"
-                                          onChange="() => this.updateSettings({disableLeavePagePopUp: !this.state.settings.disableLeavePagePopUp})"/>
+                            <settings />
                         </baseUI.Tab>
                         <baseUI.Tab eventKey={1} title="Experiments">
                             <multiSelector label="experiments"

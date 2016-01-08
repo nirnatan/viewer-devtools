@@ -1,0 +1,12 @@
+<rt-require dependency="react-bootstrap" as="baseUI"/>
+
+<div>
+    <baseUI.Input type="checkbox"
+                  label="Disable Leave Page confirmation Popup"
+                  checked="{this.state.settings.disableLeavePagePopUp}"
+                  onChange="() => this.updateSettings({disableLeavePagePopUp: !this.state.settings.disableLeavePagePopUp})"/>
+    <baseUI.Input type="checkbox"
+                  label="Disable New Relic"
+                  checked="{this.state.settings.disableNewRelic}"
+                  onChange="() => this.updateSettings({disableNewRelic: !this.state.settings.disableNewRelic})"/>
+</div>

@@ -62,7 +62,6 @@ define('utils/urlUtils', ['lodash'], function (_) {
         var urlRe = /((https?\:)\/\/)?([^\?\:\/#]+)(\:([0-9]+))?(\/[^\?\#]*)?(\?([^#]*))?(#.*)?/i;
         var match = url.match(urlRe);
         var port = match[5] || '';
-        var search = match[8] ? ('?' + match[8]) : '';
         var ret = {
             full: url,
             protocol: match[2] || 'http:',
@@ -70,7 +69,6 @@ define('utils/urlUtils', ['lodash'], function (_) {
             hostname: match[3],
             port: port,
             path: match[6] || '/',
-            search: search,
             query: {},
             hash: match[9] || ''
         };
@@ -132,7 +130,6 @@ define('utils/urlUtils', ['lodash'], function (_) {
 
     function removeUrlParam(url, paramName) {
         var urlObj = parseUrl(url);
-        delete urlObj.search;
         if (urlObj.query) {
             delete urlObj.query[paramName];
         }
@@ -223,17 +220,23 @@ define('utils/urlUtils', ['lodash'], function (_) {
         getRunningExperimentsString: function (experimentsObj, current) {
             return _(experimentsObj).pick(Boolean).keys().union(current ? current.split(',') : []).join(',');
         },
-        getEditorQueryString: function (dataHandler, urlObj) {
+        getOptionsQueryString: function (dataHandler, urlObj, viewerOnly) {
             var queryObj = urlObj.query || {};
 
             var packages = dataHandler.packages.get();
             packages.react = true;
             queryObj.debug = _.all(packages) ? 'all' : _(packages).pick(Boolean).keys().join(',');
-            queryObj.petri_ovr = 'specs.DisableNewRelicScriptsSantaEditor:true;specs.EnableNewRelicInSanta:false'; // jshint ignore:line
 
             var settings = dataHandler.settings.get();
             if (settings.disableLeavePagePopUp) {
-                queryObj.leavePagePopUp = true;
+                queryObj.leavePagePopUp = false;
+            }
+
+            if (settings.disableNewRelic) {
+                queryObj.petri_ovr = 'specs.EnableNewRelicInSanta:false'; // jshint ignore:line
+                if (!viewerOnly) {
+                    queryObj.petri_ovr += ';specs.DisableNewRelicScriptsSantaEditor:true'
+                }
             }
 
             var reactSource = dataHandler.ReactSource.get();
@@ -241,7 +244,7 @@ define('utils/urlUtils', ['lodash'], function (_) {
                 queryObj.ReactSource = reactSource.version === 'local' ? 'http://localhost' : reactSource.version;
             }
             var editorSource = dataHandler.EditorSource.get();
-            if (editorSource.enabled) {
+            if (!viewerOnly && editorSource.enabled) {
                 queryObj.EditorSource = editorSource.version === 'local' ? 'http://localhost/editor-base' : editorSource.version;
             }
             var runningExperimentsString = this.getRunningExperimentsString(dataHandler.experiments.get(), queryObj.experiments);
@@ -251,24 +254,7 @@ define('utils/urlUtils', ['lodash'], function (_) {
                 delete queryObj.experiments;
             }
 
-            var params = [], remainingParams = queryObj;
-            if (urlObj.search) {
-                var originalParams = _.map(urlObj.search.substring(1).split('&'), function(p) {
-                    return _.first(p.split('='));
-                });
-
-                params = _.map(originalParams, function (key) {
-                    return key + '=' + queryObj[key];
-                });
-
-                remainingParams = _.omit(queryObj, originalParams);
-            }
-
-            params = _.transform(remainingParams, function (acc, value, key) {
-                acc.push(key + '=' + value);
-            }, params);
-
-            return params.join('&');
+            return queryObj;
         }
     };
 

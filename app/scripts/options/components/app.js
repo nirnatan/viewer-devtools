@@ -15,7 +15,6 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
         getInitialState: function () {
             var emptyState = {
                 experiments: {},
-                settings: {},
                 packages: {},
                 ReactSource: {},
                 EditorSource: {},
@@ -25,7 +24,6 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
             setTimeout(function () {
                 this.setState({
                     experiments: dataHandler.experiments.get(),
-                    settings: dataHandler.settings.get(),
                     packages: dataHandler.packages.get(),
                     ReactSource: dataHandler.ReactSource.get(),
                     EditorSource: dataHandler.EditorSource.get()
@@ -46,9 +44,6 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
             state.ReactSource.versions = dataHandler.ReactSource.get().versions;
             state.EditorSource.versions = dataHandler.EditorSource.get().versions;
             this.setState(state);
-        },
-        updateSettings: function (settings) {
-            updateData.call(this, 'settings', settings);
         },
         onExperimentChanged: function (name) {
             var value = {};
