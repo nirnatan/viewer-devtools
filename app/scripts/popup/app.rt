@@ -1,10 +1,12 @@
 <!--suppress CheckEmptyScriptTag -->
 <rt-require dependency="react-bootstrap" as="baseUI"/>
 <rt-require dependency="popup/component" as="Component"/>
+<rt-require dependency="popup/switchMode" as="switchMode"/>
 <div id="main">
     <baseUI.ButtonToolbar>
         <baseUI.Button rt-if="!this.state.optionsSet" bsStyle='success' onClick="{this.redirectUrl}" key="enableBtn">Apply options</baseUI.Button>
         <baseUI.Button rt-if="!this.state.isEditor" bsStyle='success' onClick="{this.openEditor}" key="openEditorBtn">Open Editor</baseUI.Button>
+        <switchMode key="switchMode" rt-if="!this.state.isEditor" />
         <img src="{chrome.extension.getURL('images/setting.png')}" title="Settings" onClick="{this.openSettings}" />
     </baseUI.ButtonToolbar>
 

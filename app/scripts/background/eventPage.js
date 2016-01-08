@@ -95,6 +95,21 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
             chrome.tabs.update(tabId, {url: applyEditorParams(currentUrl)});
         },
 
+        setMobileView: function (isMobile) {
+            var newUrl = urlUtils.parseUrl(currentUrl);
+            if (!isMobile) {
+                delete newUrl.query.showMobileView;
+            } else {
+                newUrl.query.showMobileView = isMobile;
+            }
+
+            chrome.tabs.update(tabId, {url: urlUtils.buildFullUrl(newUrl)});
+        },
+
+        isMobile: function (callback) {
+            callback(urlUtils.hasParam(currentUrl, 'showMobileView', 'true'));
+        },
+
         markComponent: function (domId) {
             sendToContentPage({type: 'markComponent', params: domId});
         },

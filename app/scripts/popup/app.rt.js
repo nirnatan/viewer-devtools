@@ -2,8 +2,9 @@ define([
     'react',
     'lodash',
     'react-bootstrap',
-    'popup/component'
-], function (React, _, baseUI, Component) {
+    'popup/component',
+    'popup/switchMode'
+], function (React, _, baseUI, Component, switchMode) {
     'use strict';
     function onSelectionChanged1(comp, compIndex, selectedComp) {
         this.setState({ selectedComp: selectedComp });
@@ -26,7 +27,7 @@ define([
             'bsStyle': 'success',
             'onClick': this.openEditor,
             'key': 'openEditorBtn'
-        }, 'Open Editor') : null, React.createElement('img', {
+        }, 'Open Editor') : null, !this.state.isEditor ? React.createElement(switchMode, { 'key': 'switchMode' }) : null, React.createElement('img', {
             'src': chrome.extension.getURL('images/setting.png'),
             'title': 'Settings',
             'onClick': this.openSettings

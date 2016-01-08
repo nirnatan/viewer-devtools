@@ -151,11 +151,7 @@ define('utils/urlUtils', ['lodash'], function (_) {
     }
 
     function buildFullUrl(urlObj) {
-        if (urlObj.search) {
-            urlObj.search = urlObj.search.replace(/^[?]/, '');
-        }
-
-        var query = (urlObj.search || toQueryString(urlObj.query || {}));
+        var query = toQueryString(urlObj.query || {});
 
         if (query) {
             var queryPrefix = _.contains(urlObj.path, '?') ? '&' : '?';
