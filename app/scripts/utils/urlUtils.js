@@ -235,7 +235,7 @@ define('utils/urlUtils', ['lodash'], function (_) {
             if (settings.disableNewRelic) {
                 queryObj.petri_ovr = 'specs.EnableNewRelicInSanta:false'; // jshint ignore:line
                 if (!viewerOnly) {
-                    queryObj.petri_ovr += ';specs.DisableNewRelicScriptsSantaEditor:true'
+                    queryObj.petri_ovr += ';specs.DisableNewRelicScriptsSantaEditor:true';
                 }
             }
 
