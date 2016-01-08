@@ -228,7 +228,7 @@ define('utils/urlUtils', ['lodash'], function (_) {
             queryObj.debug = _.all(packages) ? 'all' : _(packages).pick(Boolean).keys().join(',');
 
             var settings = dataHandler.settings.get();
-            if (settings.disableLeavePagePopUp) {
+            if (!viewerOnly && settings.disableLeavePagePopUp) {
                 queryObj.leavePagePopUp = false;
             }
 
