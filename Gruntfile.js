@@ -285,14 +285,11 @@ module.exports = function (grunt) {
         compress: {
             dist: {
                 options: {
-                    archive: function () {
-                        var manifest = grunt.file.readJSON('app/manifest.json');
-                        return 'package/editor devtools-' + manifest.version + '.zip';
-                    }
+                    archive: '/Users/Nir_Natan/Downloads/app.zip'
                 },
                 files: [{
                     expand: true,
-                    cwd: 'dist/',
+                    cwd: 'app/',
                     src: ['**'],
                     dest: ''
                 }]
