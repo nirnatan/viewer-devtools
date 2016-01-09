@@ -1,66 +1,78 @@
 #main {
   padding: 0 10px;
 
-  .btn-toolbar {
-    margin: 10px 0;
+  .wix-site {
+    .btn-toolbar {
+      margin: 10px 0;
 
-    .btn {
-      margin: 0 5px;
+      .btn {
+        margin: 0 5px;
+      }
+
+      img {
+        margin-top: 3px;
+        float: right;
+        width: 25px;
+        cursor: pointer;
+      }
     }
 
-    img {
-      margin-top: 3px;
-      float: right;
-      width: 25px;
-      cursor: pointer;
+    .search-box {
+      margin-bottom: 10px;
+
+      &.only-search {
+        margin-top: 10px;
+      }
+    }
+
+    .components {
+      overflow-y: auto;
+      max-height: 480px;
+    }
+
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .bubblingG {
+      text-align: center;
+      width: 120px;
+      height: 75px;
+    }
+
+    .bubblingG span {
+      display: inline-block;
+      vertical-align: middle;
+      width: 15px;
+      height: 15px;
+      margin: 38px auto;
+      background: #000456;
+      border-radius: 75px;
+      animation: bubblingG 1s infinite alternate;
+
+      &:first-child {
+        animation-delay: 0s;
+      }
+
+      &:nth-child(2) {
+        animation-delay: 0.3s;
+      }
+
+      &:last-child {
+        animation-delay: 0.6s;
+      }
     }
   }
 
-  .search-box {
-    margin-bottom: 10px;
-
-    &.only-search {
-      margin-top: 10px;
-    }
-  }
-
-  .components {
-    overflow-y: auto;
-    max-height: 480px;
-  }
-
-  .loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .bubblingG {
-    text-align: center;
-    width: 120px;
-    height: 75px;
-  }
-
-  .bubblingG span {
-    display: inline-block;
-    vertical-align: middle;
-    width: 15px;
-    height: 15px;
-    margin: 38px auto;
-    background: #000456;
-    border-radius: 75px;
-    animation: bubblingG 1s infinite alternate;
-
-    &:first-child {
-      animation-delay: 0s;
-    }
-
-    &:nth-child(2) {
-      animation-delay: 0.3s;
-    }
-
-    &:last-child {
-      animation-delay: 0.6s;
+  .no-wix-site {
+    span {
+      font-family: "Amaranth", serif;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 17px;
+      line-height: 28px;
     }
   }
 

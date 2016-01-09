@@ -13,7 +13,8 @@ define(['react', 'lodash', 'popup/app.rt'], function (React, _, template) {
                 loading: true,
                 active: backgroundPageUtils.isActive(),
                 optionsSet: backgroundPageUtils.isOptionsSet(),
-                isEditor: true,
+                isEditor: false,
+                isViewer: true,
                 selectedComp: null
             };
         },
@@ -21,6 +22,7 @@ define(['react', 'lodash', 'popup/app.rt'], function (React, _, template) {
             var backgroundPageUtils = chrome.extension.getBackgroundPage().Utils;
             backgroundPageUtils.getComponents(this.handleSearchResults);
             backgroundPageUtils.isEditor(this.updateState.bind(this, 'isEditor'));
+            backgroundPageUtils.isViewer(this.updateState.bind(this, 'isViewer'));
         },
         handleSearchResults: function (results) {
             this.setState({comps: results, loading: false});

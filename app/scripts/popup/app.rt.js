@@ -19,7 +19,7 @@ define([
         });
     }
     return function () {
-        return React.createElement('div', { 'id': 'main' }, React.createElement(baseUI.ButtonToolbar, {}, !this.state.optionsSet ? React.createElement(baseUI.Button, {
+        return React.createElement('div', { 'id': 'main' }, this.state.isEditor || this.state.isViewer ? React.createElement('div', { 'className': 'wix-site' }, React.createElement(baseUI.ButtonToolbar, {}, !this.state.optionsSet ? React.createElement(baseUI.Button, {
             'bsStyle': 'success',
             'onClick': this.redirectUrl,
             'key': 'enableBtn'
@@ -53,6 +53,9 @@ define([
         }, React.createElement('div', {
             'className': 'bubblingG',
             'key': 'loadingAnim'
-        }, React.createElement('span', {}), React.createElement('span', {}), React.createElement('span', {}))) : null);
+        }, React.createElement('span', {}), React.createElement('span', {}), React.createElement('span', {}))) : null) : null, !this.state.isEditor && !this.state.isViewer ? React.createElement('div', { 'className': 'no-wix-site' }, React.createElement('img', {
+            'src': chrome.extension.getURL('images/nothing_to_do.gif'),
+            'title': 'Settings'
+        }), React.createElement('span', {}, 'I can\'t help you, this is not a wix site')) : null);
     };
 });

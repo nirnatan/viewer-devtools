@@ -4,11 +4,23 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
     var ports = [];
     var tabId, currentUrl;
 
+    function updateBrowserActionIcon() {
+        isWixSite(function (wixSite) {
+            chrome.browserAction.setIcon({
+              path : {
+                "19": 'images/icon-19' + (wixSite ? '' : '-disabled') + '.png',
+                "38": 'images/icon-38' + (wixSite ? '' : '-disabled') + '.png'
+              }
+            });
+        });
+    }
+
     chrome.tabs.onActiveChanged.addListener(function (id) {
         chrome.tabs.get(id, function (tab) {
             if (tab.url.indexOf('chrome-devtools') !== 0) {
                 currentUrl = tab.url;
                 tabId = id;
+                updateBrowserActionIcon();
             }
         });
     });
@@ -16,6 +28,7 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
     chrome.tabs.onUpdated.addListener(function (id, changeInfo, tab) {
         if (tabId === id) {
             currentUrl = changeInfo.url || tab.url;
+            updateBrowserActionIcon();
         }
     });
 
@@ -79,7 +92,7 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
     }
 
     function createOrActivateEditorTab(siteId, metaSiteId) {
-        chrome.tabs.getAllInWindow(function(tabs) {
+        chrome.tabs.getAllInWindow(function (tabs) {
             var baseEditorUrl = 'http://editor.wix.com/html/editor/web/renderer/edit/' + siteId;
             var urlObj = urlUtils.parseUrl(currentUrl);
             urlObj.query.metaSiteId = metaSiteId;
@@ -95,6 +108,17 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
             } else {
                 chrome.tabs.update(editorTab.id, {selected: true});
             }
+        });
+    }
+
+    function isWixSite(callback) {
+        utils.isEditor(function (editor) {
+            if (editor) {
+                callback(true);
+                return;
+            }
+
+            utils.isViewer(callback);
         });
     }
 
