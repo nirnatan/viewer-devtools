@@ -9,6 +9,25 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
         state[name] = value;
         this.setState(state);
     }
+    
+    function mergeExperiments() {
+        var custom = dataHandler.custom.get();
+        var experiments = dataHandler.experiments.get();
+        
+        if (custom) {
+            var exps = _.map(custom.experiments.split(','), _.trim);
+            var intersection = _.intersection(exps, _.keys(experiments));
+            if (!_.isEmpty(intersection)) {
+                exps = _.reject(exps, _.has.bind(_, experiments));
+                dataHandler.custom.set({experiments: exps.join(', ')});
+
+                _.forEach(intersection, function (exp) {
+                    experiments[exp] = true;
+                });
+                dataHandler.experiments.set(experiments);
+            }
+        }
+    }
 
     return React.createClass({
         displayName: 'options',
@@ -23,6 +42,7 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
             };
 
             setTimeout(function () {
+                mergeExperiments();
                 var custom = dataHandler.custom.get();
                 this.setState({
                     customExperiments: _(custom.experiments.split(',')).map(_.trim).uniq().join(', '),
