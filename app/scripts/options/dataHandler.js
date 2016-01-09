@@ -6,6 +6,9 @@ define(['jquery', 'lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json
             .zipObject()
             .mapValues(Boolean)
             .value(),
+        custom: {
+            experiments: ''
+        },
         packages: _(packagesNames)
             .zipObject()
             .mapValues(Boolean)

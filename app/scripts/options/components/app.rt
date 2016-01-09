@@ -32,6 +32,10 @@
                             <settings />
                         </baseUI.Tab>
                         <baseUI.Tab eventKey={1} title="Experiments">
+                            <baseUI.Input type="text"
+                                          value="{this.state.customExperiments}"
+                                          onChange="{this.onUserExperimentsChanged}"
+                                          label="Additional experiments to open (separated by ,)"/>
                             <multiSelector label="experiments"
                                            items="{this.state.experiments}"
                                            selectAll="{this.selectAll.bind(this, 'experiments')}"

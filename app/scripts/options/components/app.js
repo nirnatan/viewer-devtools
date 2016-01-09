@@ -15,6 +15,7 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
         getInitialState: function () {
             var emptyState = {
                 experiments: {},
+                customExperiments: '',
                 packages: {},
                 ReactSource: {},
                 EditorSource: {},
@@ -22,7 +23,9 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
             };
 
             setTimeout(function () {
+                var custom = dataHandler.custom.get();
                 this.setState({
+                    customExperiments: _(custom.experiments.split(',')).map(_.trim).uniq().join(', '),
                     experiments: dataHandler.experiments.get(),
                     packages: dataHandler.packages.get(),
                     ReactSource: dataHandler.ReactSource.get(),
@@ -49,6 +52,14 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
             var value = {};
             value[name] = !this.state.experiments[name];
             updateData.call(this, 'experiments', value);
+        },
+        onUserExperimentsChanged: function (e) {
+            var value = e.target.value;
+            dataHandler.custom.set({experiments: value});
+
+            this.setState({
+                customExperiments: value
+            });
         },
         onPackageChanged: function (name) {
             var value = {};
