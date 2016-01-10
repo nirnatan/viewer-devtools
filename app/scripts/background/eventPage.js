@@ -109,7 +109,7 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
                 } else {
                     chrome.tabs.update(editorTab.id, {selected: true});
                 }
-            })
+            });
         }
 
         dataHandler.updateLatestVersions()
