@@ -92,13 +92,8 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
     }
 
     function createOrActivateEditorTab(siteId, metaSiteId) {
-        var updateVersions = dataHandler.updateLatestVersions();
-        var allTabs = new Promise(function (resolve) {
-            chrome.tabs.getAllInWindow(resolve);
-        });
-
-        Promise.all([updateVersions, allTabs])
-            .then(function (tabs) {
+        function setUrl() {
+            chrome.tabs.getAllInWindow(function (tabs) {
                 var baseEditorUrl = 'http://editor.wix.com/html/editor/web/renderer/edit/' + siteId;
                 var urlObj = urlUtils.parseUrl(currentUrl);
                 urlObj.query.metaSiteId = metaSiteId;
@@ -114,7 +109,12 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
                 } else {
                     chrome.tabs.update(editorTab.id, {selected: true});
                 }
-            });
+            })
+        }
+
+        dataHandler.updateLatestVersions()
+            .then(setUrl)
+            .catch(setUrl);
     }
 
     function isWixSite(callback) {
