@@ -7,10 +7,10 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
     function updateBrowserActionIcon() {
         isWixSite(function (wixSite) {
             chrome.browserAction.setIcon({
-              path : {
-                "19": 'images/icon-19' + (wixSite ? '' : '-disabled') + '.png',
-                "38": 'images/icon-38' + (wixSite ? '' : '-disabled') + '.png'
-              }
+                path: {
+                    "19": 'images/icon-19' + (wixSite ? '' : '-disabled') + '.png',
+                    "38": 'images/icon-38' + (wixSite ? '' : '-disabled') + '.png'
+                }
             });
         });
     }
@@ -72,7 +72,7 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
             '})();';
 
         chrome.tabs.executeScript(tabId, {code: code}, function (metaElementsResult) {
-            metaElementsCallback(metaElementsResult[0]);
+            metaElementsCallback(_.get(metaElementsResult, 0));
         });
     }
 
@@ -92,23 +92,29 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
     }
 
     function createOrActivateEditorTab(siteId, metaSiteId) {
-        chrome.tabs.getAllInWindow(function (tabs) {
-            var baseEditorUrl = 'http://editor.wix.com/html/editor/web/renderer/edit/' + siteId;
-            var urlObj = urlUtils.parseUrl(currentUrl);
-            urlObj.query.metaSiteId = metaSiteId;
-            var editorUrl = urlUtils.setUrlParams(baseEditorUrl, urlUtils.getOptionsQueryString(dataHandler, urlObj));
-
-            var editorTab = _.find(tabs, function (tab) {
-                var tabUrlObj = urlUtils.parseUrl(tab.url);
-                return tabUrlObj.query.metaSiteId === metaSiteId && _.endsWith(tabUrlObj.path, siteId);
-            });
-
-            if (!editorTab) {
-                chrome.tabs.create({url: editorUrl});
-            } else {
-                chrome.tabs.update(editorTab.id, {selected: true});
-            }
+        var updateVersions = dataHandler.updateLatestVersions();
+        var allTabs = new Promise(function (resolve) {
+            chrome.tabs.getAllInWindow(resolve);
         });
+
+        Promise.all([updateVersions, allTabs])
+            .then(function (tabs) {
+                var baseEditorUrl = 'http://editor.wix.com/html/editor/web/renderer/edit/' + siteId;
+                var urlObj = urlUtils.parseUrl(currentUrl);
+                urlObj.query.metaSiteId = metaSiteId;
+                var editorUrl = urlUtils.setUrlParams(baseEditorUrl, urlUtils.getOptionsQueryString(dataHandler, urlObj));
+
+                var editorTab = _.find(tabs, function (tab) {
+                    var tabUrlObj = urlUtils.parseUrl(tab.url);
+                    return tabUrlObj.query.metaSiteId === metaSiteId && _.endsWith(tabUrlObj.path, siteId);
+                });
+
+                if (!editorTab) {
+                    chrome.tabs.create({url: editorUrl});
+                } else {
+                    chrome.tabs.update(editorTab.id, {selected: true});
+                }
+            });
     }
 
     function isWixSite(callback) {
@@ -136,17 +142,23 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
         },
 
         startDebug: function () {
-            utils.isEditor(function (editor) {
-                if (editor) {
-                    chrome.tabs.update(tabId, {url: applyOptions(currentUrl, false)});
-                }
-            });
+            function updateUrl() {
+                utils.isEditor(function (editor) {
+                    if (editor) {
+                        chrome.tabs.update(tabId, {url: applyOptions(currentUrl, false)});
+                    }
+                });
 
-            utils.isViewer(function (viewer) {
-                if (viewer) {
-                    chrome.tabs.update(tabId, {url: applyOptions(currentUrl, true)});
-                }
-            });
+                utils.isViewer(function (viewer) {
+                    if (viewer) {
+                        chrome.tabs.update(tabId, {url: applyOptions(currentUrl, true)});
+                    }
+                });
+            }
+
+            dataHandler.updateLatestVersions()
+                .then(updateUrl)
+                .catch(updateUrl);
         },
 
         setMobileView: function (isMobile) {

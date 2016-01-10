@@ -247,11 +247,33 @@ define('utils/urlUtils', ['lodash'], function (_) {
 
             var reactSource = dataHandler.ReactSource.get();
             if (reactSource.enabled) {
-                queryObj.ReactSource = reactSource.version === 'local' ? 'http://localhost' : reactSource.version;
+                switch (reactSource.version) {
+                    case 'local':
+                        queryObj.ReactSource = 'http://localhost';
+                        break;
+                    case 'Latest RC':
+                        queryObj.ReactSource = _.find(reactSource.versions, function (version) {
+                            return version !== 'local' && version !== 'Latest RC';
+                        });
+                        break;
+                    default:
+                        queryObj.ReactSource = reactSource.version;
+                }
             }
             var editorSource = dataHandler.EditorSource.get();
             if (!viewerOnly && editorSource.enabled) {
-                queryObj.EditorSource = editorSource.version === 'local' ? 'http://localhost/editor-base' : editorSource.version;
+                switch (editorSource.version) {
+                    case 'local':
+                        queryObj.EditorSource = 'http://localhost/editor-base';
+                        break;
+                    case 'Latest RC':
+                        queryObj.EditorSource = _.find(editorSource.versions, function (version) {
+                            return version !== 'local' && version !== 'Latest RC';
+                        });
+                        break;
+                    default:
+                        queryObj.EditorSource = editorSource.version;
+                }
             }
             var runningExperimentsString = this.getRunningExperimentsString(dataHandler.experiments.get(), dataHandler.custom.get().experiments, queryObj.experiments);
             if (runningExperimentsString) {
