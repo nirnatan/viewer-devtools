@@ -25,6 +25,15 @@
       }
     }
 
+    .version-selector {
+      display: flex;
+      flex-direction: row;
+
+      > div:first-child {
+        margin-right: 20px;
+      }
+    }
+
     .components {
       overflow-y: auto;
       max-height: 480px;

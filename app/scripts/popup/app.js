@@ -1,6 +1,16 @@
 define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (React, _, dataHandler, template) {
     'use strict';
 
+    function getSettings() {
+        var settings = dataHandler.settings.get();
+        return {
+            showComponents: settings.showComponents,
+            showVersionSelector: settings.versionSelectorInPopup,
+            ReactSource: dataHandler.ReactSource.get(),
+            EditorSource: dataHandler.EditorSource.get()
+        };
+    }
+
     return React.createClass({
         displayName: 'Editor DevTools',
         mixins: [React.addons.LinkedStateMixin],
@@ -8,10 +18,12 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
             var backgroundPageUtils = chrome.extension.getBackgroundPage().Utils;
 
             if (!dataHandler.isReady) {
-                _.delay(this.setState.bind(this, {showComponents: dataHandler.settings.get().showComponents}), 300);
+                _.delay(function () {
+                    this.setState(getSettings());
+                }.bind(this), 300);
             }
 
-            return {
+            return _.assign({
                 displayName: '',
                 comps: [],
                 loading: true,
@@ -19,9 +31,8 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
                 optionsSet: backgroundPageUtils.isOptionsSet(),
                 isEditor: false,
                 isViewer: true,
-                selectedComp: null,
-                showComponents: dataHandler.settings.get().showComponents
-            };
+                selectedComp: null
+            }, getSettings());
         },
         componentWillMount: function () {
             var backgroundPageUtils = chrome.extension.getBackgroundPage().Utils;
@@ -48,6 +59,13 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
             return _.filter(this.state.comps, function (comp) {
                 return new RegExp(this.state.displayName, 'ig').test(comp.name || comp.id || comp.domId);
             }, this);
+        },
+        updateVersions: function (type, newValue) {
+            var newState = {};
+            newState[type] = _.defaults(newValue, this.state[type]);
+            this.setState(newState);
+
+            dataHandler[type].set(newValue);
         },
         openEditor: function () {
             chrome.extension.getBackgroundPage().Utils.openEditor();

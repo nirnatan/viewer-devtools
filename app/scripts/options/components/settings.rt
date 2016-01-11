@@ -13,4 +13,8 @@
                   label="Show components information"
                   checked="{this.state.settings.showComponents}"
                   onChange="() => this.updateSettings({showComponents: !this.state.settings.showComponents})"/>
+    <baseUI.Input type="checkbox"
+                  label="Show version selector in popup window"
+                  checked="{this.state.settings.versionSelectorInPopup}"
+                  onChange="() => this.updateSettings({versionSelectorInPopup: !this.state.settings.versionSelectorInPopup})"/>
 </div>

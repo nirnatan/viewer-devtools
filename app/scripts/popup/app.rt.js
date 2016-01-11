@@ -3,8 +3,9 @@ define([
     'lodash',
     'react-bootstrap',
     'popup/component',
-    'popup/switchMode'
-], function (React, _, baseUI, Component, switchMode) {
+    'popup/switchMode',
+    'options/components/versionSelector'
+], function (React, _, baseUI, Component, switchMode, versionSelector) {
     'use strict';
     function onSelectionChanged1(comp, compIndex, selectedComp) {
         this.setState({ selectedComp: selectedComp });
@@ -31,7 +32,24 @@ define([
             'src': chrome.extension.getURL('images/setting.png'),
             'title': 'Settings',
             'onClick': this.openSettings
-        })), this.state.showComponents ? React.createElement('div', { 'key': 'components' }, React.createElement(baseUI.Input, {
+        })), this.state.showVersionSelector ? React.createElement('div', {
+            'className': 'version-selector',
+            'key': 'versionSelector'
+        }, this.state.ReactSource.versions ? React.createElement(versionSelector, {
+            'key': 'ReactSource.versions',
+            'label': 'Santa Viewer',
+            'enabled': this.state.ReactSource.enabled,
+            'selectedVersion': this.state.ReactSource.version,
+            'versions': this.state.ReactSource.versions,
+            'updateSource': this.updateVersions.bind(this, 'ReactSource')
+        }) : null, this.state.EditorSource.versions ? React.createElement(versionSelector, {
+            'key': 'EditorSource.versions',
+            'label': 'Santa Editor',
+            'enabled': this.state.EditorSource.enabled,
+            'selectedVersion': this.state.EditorSource.version,
+            'versions': this.state.EditorSource.versions,
+            'updateSource': this.updateVersions.bind(this, 'EditorSource')
+        }) : null) : null, this.state.showComponents ? React.createElement('div', { 'key': 'components' }, React.createElement(baseUI.Input, {
             'className': _.keys(_.pick({
                 'search-box': true,
                 'only-search': this.state.active
