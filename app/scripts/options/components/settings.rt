@@ -9,4 +9,8 @@
                   label="Disable New Relic"
                   checked="{this.state.settings.disableNewRelic}"
                   onChange="() => this.updateSettings({disableNewRelic: !this.state.settings.disableNewRelic})"/>
+    <baseUI.Input type="checkbox"
+                  label="Show components information"
+                  checked="{this.state.settings.showComponents}"
+                  onChange="() => this.updateSettings({showComponents: !this.state.settings.showComponents})"/>
 </div>

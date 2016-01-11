@@ -1,5 +1,5 @@
 define([
-    'react',
+    'react/addons',
     'lodash',
     'react-bootstrap',
     'popup/component',
@@ -31,7 +31,7 @@ define([
             'src': chrome.extension.getURL('images/setting.png'),
             'title': 'Settings',
             'onClick': this.openSettings
-        })), React.createElement(baseUI.Input, {
+        })), this.state.showComponents ? React.createElement('div', { 'key': 'components' }, React.createElement(baseUI.Input, {
             'className': _.keys(_.pick({
                 'search-box': true,
                 'only-search': this.state.active
@@ -53,7 +53,7 @@ define([
         }, React.createElement('div', {
             'className': 'bubblingG',
             'key': 'loadingAnim'
-        }, React.createElement('span', {}), React.createElement('span', {}), React.createElement('span', {}))) : null) : null, !this.state.isEditor && !this.state.isViewer ? React.createElement('div', { 'className': 'no-wix-site' }, React.createElement('img', {
+        }, React.createElement('span', {}), React.createElement('span', {}), React.createElement('span', {}))) : null) : null) : null, !this.state.isEditor && !this.state.isViewer ? React.createElement('div', { 'className': 'no-wix-site' }, React.createElement('img', {
             'src': chrome.extension.getURL('images/nothing_to_do.gif'),
             'title': 'Settings'
         }), React.createElement('span', {}, 'I can\'t help you, this is not a wix site')) : null);

@@ -1,4 +1,4 @@
-define(['react', 'lodash', 'popup/app.rt'], function (React, _, template) {
+define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (React, _, dataHandler, template) {
     'use strict';
 
     return React.createClass({
@@ -6,6 +6,10 @@ define(['react', 'lodash', 'popup/app.rt'], function (React, _, template) {
         mixins: [React.addons.LinkedStateMixin],
         getInitialState: function () {
             var backgroundPageUtils = chrome.extension.getBackgroundPage().Utils;
+
+            if (!dataHandler.isReady) {
+                _.delay(this.setState.bind(this, {showComponents: dataHandler.settings.get().showComponents}), 300);
+            }
 
             return {
                 displayName: '',
@@ -15,14 +19,22 @@ define(['react', 'lodash', 'popup/app.rt'], function (React, _, template) {
                 optionsSet: backgroundPageUtils.isOptionsSet(),
                 isEditor: false,
                 isViewer: true,
-                selectedComp: null
+                selectedComp: null,
+                showComponents: dataHandler.settings.get().showComponents
             };
         },
         componentWillMount: function () {
             var backgroundPageUtils = chrome.extension.getBackgroundPage().Utils;
-            backgroundPageUtils.getComponents(this.handleSearchResults);
+            if (dataHandler.settings.get().showComponents) {
+                backgroundPageUtils.getComponents(this.handleSearchResults);
+            }
             backgroundPageUtils.isEditor(this.updateState.bind(this, 'isEditor'));
             backgroundPageUtils.isViewer(this.updateState.bind(this, 'isViewer'));
+        },
+        componentWillUpdate: function () {
+            if (this.state.showComponents && this.state.loading) {
+                chrome.extension.getBackgroundPage().Utils.getComponents(this.handleSearchResults);
+            }
         },
         handleSearchResults: function (results) {
             this.setState({comps: results, loading: false});
