@@ -35,8 +35,29 @@
         border-radius: 0 0 10px 10px;
       }
 
+      .control-label {
+        margin-top: 10px;
+      }
+
+      .experiments {
+        display: flex;
+        flex-direction: row;
+
+        > div:first-child {
+          margin-right: 10px;
+        }
+      }
+
       .col-3 {
         -webkit-column-count: 3;
+      }
+
+      .col-2 {
+        -webkit-column-count: 2;
+      }
+
+      .col-1 {
+        -webkit-column-count: 1;
       }
 
       .form-group {

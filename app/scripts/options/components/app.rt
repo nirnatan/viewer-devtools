@@ -36,14 +36,21 @@
                                           value="{this.state.customExperiments}"
                                           onChange="{this.onUserExperimentsChanged}"
                                           label="Additional experiments to open (separated by ,)"/>
-                            <multiSelector label="experiments"
-                                           items="{this.state.experiments}"
-                                           selectAll="{this.selectAll.bind(this, 'experiments')}"
-                                           onItemChanged="{this.onExperimentChanged}" />
+                            <div class="experiments">
+                                <multiSelector class="col-1"
+                                               label="Viewer"
+                                               items="{this.state.santaExperiments}"
+                                               selectAll="{this.selectAll.bind(this, 'santaExperiments')}"
+                                               onItemChanged="{this.onExperimentChanged}"/>
+                                <multiSelector class="col-2"
+                                               label="Editor"
+                                               items="{this.state.editorExperiments}"
+                                               selectAll="{this.selectAll.bind(this, 'editorExperiments')}"
+                                               onItemChanged="{this.onExperimentChanged}"/>
+                            </div>
                         </baseUI.Tab>
                         <baseUI.Tab eventKey={2} title="Debug Packages">
-                            <multiSelector label="packages"
-                                           items="{this.state.packages}"
+                            <multiSelector class="col-3" items="{this.state.packages}"
                                            selectAll="{this.selectAll.bind(this, 'packages')}"
                                            onItemChanged="{this.onPackageChanged}" />
                         </baseUI.Tab>

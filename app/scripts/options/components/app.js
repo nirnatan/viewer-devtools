@@ -9,22 +9,39 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
         state[name] = value;
         this.setState(state);
     }
+
+    function updateExperimentIfExists(groupName, expName) {
+        if (_.has(this.state[groupName], expName)) {
+            var value = {};
+            value[expName] = !this.state[groupName][expName];
+            updateData.call(this, groupName, value);
+        }
+    }
     
     function mergeExperiments() {
         var custom = dataHandler.custom.get();
-        var experiments = dataHandler.experiments.get();
-        
-        if (custom) {
+        var santaExperiments = dataHandler.santaExperiments.get();
+        var editorExperiments = dataHandler.editorExperiments.get();
+
+        if (_.get(custom, 'experiments')) {
             var exps = _.map(custom.experiments.split(','), _.trim);
-            var intersection = _.intersection(exps, _.keys(experiments));
+            var allExperimentsNames = _(santaExperiments).union(editorExperiments).keys().value();
+            var intersection = _.intersection(exps, allExperimentsNames);
             if (!_.isEmpty(intersection)) {
                 exps = _.reject(exps, _.has.bind(_, experiments));
                 dataHandler.custom.set({experiments: exps.join(', ')});
 
                 _.forEach(intersection, function (exp) {
-                    experiments[exp] = true;
+                    if (_.has(santaExperiments, exp)) {
+                        santaExperiments[exp] = true;
+                    }
+                    if (_.has(editorExperiments, exp)) {
+                        editorExperiments[exp] = true;
+                    }
                 });
-                dataHandler.experiments.set(experiments);
+
+                dataHandler.santaExperiments.set(experiments);
+                dataHandler.editorExperiments.set(experiments);
             }
         }
     }
@@ -33,7 +50,8 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
         displayName: 'options',
         getInitialState: function () {
             var emptyState = {
-                experiments: {},
+                santaExperiments: {},
+                editorExperiments: {},
                 customExperiments: '',
                 packages: {},
                 ReactSource: {},
@@ -46,7 +64,8 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
                 var custom = dataHandler.custom.get();
                 this.setState({
                     customExperiments: _(custom.experiments.split(',')).map(_.trim).uniq().join(', '),
-                    experiments: dataHandler.experiments.get(),
+                    santaExperiments: dataHandler.santaExperiments.get(),
+                    editorExperiments: dataHandler.editorExperiments.get(),
                     packages: dataHandler.packages.get(),
                     ReactSource: dataHandler.ReactSource.get(),
                     EditorSource: dataHandler.EditorSource.get()
@@ -69,9 +88,8 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
             this.setState(state);
         },
         onExperimentChanged: function (name) {
-            var value = {};
-            value[name] = !this.state.experiments[name];
-            updateData.call(this, 'experiments', value);
+            updateExperimentIfExists.call(this, 'santaExperiments', name);
+            updateExperimentIfExists.call(this, 'editorExperiments', name);
         },
         onUserExperimentsChanged: function (e) {
             var value = e.target.value;

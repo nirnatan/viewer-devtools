@@ -2,7 +2,11 @@ define(['jquery', 'lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json
     'use strict';
 
     var localStore = {
-        experiments: _(viewerExp.concat(editorExp))
+        santaExperiments: _(viewerExp)
+            .zipObject()
+            .mapValues(Boolean)
+            .value(),
+        editorExperiments: _(editorExp)
             .zipObject()
             .mapValues(Boolean)
             .value(),
