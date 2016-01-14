@@ -217,11 +217,15 @@ define('utils/urlUtils', ['lodash'], function (_) {
         hasParam: hasParam,
 
         isSame: isSameUrl,
-        getRunningExperimentsString: function (experimentsObj, additional, current) {
+        getRunningExperimentsString: function (santaExperimentsObj, editorExperimentsObj, additional, current) {
             current = current || '';
             additional = additional || '';
             var all = _.map(additional.concat(',', current).split(','), function (exp) {
                 return exp.trim();
+            });
+
+            var experimentsObj = _.merge(santaExperimentsObj, editorExperimentsObj, function (a, b) {
+                return a || b;
             });
 
             return _(experimentsObj).pick(Boolean).keys().union(all).compact().uniq().join(',');
@@ -275,7 +279,7 @@ define('utils/urlUtils', ['lodash'], function (_) {
                         queryObj.EditorSource = editorSource.version;
                 }
             }
-            var runningExperimentsString = this.getRunningExperimentsString(dataHandler.experiments.get(), dataHandler.custom.get().experiments, queryObj.experiments);
+            var runningExperimentsString = this.getRunningExperimentsString(dataHandler.santaExperiments.get(), dataHandler.editorExperiments.get(), dataHandler.custom.get().experiments, queryObj.experiments);
             if (runningExperimentsString) {
                 queryObj.experiments = runningExperimentsString;
             } else {
