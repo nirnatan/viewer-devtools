@@ -5,11 +5,13 @@
 <rt-require dependency="popup/switchMode" as="switchMode"/>
 <rt-require dependency="options/components/versionSelector" as="versionSelector"/>
 
-<div id="main">
-    <div class="wix-site" rt-if="this.state.isEditor || this.state.isViewer">
+<div id="main" rt-scope="chrome.extension.getBackgroundPage().Utils as Utils; this.state.isEditor || this.state.isViewer || this.state.isPreview as isWixSite">
+    <div class="wix-site" rt-if="isWixSite">
         <baseUI.ButtonToolbar>
             <baseUI.Button rt-if="!this.state.optionsSet" bsStyle='success' onClick="{this.redirectUrl}" key="enableBtn">Apply options</baseUI.Button>
             <baseUI.Button rt-if="!this.state.isEditor" bsStyle='success' onClick="{this.openEditor}" key="openEditorBtn">Open Editor</baseUI.Button>
+            <baseUI.Button rt-if="this.state.locations.previewUrl" bsStyle='success' onClick="() => Utils.moveToPage(this.state.locations.previewUrl)" key="previewBtn">Preview</baseUI.Button>
+            <baseUI.Button rt-if="this.state.locations.publicUrl" bsStyle='success' onClick="() => Utils.moveToPage(this.state.locations.publicUrl)" key="publicBtn">Public</baseUI.Button>
             <switchMode key="switchMode" rt-if="!this.state.isEditor"/>
             <img src="{chrome.extension.getURL('images/setting.png')}" title="Settings" onClick="{this.openSettings}"/>
         </baseUI.ButtonToolbar>
@@ -50,7 +52,7 @@
             </div>
         </div>
     </div>
-    <div class="no-wix-site" rt-if="!this.state.isEditor && !this.state.isViewer">
+    <div class="no-wix-site" rt-if="!isWixSite">
         <img src="{chrome.extension.getURL('images/nothing_to_do.gif')}" title="Settings"/>
         <span>I can't help you, this is not a wix site</span>
     </div>

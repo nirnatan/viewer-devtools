@@ -17,4 +17,12 @@
                   label="Show version selector in popup window"
                   checked="{this.state.settings.versionSelectorInPopup}"
                   onChange="() => this.updateSettings({versionSelectorInPopup: !this.state.settings.versionSelectorInPopup})"/>
+    <baseUI.Input type="checkbox"
+                  label="Show open 'Preview' frame in a new window"
+                  checked="{this.state.settings.showPreviewBtn}"
+                  onChange="() => this.updateSettings({showPreviewBtn: !this.state.settings.showPreviewBtn})"/>
+    <baseUI.Input type="checkbox"
+                  label="Show open 'Public' site in a new window"
+                  checked="{this.state.settings.showPublicButton}"
+                  onChange="() => this.updateSettings({showPublicButton: !this.state.settings.showPublicButton})"/>
 </div>

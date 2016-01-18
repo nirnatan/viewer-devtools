@@ -72,7 +72,23 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
             '})();';
 
         chrome.tabs.executeScript(tabId, {code: code}, function (metaElementsResult) {
-            metaElementsCallback(_.get(metaElementsResult, 0));
+            metaElementsCallback(_.first(metaElementsResult));
+        });
+    }
+
+    function getPreviewUrl() {
+        var code = '(function() { return document.getElementById("preview").src; })();';
+
+        return new Promise(function (resolve) {
+            chrome.tabs.executeScript(tabId, {code: code}, function (comp) {
+                resolve(_.first(comp));
+            });
+        });
+    }
+
+    function getSitePublicUrl() {
+        return new Promise(function (resolve) {
+            sendToContentPage({type: 'getSitePublicUrl'}, resolve);
         });
     }
 
@@ -118,6 +134,11 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
     }
 
     function isWixSite(callback) {
+        if (urlUtils.parseUrl(currentUrl).host === 'editor.wix.com') {
+            callback(true);
+            return;
+        }
+
         utils.isEditor(function (editor) {
             if (editor) {
                 callback(true);
@@ -141,6 +162,18 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
             sendToContentPage({type: 'getComponents'}, callback);
         },
 
+        getSiteLocations: function (callback) {
+            Promise.all([
+                getSitePublicUrl(),
+                getPreviewUrl()
+            ]).then(function (urls) {
+                callback({
+                    publicUrl: urls[0],
+                    previewUrl: urls[1]
+                });
+            });
+        },
+
         startDebug: function () {
             function updateUrl() {
                 utils.isEditor(function (editor) {
@@ -159,6 +192,20 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
             dataHandler.updateLatestVersions()
                 .then(updateUrl)
                 .catch(updateUrl);
+        },
+
+        moveToPage: function (url) {
+            chrome.tabs.getAllInWindow(function (tabs) {
+                var existingTab = _.find(tabs, function (tab) {
+                    return tab.url === url;
+                });
+
+                if (existingTab) {
+                    chrome.tabs.update(existingTab.id, {selected: true});
+                } else {
+                    chrome.tabs.create({url: url});
+                }
+            });
         },
 
         setMobileView: function (isMobile) {
@@ -208,9 +255,15 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
             return currentUrl === applyOptions(currentUrl);
         },
 
+        isPreview: function (callback) {
+            utils.isEditor(function (editor) {
+                callback(!editor && urlUtils.parseUrl(currentUrl).host === 'editor.wix.com');
+            });
+        },
+
         isViewer: function (callback) {
             var metaElementsCallback = function (metaElements) {
-                var hasViewerMetaTag = metaElements.reduce(function (acc, element) {
+                var hasViewerMetaTag = metaElements && metaElements.reduce(function (acc, element) {
                     return acc || element.httpEquiv === 'X-Wix-Renderer-Server';
                 }, false);
                 callback(hasViewerMetaTag);
@@ -221,7 +274,7 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
 
         isEditor: function (callback) {
             var metaElementsCallback = function (metaElements) {
-                var hasEditorMetaTag = metaElements.reduce(function (acc, element) {
+                var hasEditorMetaTag = metaElements && metaElements.reduce(function (acc, element) {
                     return acc || element.httpEquiv === 'X-Wix-Editor-Server';
                 }, false);
 

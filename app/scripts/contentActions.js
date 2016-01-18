@@ -7,7 +7,7 @@
 
     var events, eventsQueue = [];
 
-    require(['react', 'lodash', 'reactDOM'], function (React, _, ReactDOM) {
+    require(['react', 'lodash'], function (React, _, ReactDOM) {
         function compactObject(obj) {
             return _.transform(obj, function (acc, value, key) {
                 if (value) {
@@ -75,6 +75,10 @@
         }
 
         events = {
+            getSitePublicUrl: function () {
+                var editorAPI = window.rendered.editorAPI;
+                return (editorAPI.generalInfo && editorAPI.generalInfo.isSitePublished() && editorAPI.site.getSitePublicUrl()) || '';
+            },
             getComponents: function () {
                 components = _(getComponentsByName(''))
                     .filter(function (comp) {

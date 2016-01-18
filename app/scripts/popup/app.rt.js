@@ -7,20 +7,28 @@ define([
     'options/components/versionSelector'
 ], function (React, _, baseUI, Component, switchMode, versionSelector) {
     'use strict';
-    function onSelectionChanged1(comp, compIndex, selectedComp) {
+    function onClick1(Utils, isWixSite) {
+        Utils.moveToPage(this.state.locations.previewUrl);
+    }
+    function onClick2(Utils, isWixSite) {
+        Utils.moveToPage(this.state.locations.publicUrl);
+    }
+    function onSelectionChanged3(Utils, isWixSite, comp, compIndex, selectedComp) {
         this.setState({ selectedComp: selectedComp });
     }
-    function repeatComp2(comp, compIndex) {
+    function repeatComp4(Utils, isWixSite, comp, compIndex) {
         return React.createElement(Component, {
             'className': 'component-wrapper',
             'selectedComp': this.state.selectedComp,
-            'onSelectionChanged': onSelectionChanged1.bind(this, comp, compIndex),
+            'onSelectionChanged': onSelectionChanged3.bind(this, Utils, isWixSite, comp, compIndex),
             'comp': comp,
             'key': comp.id
         });
     }
-    return function () {
-        return React.createElement('div', { 'id': 'main' }, this.state.isEditor || this.state.isViewer ? React.createElement('div', { 'className': 'wix-site' }, React.createElement(baseUI.ButtonToolbar, {}, !this.state.optionsSet ? React.createElement(baseUI.Button, {
+    function scopeUtilsIsWixSite5() {
+        var Utils = chrome.extension.getBackgroundPage().Utils;
+        var isWixSite = this.state.isEditor || this.state.isViewer || this.state.isPreview;
+        return React.createElement('div', { 'id': 'main' }, isWixSite ? React.createElement('div', { 'className': 'wix-site' }, React.createElement(baseUI.ButtonToolbar, {}, !this.state.optionsSet ? React.createElement(baseUI.Button, {
             'bsStyle': 'success',
             'onClick': this.redirectUrl,
             'key': 'enableBtn'
@@ -28,7 +36,15 @@ define([
             'bsStyle': 'success',
             'onClick': this.openEditor,
             'key': 'openEditorBtn'
-        }, 'Open Editor') : null, !this.state.isEditor ? React.createElement(switchMode, { 'key': 'switchMode' }) : null, React.createElement('img', {
+        }, 'Open Editor') : null, this.state.locations.previewUrl ? React.createElement(baseUI.Button, {
+            'bsStyle': 'success',
+            'onClick': onClick1.bind(this, Utils, isWixSite),
+            'key': 'previewBtn'
+        }, 'Preview') : null, this.state.locations.publicUrl ? React.createElement(baseUI.Button, {
+            'bsStyle': 'success',
+            'onClick': onClick2.bind(this, Utils, isWixSite),
+            'key': 'publicBtn'
+        }, 'Public') : null, !this.state.isEditor ? React.createElement(switchMode, { 'key': 'switchMode' }) : null, React.createElement('img', {
             'src': chrome.extension.getURL('images/setting.png'),
             'title': 'Settings',
             'onClick': this.openSettings
@@ -64,16 +80,19 @@ define([
                 'className': 'components',
                 'key': 'components'
             },
-            _.map(this.getComponents(), repeatComp2.bind(this))
+            _.map(this.getComponents(), repeatComp4.bind(this, Utils, isWixSite))
         ]) : null, this.state.loading ? React.createElement('div', {
             'className': 'loading',
             'key': 'loading'
         }, React.createElement('div', {
             'className': 'bubblingG',
             'key': 'loadingAnim'
-        }, React.createElement('span', {}), React.createElement('span', {}), React.createElement('span', {}))) : null) : null) : null, !this.state.isEditor && !this.state.isViewer ? React.createElement('div', { 'className': 'no-wix-site' }, React.createElement('img', {
+        }, React.createElement('span', {}), React.createElement('span', {}), React.createElement('span', {}))) : null) : null) : null, !isWixSite ? React.createElement('div', { 'className': 'no-wix-site' }, React.createElement('img', {
             'src': chrome.extension.getURL('images/nothing_to_do.gif'),
             'title': 'Settings'
         }), React.createElement('span', {}, 'I can\'t help you, this is not a wix site')) : null);
+    }
+    return function () {
+        return scopeUtilsIsWixSite5.apply(this, []);
     };
 });

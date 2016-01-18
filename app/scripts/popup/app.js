@@ -29,18 +29,31 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
                 loading: true,
                 active: backgroundPageUtils.isActive(),
                 optionsSet: backgroundPageUtils.isOptionsSet(),
+                locations: {},
                 isEditor: false,
                 isViewer: true,
+                isPreview: false,
                 selectedComp: null
             }, getSettings());
         },
         componentWillMount: function () {
             var backgroundPageUtils = chrome.extension.getBackgroundPage().Utils;
-            if (dataHandler.settings.get().showComponents) {
+            var settings = dataHandler.settings.get();
+            if (settings.showComponents) {
                 backgroundPageUtils.getComponents(this.handleSearchResults);
             }
+
+            backgroundPageUtils.getSiteLocations(function (locations) {
+                this.setState({
+                    locations: {
+                        previewUrl: locations.previewUrl && settings.showPreviewBtn,
+                        publicUrl: locations.publicUrl && settings.showPublicButton
+                    }
+                });
+            }.bind(this));
             backgroundPageUtils.isEditor(this.updateState.bind(this, 'isEditor'));
             backgroundPageUtils.isViewer(this.updateState.bind(this, 'isViewer'));
+            backgroundPageUtils.isPreview(this.updateState.bind(this, 'isPreview'));
         },
         componentWillUpdate: function () {
             if (this.state.showComponents && this.state.loading) {
