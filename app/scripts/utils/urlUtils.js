@@ -18,7 +18,7 @@ define('utils/urlUtils', ['lodash'], function (_) {
     function toQueryString(jsonObj) {
         return _.map(jsonObj, function (value, key) {
             return toQueryParam(key, value);
-        }).sort().join('&');
+        }).join('&');
     }
 
     function toQueryParam(key, val) {
