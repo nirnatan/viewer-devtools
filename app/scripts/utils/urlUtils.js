@@ -234,7 +234,10 @@ define('utils/urlUtils', ['lodash'], function (_) {
             var queryObj = urlObj.query || {};
 
             var packages = dataHandler.packages.get();
-            packages.react = true;
+            if (dataHandler.settings.get().showComponents) {
+                packages.react = true;
+            }
+
             queryObj.debug = _.all(packages) ? 'all' : _(packages).pick(Boolean).keys().join(',');
 
             var settings = dataHandler.settings.get();
