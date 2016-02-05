@@ -319,11 +319,11 @@ module.exports = function (grunt) {
 
         experiments: {
             santa: {
-                src: ['../santa/packages/**/*.js'],
+                src: ['../santa/packages/**/*.js', '!../santa/packages/**/*.unit.js', '!../santa/packages/**/*.spec.js'],
                 dest: 'app/scripts/generated/santa.json'
             },
             'santa-editor': {
-                src: ['../santa-editor/packages/**/*.js'],
+                src: ['../santa-editor/packages/**/*.js', '!../santa-editor/packages/**/*.unit.js', '!../santa-editor/packages/**/*.spec.js'],
                 dest: 'app/scripts/generated/santa-editor.json'
             }
         },
