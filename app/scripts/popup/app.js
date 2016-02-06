@@ -52,8 +52,8 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
             backgroundPageUtils.getSiteLocations(function (locations) {
                 this.setState({
                     locations: {
-                        previewUrl: locations.previewUrl && settings.showPreviewBtn,
-                        publicUrl: locations.publicUrl && settings.showPublicButton
+                        previewUrl: settings.showPreviewBtn && locations.previewUrl,
+                        publicUrl: settings.showPublicButton && locations.publicUrl
                     }
                 });
             }.bind(this));
