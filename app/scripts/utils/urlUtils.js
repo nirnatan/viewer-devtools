@@ -267,9 +267,11 @@ define('utils/urlUtils', ['lodash'], function (_) {
                     break;
                 case 'Latest RC':
                     queryObj.ReactSource = latestRcVersion;
+                    delete queryObj.WixCodeRuntimeSource;
                     break;
                 default:
                     queryObj.ReactSource = reactSource.version;
+                    delete queryObj.WixCodeRuntimeSource;
             }
 
             var editorSource = dataHandler.EditorSource.get();
