@@ -3,11 +3,17 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
 
     function getSettings() {
         var settings = dataHandler.settings.get();
+        var reactSource = dataHandler.ReactSource.get();
+        var editorSource = dataHandler.EditorSource.get();
+        this.initialVersions = {
+            ReactSource: this.backgroundPageUtils.getSantaVersion(),
+            EditorSource: this.backgroundPageUtils.getEditorVersion()
+        };
         return {
             showComponents: settings.showComponents,
             showVersionSelector: settings.versionSelectorInPopup,
-            ReactSource: dataHandler.ReactSource.get(),
-            EditorSource: dataHandler.EditorSource.get()
+            ReactSource: reactSource,
+            EditorSource: editorSource
         };
     }
 
@@ -15,7 +21,7 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
         displayName: 'Editor DevTools',
         mixins: [React.addons.LinkedStateMixin],
         getInitialState: function () {
-            var backgroundPageUtils = chrome.extension.getBackgroundPage().Utils;
+            this.backgroundPageUtils = chrome.extension.getBackgroundPage().Utils;
 
             if (!dataHandler.isReady) {
                 _.delay(function () {
@@ -27,14 +33,14 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
                 displayName: '',
                 comps: [],
                 loading: true,
-                active: backgroundPageUtils.isActive(),
-                optionsSet: backgroundPageUtils.isOptionsSet(),
+                active: this.backgroundPageUtils.isActive(),
+                optionsSet: this.backgroundPageUtils.isOptionsSet(),
                 locations: {},
                 isEditor: false,
                 isViewer: true,
                 isPreview: false,
                 selectedComp: null
-            }, getSettings());
+            }, getSettings.call(this));
         },
         componentWillMount: function () {
             var backgroundPageUtils = chrome.extension.getBackgroundPage().Utils;
@@ -74,11 +80,11 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
             }, this);
         },
         updateVersions: function (type, newValue) {
+            dataHandler[type].set(newValue);
             var newState = {};
             newState[type] = _.defaults(newValue, this.state[type]);
+            newState.optionsSet = this.initialVersions[type] === newValue.version;
             this.setState(newState);
-
-            dataHandler[type].set(newValue);
         },
         openEditor: function () {
             chrome.extension.getBackgroundPage().Utils.openEditor();

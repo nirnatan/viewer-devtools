@@ -1,6 +1,9 @@
 <rt-require dependency="react-bootstrap" as="baseUI" xmlns="http://www.w3.org/1999/html"/>
 <div>
-    <h3>{this.props.label}</h3>
+    <h3 rt-if="!this.props.currentVersion" key="noCurrent">{this.props.label}</h3>
+    <div rt-if="this.props.currentVersion" key="currentVersion">
+        <h5>{this.props.label} <span class="current-version">({this.props.currentVersion})</span></h5>
+    </div>
     <baseUI.Input type="select"
                   value="{this.props.selectedVersion}"
                   placeholder="Select Version..."

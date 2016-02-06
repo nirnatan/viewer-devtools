@@ -29,8 +29,16 @@
       display: flex;
       flex-direction: row;
 
+      > div {
+        flex: 1;
+      }
+
       > div:first-child {
         margin-right: 20px;
+      }
+
+      .current-version {
+        font-size: smaller;
       }
     }
 

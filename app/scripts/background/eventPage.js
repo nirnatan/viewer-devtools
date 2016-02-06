@@ -255,6 +255,22 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
             return currentUrl === applyOptions(currentUrl);
         },
 
+        getSantaVersion: function () {
+            var reactSource = urlUtils.parseUrl(currentUrl).query.ReactSource;
+            if (_.startsWith(reactSource, 'http://localhost')) {
+                return 'local';
+            }
+            return reactSource;
+        },
+
+        getEditorVersion: function () {
+            var editorSource = urlUtils.parseUrl(currentUrl).query.EditorSource;
+            if (_.startsWith(editorSource, 'http://localhost')) {
+                return 'local';
+            }
+            return editorSource;
+        },
+
         isPreview: function (callback) {
             utils.isEditor(function (editor) {
                 callback(!editor && urlUtils.parseUrl(currentUrl).host === 'editor.wix.com');

@@ -54,12 +54,14 @@ define([
         }, this.state.ReactSource.versions ? React.createElement(versionSelector, {
             'key': 'ReactSource.versions',
             'label': 'Santa Viewer',
+            'currentVersion': this.initialVersions.ReactSource,
             'selectedVersion': this.state.ReactSource.version,
             'versions': this.state.ReactSource.versions,
             'updateSource': this.updateVersions.bind(this, 'ReactSource')
         }) : null, this.state.EditorSource.versions ? React.createElement(versionSelector, {
             'key': 'EditorSource.versions',
             'label': 'Santa Editor',
+            'currentVersion': this.initialVersions.EditorSource,
             'selectedVersion': this.state.EditorSource.version,
             'versions': this.state.EditorSource.versions,
             'updateSource': this.updateVersions.bind(this, 'EditorSource')
