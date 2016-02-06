@@ -5,7 +5,6 @@ define(['react', 'lodash', 'options/components/versionSelector.rt'], function (R
         displayName: 'versionSelector',
         propTypes: {
             label: React.PropTypes.string,
-            enabled: React.PropTypes.bool,
             selectedVersion: React.PropTypes.string,
             versions: React.PropTypes.arrayOf(React.PropTypes.string),
             updateSource: React.PropTypes.func

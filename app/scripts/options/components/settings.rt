@@ -1,10 +1,8 @@
 <rt-require dependency="react-bootstrap" as="baseUI"/>
 
 <div>
-    <baseUI.Input type="checkbox"
-                  label="Disable Leave Page confirmation Popup"
-                  checked="{this.state.settings.disableLeavePagePopUp}"
-                  onChange="() => this.updateSettings({disableLeavePagePopUp: !this.state.settings.disableLeavePagePopUp})"/>
+    <h3>General</h3>
+    <hr/>
     <baseUI.Input type="checkbox"
                   label="Disable New Relic"
                   checked="{this.state.settings.disableNewRelic}"
@@ -13,6 +11,13 @@
                   label="Show components information"
                   checked="{this.state.settings.showComponents}"
                   onChange="() => this.updateSettings({showComponents: !this.state.settings.showComponents})"/>
+
+    <h3>Editor</h3>
+    <hr/>
+    <baseUI.Input type="checkbox"
+                  label="Disable Leave Page confirmation Popup"
+                  checked="{this.state.settings.disableLeavePagePopUp}"
+                  onChange="() => this.updateSettings({disableLeavePagePopUp: !this.state.settings.disableLeavePagePopUp})"/>
     <baseUI.Input type="checkbox"
                   label="Show version selector in popup window"
                   checked="{this.state.settings.versionSelectorInPopup}"
@@ -25,4 +30,11 @@
                   label="Show open 'Public' site in a new window"
                   checked="{this.state.settings.showPublicButton}"
                   onChange="() => this.updateSettings({showPublicButton: !this.state.settings.showPublicButton})"/>
+
+    <h3>Wix Code</h3>
+    <hr/>
+    <baseUI.Input type="checkbox"
+                  label="Use Latest RC as WixCodeRuntimeSource when working with local code"
+                  checked="{this.state.settings.useWixCodeRuntimeSource}"
+                  onChange="() => this.updateSettings({useWixCodeRuntimeSource: !this.state.settings.useWixCodeRuntimeSource})"/>
 </div>

@@ -23,15 +23,14 @@ define(['jquery', 'lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json
             showComponents: false,
             versionSelectorInPopup: true,
             showPublicButton: true,
-            showPreviewBtn: true
+            showPreviewBtn: true,
+            useWixCodeRuntimeSource: false
         },
         ReactSource: {
-            enabled: false,
             versions: [],
             version: ''
         },
         EditorSource: {
-            enabled: false,
             versions: [],
             version: ''
         }
@@ -66,7 +65,6 @@ define(['jquery', 'lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json
         }));
     }
 
-
     var handler = {};
 
     function updateLatestVersions() {
@@ -76,14 +74,14 @@ define(['jquery', 'lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json
         var santaRcs = $.get('http://rudolph.wixpress.com/services/availableRcs?project=santa-viewer');
         return Promise.all([editorRcs, editorGA, santaRcs, santaGA])
             .then(function (responses) {
-                var editorVersions = ['local', 'Latest RC'].concat(_(responses[0].result).reverse().value());
+                var editorVersions = ['none', 'local', 'Latest RC'].concat(_(responses[0].result).reverse().value());
                 handler.EditorSource.set({
-                    version: localStore.EditorSource.version || responses[1].result,
+                    version: localStore.EditorSource.version || responses[1].result || 'none',
                     versions: editorVersions
                 });
-                var santaVersions = ['local', 'Latest RC'].concat(_(responses[2].result).reverse().value());
+                var santaVersions = ['none', 'local', 'Latest RC'].concat(_(responses[2].result).reverse().value());
                 handler.ReactSource.set({
-                    version: localStore.ReactSource.version || responses[3].result,
+                    version: localStore.ReactSource.version || responses[3].result || 'none',
                     versions: santaVersions
                 });
             });

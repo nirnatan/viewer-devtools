@@ -231,57 +231,64 @@ define('utils/urlUtils', ['lodash'], function (_) {
             return _(experimentsObj).pick(Boolean).keys().union(all).compact().uniq().join(',');
         },
         getOptionsQueryString: function (dataHandler, urlObj, viewerOnly) {
+            var isEditor = !viewerOnly;
             var queryObj = urlObj.query || {};
 
             var packages = dataHandler.packages.get();
-            if (dataHandler.settings.get().showComponents) {
+            var settings = dataHandler.settings.get();
+            if (settings.showComponents) {
                 packages.react = true;
             }
 
             queryObj.debug = _.all(packages) ? 'all' : _(packages).pick(Boolean).keys().join(',');
 
-            var settings = dataHandler.settings.get();
-            if (!viewerOnly && settings.disableLeavePagePopUp) {
+            if (isEditor && settings.disableLeavePagePopUp) {
                 queryObj.leavePagePopUp = false;
             }
 
             if (settings.disableNewRelic) {
                 queryObj.petri_ovr = 'specs.EnableNewRelicInSanta:false'; // jshint ignore:line
-                if (!viewerOnly) {
+                if (isEditor) {
                     queryObj.petri_ovr += ';specs.DisableNewRelicScriptsSantaEditor:true';
                 }
             }
 
             var reactSource = dataHandler.ReactSource.get();
-            if (reactSource.enabled) {
-                switch (reactSource.version) {
-                    case 'local':
-                        queryObj.ReactSource = 'http://localhost';
-                        break;
-                    case 'Latest RC':
-                        queryObj.ReactSource = _.find(reactSource.versions, function (version) {
-                            return version !== 'local' && version !== 'Latest RC';
-                        });
-                        break;
-                    default:
-                        queryObj.ReactSource = reactSource.version;
-                }
+            // reactSource.versions = ['none', 'local', 'Latest RC', latest rc version]
+            var latestRcVersion = reactSource.versions[3];
+            switch (reactSource.version) {
+                case 'none':
+                    break;
+                case 'local':
+                    queryObj.ReactSource = 'http://localhost';
+                    if (settings.useWixCodeRuntimeSource) {
+                        queryObj.WixCodeRuntimeSource = latestRcVersion;
+                    }
+                    break;
+                case 'Latest RC':
+                    queryObj.ReactSource = latestRcVersion;
+                    break;
+                default:
+                    queryObj.ReactSource = reactSource.version;
             }
+
             var editorSource = dataHandler.EditorSource.get();
-            if (!viewerOnly && editorSource.enabled) {
+            if (isEditor) {
                 switch (editorSource.version) {
+                    case 'none':
+                        break;
                     case 'local':
                         queryObj.EditorSource = 'http://localhost/editor-base';
                         break;
                     case 'Latest RC':
-                        queryObj.EditorSource = _.find(editorSource.versions, function (version) {
-                            return version !== 'local' && version !== 'Latest RC';
-                        });
+                        // editorSource.versions = ['none', 'local', 'Latest RC', latest rc version]
+                        queryObj.EditorSource = editorSource.versions[3];
                         break;
                     default:
                         queryObj.EditorSource = editorSource.version;
                 }
             }
+
             var runningExperimentsString = this.getRunningExperimentsString(dataHandler.santaExperiments.get(), dataHandler.editorExperiments.get(), dataHandler.custom.get().experiments, queryObj.experiments);
             if (runningExperimentsString) {
                 queryObj.experiments = runningExperimentsString;

@@ -358,23 +358,23 @@ module.exports = function (grunt) {
 
     grunt.registerTask('build', [
         'clean:dist',
-        'chromeManifest:dist',
         'useminPrepare',
         'concurrent:dist',
-        //'cssmin',
-        //'concat',
         'experiments:santa',
         'experiments:santa-editor',
         'packages',
-        'uglify',
-        'copy',
-        //'usemin',
-        'compress'
+        'copy'
     ]);
 
     grunt.registerTask('default', [
         'eslint',
         'test',
         'build'
+    ]);
+
+    grunt.registerTask('deploy', [
+        'chromeManifest:dist',
+        'default',
+        'compress'
     ]);
 };

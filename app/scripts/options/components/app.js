@@ -28,7 +28,7 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
             var allExperimentsNames = _(santaExperiments).union(editorExperiments).keys().value();
             var intersection = _.intersection(exps, allExperimentsNames);
             if (!_.isEmpty(intersection)) {
-                exps = _.reject(exps, _.has.bind(_, experiments));
+                exps = _.reject(exps, _.has.bind(_, intersection));
                 dataHandler.custom.set({experiments: exps.join(', ')});
 
                 _.forEach(intersection, function (exp) {
@@ -40,8 +40,8 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
                     }
                 });
 
-                dataHandler.santaExperiments.set(experiments);
-                dataHandler.editorExperiments.set(experiments);
+                dataHandler.santaExperiments.set(santaExperiments);
+                dataHandler.editorExperiments.set(editorExperiments);
             }
         }
     }

@@ -1,10 +1,6 @@
 <rt-require dependency="react-bootstrap" as="baseUI" xmlns="http://www.w3.org/1999/html"/>
 <div>
     <h3>{this.props.label}</h3>
-    <baseUI.Input type="checkbox"
-                  label="Custom Version"
-                  checked="{this.props.enabled}"
-                  onChange="() => this.props.updateSource({enabled: !this.props.enabled})"/>
     <baseUI.Input type="select"
                   value="{this.props.selectedVersion}"
                   placeholder="Select Version..."
