@@ -48,10 +48,7 @@ define([
             'src': chrome.extension.getURL('images/setting.png'),
             'title': 'Settings',
             'onClick': this.openSettings
-        })), this.state.showVersionSelector ? React.createElement('div', {
-            'className': 'version-selector',
-            'key': 'versionSelector'
-        }, this.state.ReactSource.versions ? React.createElement(versionSelector, {
+        })), this.state.showVersionSelector ? React.createElement('div', { 'key': 'versionSelector' }, React.createElement('div', { 'className': 'version-selector' }, this.state.ReactSource.versions ? React.createElement(versionSelector, {
             'key': 'ReactSource.versions',
             'label': 'Santa Viewer',
             'currentVersion': this.initialVersions.ReactSource,
@@ -65,7 +62,13 @@ define([
             'selectedVersion': this.state.EditorSource.version,
             'versions': this.state.EditorSource.versions,
             'updateSource': this.updateVersions.bind(this, 'EditorSource')
-        }) : null) : null, this.state.showComponents ? React.createElement('div', { 'key': 'components' }, React.createElement(baseUI.Input, {
+        }) : null), this.state.updateFailed ? React.createElement('div', {
+            'className': 'error-msg',
+            'key': 'errorMsg'
+        }, '\n                In order to get the latest versions list please connect to VPN\n                and login to ', React.createElement('a', {
+            'href': 'http://rudolph.wixpress.com/',
+            'target': '_blank'
+        }, 'rudolph')) : null) : null, this.state.showComponents ? React.createElement('div', { 'key': 'components' }, React.createElement(baseUI.Input, {
             'className': _.keys(_.pick({
                 'search-box': true,
                 'only-search': this.state.active

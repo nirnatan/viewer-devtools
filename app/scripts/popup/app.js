@@ -61,6 +61,18 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
             backgroundPageUtils.isViewer(this.updateState.bind(this, 'isViewer'));
             backgroundPageUtils.isPreview(this.updateState.bind(this, 'isPreview'));
         },
+        componentDidMount: function () {
+            dataHandler.updateLatestVersions()
+                .then(function () {
+                    var state = _.pick(this.state, ['ReactSource', 'EditorSource']);
+                    state.ReactSource.versions = dataHandler.ReactSource.get().versions;
+                    state.EditorSource.versions = dataHandler.EditorSource.get().versions;
+                    this.setState(state);
+                }.bind(this))
+                .catch(function () {
+                    this.setState({updateFailed: true});
+                }.bind(this));
+        },
         componentWillUpdate: function () {
             if (this.state.showComponents && this.state.loading) {
                 chrome.extension.getBackgroundPage().Utils.getComponents(this.handleSearchResults);

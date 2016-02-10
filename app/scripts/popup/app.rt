@@ -15,23 +15,28 @@
             <switchMode key="switchMode" rt-if="!this.state.isEditor"/>
             <img src="{chrome.extension.getURL('images/setting.png')}" title="Settings" onClick="{this.openSettings}"/>
         </baseUI.ButtonToolbar>
-        <div class="version-selector" rt-if="this.state.showVersionSelector" key="versionSelector">
-            <versionSelector rt-if="this.state.ReactSource.versions"
-                             key="ReactSource.versions"
-                             label="Santa Viewer"
-                             currentVersion="{this.initialVersions.ReactSource}"
-                             selectedVersion="{this.state.ReactSource.version}"
-                             versions="{this.state.ReactSource.versions}"
-                             updateSource="{this.updateVersions.bind(this, 'ReactSource')}" />
-            <versionSelector rt-if="this.state.EditorSource.versions"
-                             key="EditorSource.versions"
-                             label="Santa Editor"
-                             currentVersion="{this.initialVersions.EditorSource}"
-                             selectedVersion="{this.state.EditorSource.version}"
-                             versions="{this.state.EditorSource.versions}"
-                             updateSource="{this.updateVersions.bind(this, 'EditorSource')}" />
+        <div rt-if="this.state.showVersionSelector" key="versionSelector">
+            <div class="version-selector">
+                <versionSelector rt-if="this.state.ReactSource.versions"
+                                 key="ReactSource.versions"
+                                 label="Santa Viewer"
+                                 currentVersion="{this.initialVersions.ReactSource}"
+                                 selectedVersion="{this.state.ReactSource.version}"
+                                 versions="{this.state.ReactSource.versions}"
+                                 updateSource="{this.updateVersions.bind(this, 'ReactSource')}" />
+                <versionSelector rt-if="this.state.EditorSource.versions"
+                                 key="EditorSource.versions"
+                                 label="Santa Editor"
+                                 currentVersion="{this.initialVersions.EditorSource}"
+                                 selectedVersion="{this.state.EditorSource.version}"
+                                 versions="{this.state.EditorSource.versions}"
+                                 updateSource="{this.updateVersions.bind(this, 'EditorSource')}" />
+            </div>
+            <div rt-if="this.state.updateFailed" class="error-msg" key="errorMsg">
+                In order to get the latest versions list please connect to VPN
+                and login to <a href="http://rudolph.wixpress.com/" target="_blank">rudolph</a>
+            </div>
         </div>
-
         <div rt-if="this.state.showComponents" key="components">
             <baseUI.Input rt-class="{'search-box': true, 'only-search': this.state.active}" autoFocus disabled="{!this.state.active}" type="text" valueLink="{this.linkState('displayName')}"/>
             <div class="components" rt-if="!this.state.loading" key="components">

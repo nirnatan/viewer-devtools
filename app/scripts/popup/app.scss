@@ -42,6 +42,11 @@
       }
     }
 
+    .error-msg {
+      font-weight: bold;
+      color: red;
+    }
+
     .components {
       overflow-y: auto;
       max-height: 480px;
