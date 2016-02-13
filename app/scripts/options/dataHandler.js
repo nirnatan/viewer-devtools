@@ -54,14 +54,13 @@ define(['jquery', 'lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json
 
     function updateDataFromStorage() {
         return Promise.all(_.map(localStore, function (value, key) {
-            var defer = Promise.defer();
-            chrome.storage.local.get(_.keys(addPrefix(key, value)), function (result) {
-                var storage = removePrefix(key, result);
-                _.assign(value, storage);
-                defer.resolve();
+            return new Promise(function (resolve) {
+                chrome.storage.local.get(_.keys(addPrefix(key, value)), function (result) {
+                    var storage = removePrefix(key, result);
+                    _.assign(value, storage);
+                    resolve();
+                });
             });
-
-            return defer.promise;
         }));
     }
 
