@@ -30,7 +30,7 @@
                         <baseUI.Input type="select"
                                       ref="feature"
                                       placeholder="Select Feature...">
-                            <option rt-repeat="feature in features" key="{feature}" value="{feature}">{feature}</option>
+                            <option rt-repeat="feature in _.sortBy(features)" key="{feature}" value="{feature}">{feature}</option>
                         </baseUI.Input>
                         <baseUI.Button class="apply-feature" bsSize="small" bsStyle="primary" onClick="{this.applyFeature}">Apply</baseUI.Button>
                         <baseUI.Button class="update-features" bsStyle="link" onClick="{window.open.bind(window, 'https://docs.google.com/spreadsheets/d/1Z-QLMn-xyesvLIuU_suoJXVnTizCTx7dkbY2hGFdSLk/edit#gid=0', '_blank')}">Update</baseUI.Button>
