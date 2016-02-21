@@ -11,6 +11,10 @@
                   label="Show components information"
                   checked="{this.state.settings.showComponents}"
                   onChange="() => this.updateSettings({showComponents: !this.state.settings.showComponents})"/>
+    <baseUI.Input type="checkbox"
+                  label="Apply Versions when selecting feature"
+                  checked="{this.state.settings.applyFeatureVersions}"
+                  onChange="() => this.updateSettings({applyFeatureVersions: !this.state.settings.applyFeatureVersions})"/>
 
     <h3>Editor</h3>
     <hr/>

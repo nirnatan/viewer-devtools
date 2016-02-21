@@ -1,4 +1,12 @@
-define(['jquery', 'lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json!generated/santa-editor.json', 'json!generated/packages.json'], function ($, _, urlUtils, viewerExp, editorExp, packagesNames) {
+define([
+    'jquery',
+    'lodash',
+    'utils/google-spreadsheet',
+    'utils/urlUtils',
+    'json!generated/santa.json',
+    'json!generated/santa-editor.json',
+    'json!generated/packages.json'
+], function ($, _, googleSpreadsheet, urlUtils, viewerExp, editorExp, packagesNames) {
     'use strict';
 
     var localStore = {
@@ -24,7 +32,8 @@ define(['jquery', 'lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json
             versionSelectorInPopup: true,
             showPublicButton: true,
             showPreviewBtn: true,
-            useWixCodeRuntimeSource: false
+            useWixCodeRuntimeSource: false,
+            applyFeatureVersions: false
         },
         ReactSource: {
             versions: [],
@@ -33,7 +42,8 @@ define(['jquery', 'lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json
         EditorSource: {
             versions: [],
             version: ''
-        }
+        },
+        features: []
     };
 
     function addPrefix(prefix, object) {
@@ -65,6 +75,14 @@ define(['jquery', 'lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json
     }
 
     var handler = {};
+
+    function updatePresets() {
+        var id = '1Z-QLMn-xyesvLIuU_suoJXVnTizCTx7dkbY2hGFdSLk';
+        googleSpreadsheet.getAsJson(id)
+            .then(function (data) {
+                handler.features.set(data);
+            });
+    }
 
     function updateLatestVersions() {
         var editorRcs = $.get('http://rudolph.wixpress.com/services/availableRcs?project=santa-editor');
@@ -113,10 +131,12 @@ define(['jquery', 'lodash', 'utils/urlUtils', 'json!generated/santa.json', 'json
 
         handler.isReady = handler.isReady || false;
         handler.updateLatestVersions = updateLatestVersions;
+        handler.updatePresets = updatePresets;
     }
 
     init();
     updateLatestVersions();
+    updatePresets();
 
     return handler;
 });

@@ -25,6 +25,22 @@
           font-weight: bold;
           color: red;
         }
+
+        .apply-feature {
+          background-color: #3b99fc;
+          margin-top: 5px;
+          margin-right: 5px;
+          outline: none;
+
+          &:hover {
+            background-color: #84befb;
+          }
+        }
+
+        .update-features {
+          float: right;
+          outline: none;
+        }
       }
 
       height: 100%;

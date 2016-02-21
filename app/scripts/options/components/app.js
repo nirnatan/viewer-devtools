@@ -1,4 +1,4 @@
-define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataHandler, template) {
+define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (React, ReactDOM, _, dataHandler, template) {
     'use strict';
 
     function updateData(name, newValue) {
@@ -10,12 +10,15 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
         this.setState(state);
     }
 
-    function updateExperimentIfExists(groupName, expName) {
+    function updateExperimentIfExists(groupName, expName, newState) {
         if (_.has(this.state[groupName], expName)) {
             var value = {};
-            value[expName] = !this.state[groupName][expName];
+            value[expName] = newState || !this.state[groupName][expName];
             updateData.call(this, groupName, value);
+            return true;
         }
+
+        return false;
     }
     
     function mergeExperiments() {
@@ -56,7 +59,8 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
                 packages: {},
                 ReactSource: {},
                 EditorSource: {},
-                updateFailed: false
+                updateFailed: false,
+                features: []
             };
 
             setTimeout(function () {
@@ -68,7 +72,8 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
                     editorExperiments: dataHandler.editorExperiments.get(),
                     packages: dataHandler.packages.get(),
                     ReactSource: dataHandler.ReactSource.get(),
-                    EditorSource: dataHandler.EditorSource.get()
+                    EditorSource: dataHandler.EditorSource.get(),
+                    features: dataHandler.features.get()
                 });
             }.bind(this), 100);
 
@@ -109,6 +114,31 @@ define(['react', 'lodash', 'dataHandler', './app.rt'], function (React, _, dataH
         },
         updateEditorSource: function (newValue) {
             updateData.call(this, 'EditorSource', newValue);
+        },
+        applyFeature: function () {
+            var selectedFeature = ReactDOM.findDOMNode(this.refs.feature).firstChild.value;
+            if (selectedFeature === 'none') {
+                return;
+            }
+            var feature = _.find(this.state.features, {Feature: selectedFeature});
+            var experiments = feature.experiments.split(',');
+            _.each(experiments, function (exp) {
+                var name = exp.trim();
+                var found = updateExperimentIfExists.call(this, 'santaExperiments', name, true);
+                found = updateExperimentIfExists.call(this, 'editorExperiments', name, true) || found;
+                if (!found) {
+                    var customExperiments = this.state.customExperiments ? _(this.state.customExperiments.split(',').concat(name)).map(_.trim).uniq().join(', ') : name;
+                    dataHandler.custom.set({experiments: customExperiments});
+                    this.setState({
+                        customExperiments: customExperiments
+                    });
+                }
+            }, this);
+
+            if (dataHandler.settings.get().applyFeatureVersions) {
+                feature.ReactSource && this.updateReactSource({version: feature.ReactSource});
+                feature.EditorSource && this.updateEditorSource({version: feature.EditorSource});
+            }
         },
         selectAll: function (type) {
             var current = _.all(this.state[type]);
