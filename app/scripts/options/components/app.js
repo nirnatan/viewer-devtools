@@ -77,12 +77,11 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
                     features: features
                 });
 
-                if (!features) {
-                    setTimeout(function () {
-                        this.setState({
-                            features: dataHandler.features.get()
-                        });
-                    }.bind(this), 900);
+                if (_.isEmpty(features)) {
+                    dataHandler.updateFeaturePresets()
+                        .then(function (features) {
+                            this.setState({features: features});
+                        }.bind(this));
                 }
             }.bind(this), 100);
 

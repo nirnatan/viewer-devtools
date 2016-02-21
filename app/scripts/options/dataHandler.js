@@ -76,12 +76,9 @@ define([
 
     var handler = {};
 
-    function updatePresets() {
+    function updateFeaturePresets() {
         var id = '1Z-QLMn-xyesvLIuU_suoJXVnTizCTx7dkbY2hGFdSLk';
-        googleSpreadsheet.getAsJson(id)
-            .then(function (data) {
-                handler.features.set(data);
-            });
+        return googleSpreadsheet.getAsJson(id);
     }
 
     function updateLatestVersions() {
@@ -131,12 +128,15 @@ define([
 
         handler.isReady = handler.isReady || false;
         handler.updateLatestVersions = updateLatestVersions;
-        handler.updatePresets = updatePresets;
+        handler.updateFeaturePresets = updateFeaturePresets;
     }
 
     init();
     updateLatestVersions();
-    updatePresets();
+    updateFeaturePresets()
+        .then(function (data) {
+            handler.features.set(data);
+        });
 
     return handler;
 });
