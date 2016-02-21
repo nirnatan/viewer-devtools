@@ -67,10 +67,10 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
                     var state = _.pick(this.state, ['ReactSource', 'EditorSource']);
                     state.ReactSource.versions = dataHandler.ReactSource.get().versions;
                     state.EditorSource.versions = dataHandler.EditorSource.get().versions;
-                    this.setState(state);
+                    this.setState(state); //eslint-disable-line react/no-did-mount-set-state
                 }.bind(this))
                 .catch(function () {
-                    this.setState({updateFailed: true});
+                    this.setState({updateFailed: true}); //eslint-disable-line react/no-did-mount-set-state
                 }.bind(this));
         },
         componentWillUpdate: function () {
