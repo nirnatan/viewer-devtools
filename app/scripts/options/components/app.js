@@ -66,6 +66,7 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
             setTimeout(function () {
                 mergeExperiments();
                 var custom = dataHandler.custom.get();
+                var features = dataHandler.features.get();
                 this.setState({
                     customExperiments: _(custom.experiments.split(',')).map(_.trim).uniq().join(', '),
                     santaExperiments: dataHandler.santaExperiments.get(),
@@ -73,9 +74,17 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
                     packages: dataHandler.packages.get(),
                     ReactSource: dataHandler.ReactSource.get(),
                     EditorSource: dataHandler.EditorSource.get(),
-                    features: dataHandler.features.get()
+                    features: features
                 });
-            }.bind(this), 1000);
+
+                if (!features) {
+                    setTimeout(function () {
+                        this.setState({
+                            features: dataHandler.features.get()
+                        });
+                    }.bind(this), 900);
+                }
+            }.bind(this), 100);
 
             return emptyState;
         },
