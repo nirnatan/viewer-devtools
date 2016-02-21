@@ -30,8 +30,8 @@
                                       placeholder="Select Feature...">
                             <option rt-repeat="feature in features" key="{feature}" value="{feature}">{feature}</option>
                         </baseUI.Input>
-                        <baseUI.Button class="apply-feature" onClick="{this.applyFeature}">Apply</baseUI.Button>
-                        <baseUI.Button class="update-features" bsStyle='link' onClick="{window.open.bind(window, 'https://docs.google.com/spreadsheets/d/1Z-QLMn-xyesvLIuU_suoJXVnTizCTx7dkbY2hGFdSLk/edit#gid=0', '_blank')}">Update</baseUI.Button>
+                        <baseUI.Button class="apply-feature" bsStyle="primary" onClick="{this.applyFeature}">Apply</baseUI.Button>
+                        <baseUI.Button class="update-features" bsStyle="link" onClick="{window.open.bind(window, 'https://docs.google.com/spreadsheets/d/1Z-QLMn-xyesvLIuU_suoJXVnTizCTx7dkbY2hGFdSLk/edit#gid=0', '_blank')}">Update</baseUI.Button>
                     </div>
                 </baseUI.Col>
                 <baseUI.Col class="col-menu" lg={9}>
