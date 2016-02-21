@@ -75,7 +75,7 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
                     EditorSource: dataHandler.EditorSource.get(),
                     features: dataHandler.features.get()
                 });
-            }.bind(this), 100);
+            }.bind(this), 1000);
 
             return emptyState;
         },
