@@ -15,8 +15,12 @@
 
     .col-menu {
       &:first-of-type {
-        padding-bottom: 20px;
-        margin: 0 20px 20px 0;
+        padding: 0;
+      }
+
+      .versions {
+        padding: 0 15px 20px 15px;
+        margin-bottom: 20px;
         border: 1px solid black;
         border-radius: 10px;
 
@@ -25,6 +29,12 @@
           font-weight: bold;
           color: red;
         }
+      }
+
+      .features {
+        padding: 0 15px 20px 15px;
+        border: 1px solid black;
+        border-radius: 10px;
 
         .apply-feature {
           margin-top: 5px;

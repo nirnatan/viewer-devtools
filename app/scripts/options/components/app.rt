@@ -7,37 +7,39 @@
         <baseUI.Grid>
             <baseUI.Row>
                 <baseUI.Col class="col-menu" lg={2}>
-                    <versionSelector rt-if="this.state.ReactSource.versions"
-                                     key="ReactSource.versions"
-                                     label="Santa Viewer"
-                                     selectedVersion="{this.state.ReactSource.version}"
-                                     versions="{this.state.ReactSource.versions}"
-                                     updateSource="{this.updateReactSource}" />
-                    <versionSelector rt-if="this.state.EditorSource.versions"
-                                     key="EditorSource.versions"
-                                     label="Santa Editor"
-                                     selectedVersion="{this.state.EditorSource.version}"
-                                     versions="{this.state.EditorSource.versions}"
-                                     updateSource="{this.updateEditorSource}" />
-                    <div rt-if="this.state.updateFailed" class="error-msg" key="errorMsg">
-                        In order to get the latest versions list please connect to VPN
-                        and login to <a href="http://rudolph.wixpress.com/" target="_blank">rudolph</a>
+                    <div class="versions">
+                        <versionSelector rt-if="this.state.ReactSource.versions"
+                                         key="ReactSource.versions"
+                                         label="Santa Viewer"
+                                         selectedVersion="{this.state.ReactSource.version}"
+                                         versions="{this.state.ReactSource.versions}"
+                                         updateSource="{this.updateReactSource}"/>
+                        <versionSelector rt-if="this.state.EditorSource.versions"
+                                         key="EditorSource.versions"
+                                         label="Santa Editor"
+                                         selectedVersion="{this.state.EditorSource.version}"
+                                         versions="{this.state.EditorSource.versions}"
+                                         updateSource="{this.updateEditorSource}"/>
+                        <div rt-if="this.state.updateFailed" class="error-msg" key="errorMsg">
+                            In order to get the latest versions list please connect to VPN
+                            and login to <a href="http://rudolph.wixpress.com/" target="_blank">rudolph</a>
+                        </div>
                     </div>
-                    <div rt-if="this.state.features.length" key="features" rt-scope="_.map(this.state.features, 'Feature') as features">
+                    <div class="features" rt-if="this.state.features.length" key="features" rt-scope="_.map(this.state.features, 'Feature') as features">
                         <h4>Features Presets</h4>
                         <baseUI.Input type="select"
                                       ref="feature"
                                       placeholder="Select Feature...">
                             <option rt-repeat="feature in features" key="{feature}" value="{feature}">{feature}</option>
                         </baseUI.Input>
-                        <baseUI.Button class="apply-feature" bsStyle="primary" onClick="{this.applyFeature}">Apply</baseUI.Button>
+                        <baseUI.Button class="apply-feature" bsSize="small" bsStyle="primary" onClick="{this.applyFeature}">Apply</baseUI.Button>
                         <baseUI.Button class="update-features" bsStyle="link" onClick="{window.open.bind(window, 'https://docs.google.com/spreadsheets/d/1Z-QLMn-xyesvLIuU_suoJXVnTizCTx7dkbY2hGFdSLk/edit#gid=0', '_blank')}">Update</baseUI.Button>
                     </div>
                 </baseUI.Col>
                 <baseUI.Col class="col-menu" lg={9}>
                     <baseUI.Tabs defaultActiveKey={1}>
                         <baseUI.Tab eventKey={3} title="Settings">
-                            <settings />
+                            <settings/>
                         </baseUI.Tab>
                         <baseUI.Tab eventKey={1} title="Experiments">
                             <baseUI.Input type="text"
@@ -60,7 +62,7 @@
                         <baseUI.Tab eventKey={2} title="Debug Packages">
                             <multiSelector class="col-3" items="{this.state.packages}"
                                            selectAll="{this.selectAll.bind(this, 'packages')}"
-                                           onItemChanged="{this.onPackageChanged}" />
+                                           onItemChanged="{this.onPackageChanged}"/>
                         </baseUI.Tab>
                     </baseUI.Tabs>
                 </baseUI.Col>
