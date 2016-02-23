@@ -160,6 +160,7 @@
     },
     "globals": {
         "requirejs": true,
-        "chrome": true
+        "chrome": true,
+        "ga": true
     }
 }
