@@ -92,6 +92,7 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
             }, this);
         },
         updateVersions: function (type, newValue) {
+            ga('send', 'event', 'Options', type, newValue);
             dataHandler[type].set(newValue);
             var newState = {};
             newState[type] = _.defaults(newValue, this.state[type]);
@@ -100,14 +101,17 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
         },
         openEditor: function () {
             chrome.extension.getBackgroundPage().Utils.openEditor();
+            ga('send', 'event', 'Viewer', 'Open Editor');
         },
         redirectUrl: function () {
             chrome.extension.getBackgroundPage().Utils.startDebug();
+            ga('send', 'event', this.state.isEditor ? 'Editor' : 'Viewer', 'Apply Settings');
             window.close();
         },
         openSettings: function () {
             var optionsURL = chrome.extension.getURL('scripts/options/options.html');
             window.open(optionsURL);
+            ga('send', 'event', this.state.isEditor ? 'Editor' : 'Viewer', 'Open Settings');
         },
         render: template
     });
