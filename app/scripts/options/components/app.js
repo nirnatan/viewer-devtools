@@ -12,6 +12,7 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
 
     function updateExperimentIfExists(groupName, expName, newState) {
         if (_.has(this.state[groupName], expName)) {
+            ga('send', 'event', 'Options', 'Experiment ' + expName, newState);
             var value = {};
             value[expName] = newState || !this.state[groupName][expName];
             updateData.call(this, groupName, value);
@@ -105,22 +106,26 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
             updateExperimentIfExists.call(this, 'editorExperiments', name);
         },
         onUserExperimentsChanged: function (e) {
-            var value = e.target.value;
-            dataHandler.custom.set({experiments: value});
+            var experiments = e.target.value;
+            dataHandler.custom.set({experiments: experiments});
+            ga('send', 'event', 'Options', 'Custom experiments Set');
 
             this.setState({
-                customExperiments: value
+                customExperiments: experiments
             });
         },
         onPackageChanged: function (name) {
             var value = {};
             value[name] = !this.state.packages[name];
+            ga('send', 'event', 'Options', 'Package ' + name, value[name]);
             updateData.call(this, 'packages', value);
         },
         updateReactSource: function (newValue) {
+            ga('send', 'event', 'Options', 'ReactSource', newValue);
             updateData.call(this, 'ReactSource', newValue);
         },
         updateEditorSource: function (newValue) {
+            ga('send', 'event', 'Options', 'EditorSource', newValue);
             updateData.call(this, 'EditorSource', newValue);
         },
         applyFeature: function () {
@@ -128,6 +133,7 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
             if (selectedFeature === 'none') {
                 return;
             }
+            ga('send', 'event', 'Options', 'Apply Feature ' + selectedFeature);
             var feature = _.find(this.state.features, {Feature: selectedFeature});
             var experiments = feature.experiments.split(',');
             _.each(experiments, function (exp) {
