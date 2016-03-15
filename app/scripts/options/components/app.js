@@ -21,6 +21,30 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
 
         return false;
     }
+
+	function updatedExperiments(experiments) {
+		return new Promise(function (callback) {
+			var remainingExperiments = _.clone(experiments);
+			var groups = ['santaExperiments', 'editorExperiments'];
+			var currentState = _.clone(this.state);
+			var newState = _.transform(groups, function (acc, groupName) {
+				var group = currentState[groupName];
+				var experimentsInGroup = _.pick(experiments, _.keys(group));
+
+				remainingExperiments = _.omit(remainingExperiments, _.keys(experimentsInGroup));
+
+				acc[groupName] = _.assign(group, experimentsInGroup);
+				dataHandler[groupName].set(acc[groupName]);
+			}, {});
+
+			if (!_.isEmpty(remainingExperiments)) {
+				newState.customExperiments = this.state.customExperiments ? _(this.state.customExperiments.split(',').concat(name)).map(_.trim).uniq().join(', ') : name;
+				dataHandler.custom.set({experiments: newState.customExperiments});
+			}
+
+			this.setState(newState, callback);
+		}.bind(this));
+	}
     
     function mergeExperiments() {
         var custom = dataHandler.custom.get();
@@ -135,24 +159,15 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
             }
             ga('send', 'event', 'Options', 'Apply Feature ' + selectedFeature);
             var feature = _.find(this.state.features, {Feature: selectedFeature});
-            var experiments = feature.experiments.split(',');
-            _.each(experiments, function (exp) {
-                var name = exp.trim();
-                var found = updateExperimentIfExists.call(this, 'santaExperiments', name, true);
-                found = updateExperimentIfExists.call(this, 'editorExperiments', name, true) || found;
-                if (!found) {
-                    var customExperiments = this.state.customExperiments ? _(this.state.customExperiments.split(',').concat(name)).map(_.trim).uniq().join(', ') : name;
-                    dataHandler.custom.set({experiments: customExperiments});
-                    this.setState({
-                        customExperiments: customExperiments
-                    });
-                }
-            }, this);
 
-            if (dataHandler.settings.get().applyFeatureVersions) {
-                feature.ReactSource && this.updateReactSource({version: feature.ReactSource});
-                feature.EditorSource && this.updateEditorSource({version: feature.EditorSource});
-            }
+            var experiments = _(feature.experiments.split(',')).indexBy().mapValues(Boolean).value();
+	        updatedExperiments.call(this, experiments)
+	            .then(function () {
+		            if (dataHandler.settings.get().applyFeatureVersions) {
+		                feature.ReactSource && this.updateReactSource({version: feature.ReactSource});
+		                feature.EditorSource && this.updateEditorSource({version: feature.EditorSource});
+		            }
+	            });
         },
         selectAll: function (type) {
             var current = _.all(this.state[type]);
