@@ -1,0 +1,11 @@
+.settings {
+  .form-group {
+    > * {
+      display: inline-block;
+      margin-right: 10px;
+    }
+  }
+  .username {
+    width: 33%;
+  }
+}

@@ -1,8 +1,13 @@
 <rt-require dependency="react-bootstrap" as="baseUI"/>
 
-<div>
+<div class="settings">
     <h3>General</h3>
     <hr/>
+    <baseUI.Input type="text"
+                  label="Username"
+                  class="username"
+                  value="{this.state.settings.username}"
+                  onChange="(e) => this.updateSettings({username: e.target.value})"/>
     <baseUI.Input type="checkbox"
                   label="Disable New Relic"
                   checked="{this.state.settings.disableNewRelic}"

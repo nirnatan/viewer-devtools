@@ -33,7 +33,8 @@ define([
             showPublicButton: true,
             showPreviewBtn: true,
             useWixCodeRuntimeSource: false,
-            applyFeatureVersions: false
+            applyFeatureVersions: false,
+	        username: ''
         },
         ReactSource: {
             versions: [],

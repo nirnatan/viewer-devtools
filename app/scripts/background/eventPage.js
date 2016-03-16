@@ -162,6 +162,18 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
             sendToContentPage({type: 'getComponents'}, callback);
         },
 
+	    isImpersonationMode: function (callback) {
+  		    sendToContentPage({type: 'getCurrentUsername'}, function (currentUsername) {
+		        const username = dataHandler.settings.get().username;
+		        callback(username && (username !== currentUsername));
+	        });
+  	    },
+
+        logBackIn: function () {
+          var signInUrl = 'https://users.wix.com/wix-users/login/form?redirectTo=' + encodeURIComponent(currentUrl);
+          chrome.tabs.update(tabId, {url: signInUrl});
+        },
+
         getSiteLocations: function (callback) {
             Promise.all([
                 getSitePublicUrl(),

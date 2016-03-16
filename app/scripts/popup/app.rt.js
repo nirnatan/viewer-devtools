@@ -1,5 +1,5 @@
 define([
-    'react',
+    'react/addons',
     'lodash',
     'react-bootstrap',
     'popup/component',
@@ -28,7 +28,14 @@ define([
     function scopeUtilsIsWixSite5() {
         var Utils = chrome.extension.getBackgroundPage().Utils;
         var isWixSite = this.state.isEditor || this.state.isViewer || this.state.isPreview;
-        return React.createElement('div', { 'id': 'main' }, isWixSite ? React.createElement('div', { 'className': 'wix-site' }, React.createElement(baseUI.ButtonToolbar, {}, !this.state.optionsSet ? React.createElement(baseUI.Button, {
+        return React.createElement('div', { 'id': 'main' }, isWixSite ? React.createElement('div', { 'className': 'wix-site' }, React.createElement(baseUI.ButtonToolbar, {}, this.state.isImpersonationMode ? React.createElement(baseUI.Button, {
+            'className': 'impersonate',
+            'bsStyle': 'warning',
+            'onClick': this.logBackIn
+        }, React.createElement('img', {
+            'src': chrome.extension.getURL('images/impersonate.png'),
+            'alt': 'Log In'
+        })) : null, !this.state.optionsSet ? React.createElement(baseUI.Button, {
             'bsStyle': 'success',
             'onClick': this.redirectUrl,
             'key': 'enableBtn'

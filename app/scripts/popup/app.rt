@@ -8,6 +8,9 @@
 <div id="main" rt-scope="chrome.extension.getBackgroundPage().Utils as Utils; this.state.isEditor || this.state.isViewer || this.state.isPreview as isWixSite">
     <div class="wix-site" rt-if="isWixSite">
         <baseUI.ButtonToolbar>
+            <baseUI.Button rt-if="this.state.isImpersonationMode" class="impersonate" bsStyle='warning' onClick="{this.logBackIn}">
+                <img src="{chrome.extension.getURL('images/impersonate.png')}" alt="Log In">
+            </baseUI.Button>
             <baseUI.Button rt-if="!this.state.optionsSet" bsStyle='success' onClick="{this.redirectUrl}" key="enableBtn">Apply options</baseUI.Button>
             <baseUI.Button rt-if="!this.state.isEditor" bsStyle='success' onClick="{this.openEditor}" key="openEditorBtn">Open Editor</baseUI.Button>
             <baseUI.Button rt-if="this.state.locations.previewUrl" bsStyle='success' onClick="() => Utils.moveToPage(this.state.locations.previewUrl)" key="previewBtn">Preview</baseUI.Button>

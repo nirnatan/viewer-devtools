@@ -36,7 +36,7 @@ module.exports = function (grunt) {
                 tasks: ['rt']
             },
             sass: {
-                files: ['<%= config.app %>/{,*/}*.scss'],
+                files: ['<%= config.app %>/app/{,*/}*.scss'],
                 tasks: ['css']
             },
             // bower: {

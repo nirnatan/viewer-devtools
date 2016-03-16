@@ -39,7 +39,8 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
                 isEditor: false,
                 isViewer: true,
                 isPreview: false,
-                selectedComp: null
+                selectedComp: null,
+	            isImpersonationMode: false
             }, getSettings.call(this));
         },
         componentWillMount: function () {
@@ -60,6 +61,10 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
             backgroundPageUtils.isEditor(this.updateState.bind(this, 'isEditor'));
             backgroundPageUtils.isViewer(this.updateState.bind(this, 'isViewer'));
             backgroundPageUtils.isPreview(this.updateState.bind(this, 'isPreview'));
+	        const updateImpersonationMode = this.updateState.bind(this, 'isImpersonationMode');
+	        setTimeout(function () {
+		        backgroundPageUtils.isImpersonationMode(updateImpersonationMode);
+	        }, 100);
         },
         componentDidMount: function () {
             dataHandler.updateLatestVersions()
@@ -113,6 +118,10 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
             window.open(optionsURL);
             ga('send', 'event', this.state.isEditor ? 'Editor' : 'Viewer', 'Open Settings');
         },
+	    logBackIn: function () {
+		    chrome.extension.getBackgroundPage().Utils.logBackIn();
+		    window.close();
+	    },
         render: template
     });
 });

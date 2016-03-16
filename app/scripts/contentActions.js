@@ -130,7 +130,16 @@
                 if (_.has(components, params.id)) {
                     components[params.id].setState(params.state);
                 }
-            }
+            },
+	        getCurrentUsername: function () {
+		        var cookie = document.cookie;
+		        var wixClient = _.find(cookie.split('; '), function(v) {
+              return _.startsWith(v, 'wixClient');
+            });
+		        var usernameRegex = new RegExp('=([^\|]*)');
+
+		        return usernameRegex.exec(wixClient)[1];
+	        }
         };
 
         _.each(eventsQueue, handleEvent);
