@@ -3,5 +3,5 @@
 	'use strict';
 	setTimeout(function () {
 		$('#customGPBtn ,.customGPBtn').click();
-	}, 3500);
+	}, 1000);
 }());
