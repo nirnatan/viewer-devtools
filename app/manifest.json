@@ -38,6 +38,7 @@
     }
   ],
   "web_accessible_resources": [
+    "scripts/logInGoogle.js",
     "scripts/contentActions.js",
     "scripts/utils/jsonUtils.js"
   ],

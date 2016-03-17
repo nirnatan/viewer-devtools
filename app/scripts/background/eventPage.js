@@ -164,14 +164,13 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
 
 	    isImpersonationMode: function (callback) {
   		    sendToContentPage({type: 'getCurrentUsername'}, function (currentUsername) {
-		        const username = dataHandler.settings.get().username;
+		        var username = dataHandler.settings.get().username;
 		        callback(username && (username !== currentUsername));
 	        });
   	    },
 
         logBackIn: function () {
-          var signInUrl = 'https://users.wix.com/wix-users/login/form?redirectTo=' + encodeURIComponent(currentUrl);
-          chrome.tabs.update(tabId, {url: signInUrl});
+	        chrome.tabs.create({url: 'https://users.wix.com/wix-users/login/form'});
         },
 
         getSiteLocations: function (callback) {

@@ -61,7 +61,7 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
             backgroundPageUtils.isEditor(this.updateState.bind(this, 'isEditor'));
             backgroundPageUtils.isViewer(this.updateState.bind(this, 'isViewer'));
             backgroundPageUtils.isPreview(this.updateState.bind(this, 'isPreview'));
-	        const updateImpersonationMode = this.updateState.bind(this, 'isImpersonationMode');
+	        var updateImpersonationMode = this.updateState.bind(this, 'isImpersonationMode');
 	        setTimeout(function () {
 		        backgroundPageUtils.isImpersonationMode(updateImpersonationMode);
 	        }, 100);

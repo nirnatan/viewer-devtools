@@ -12,20 +12,25 @@
     }
 
     var injected = false;
-    chrome.extension.onMessage.addListener(function (msg, sender, sendResponse) {
-        if (!injected) {
-            injectScripts(function () {
-                sendMessageToActionScript(msg, sender, sendResponse);
-            });
-            injected = true;
-            return true;
-        }
+	function handleMessage(msg, sender, sendResponse) {
+		if (!injected) {
+			injectScripts(['scripts/contentActions.js', 'scripts/utils/jsonUtils.js'], function () {
+				sendMessageToActionScript(msg, sender, sendResponse);
+			});
+			injected = true;
+			return true;
+		}
 
-        sendMessageToActionScript(msg, sender, sendResponse);
-    });
+		sendMessageToActionScript(msg, sender, sendResponse);
+	}
 
-    function injectScripts(callback) {
-        var injectedScripts = ['scripts/contentActions.js', 'scripts/utils/jsonUtils.js'];
+	chrome.extension.onMessage.addListener(handleMessage);
+
+	if (window.location.host + window.location.pathname === 'users.wix.com/wix-users/login/form') {
+		injectScripts(['scripts/logInGoogle.js']);
+	}
+
+    function injectScripts(injectedScripts, callback) {
         var loadedScripts = 0;
         injectedScripts.forEach(function (script) {
             var s = document.createElement('script');
@@ -33,7 +38,7 @@
             document.body.appendChild(s);
             s.onload = function () {
                 s.parentNode.removeChild(s);
-                if (++loadedScripts === injectedScripts.length) {
+                if (++loadedScripts === injectedScripts.length && callback) {
                     callback();
                 }
             };
