@@ -47,97 +47,67 @@ define([
         features: []
     };
 
-    function addPrefix(prefix, object) {
-        return _.transform(object, function (acc, value, key) {
-            acc[prefix + '.' + key] = value;
-        });
-    }
-
-    function removePrefix(prefix, object) {
-        return _.transform(object, function (acc, value, key) {
-            acc[key.slice(prefix.length + 1)] = value;
-        });
-    }
-
-    chrome.storage.onChanged.addListener(function () {
+	chrome.storage.onChanged.addListener(function () {
         updateDataFromStorage();
     });
 
     function updateDataFromStorage() {
-        return Promise.all(_.map(localStore, function (value, key) {
-            return new Promise(function (resolve) {
-                chrome.storage.local.get(_.keys(addPrefix(key, value)), function (result) {
-                    var storage = removePrefix(key, result);
-                    _.assign(value, storage);
-                    resolve();
-                });
-            });
-        }));
+	    return new Promise(function (resolve) {
+		    chrome.storage.local.get('settings', function (storage) {
+			    _.merge(localStore, storage.settings);
+			    resolve();
+		    });
+	    });
     }
 
-    var handler = {};
+	function Handler() {
+		_.assign(this, localStore);
 
-    function updateFeaturePresets() {
-        var id = '1Z-QLMn-xyesvLIuU_suoJXVnTizCTx7dkbY2hGFdSLk';
-        return googleSpreadsheet.getAsJson(id);
-    }
+		Promise.all([updateDataFromStorage(), this.updateFeaturePresets()])
+			.then(function (results) {
+				this.isReady = true;
+				this.features = results[1];
+			}.bind(this));
 
-    function updateLatestVersions() {
-        var editorRcs = $.get('http://rudolph.wixpress.com/services/availableRcs?project=santa-editor');
-        var editorGA = $.get('http://rudolph.wixpress.com/services/versionsProjectGa?project=santa-editor');
-        var santaGA = $.get('http://rudolph.wixpress.com/services/versionsProjectGa?project=santa-viewer');
-        var santaRcs = $.get('http://rudolph.wixpress.com/services/availableRcs?project=santa-viewer');
-        return Promise.all([editorRcs, editorGA, santaRcs, santaGA])
-            .then(function (responses) {
-                var editorVersions = ['none', 'local', 'Latest RC'].concat(_(responses[0].result).reverse().value());
-                handler.EditorSource.set({
-                    version: localStore.EditorSource.version || responses[1].result || 'none',
-                    versions: editorVersions
-                });
-                var santaVersions = ['none', 'local', 'Latest RC'].concat(_(responses[2].result).reverse().value());
-                handler.ReactSource.set({
-                    version: localStore.ReactSource.version || responses[3].result || 'none',
-                    versions: santaVersions
-                });
-            });
-    }
+		this.isReady = false;
+		this.updateLatestVersions();
+	}
 
-    function init() {
-        updateDataFromStorage()
-            .then(function () {
-                handler.isReady = true;
-            });
+	Handler.prototype.set = function set(path, value) {
+		var current = _.get(this, path);
+		_.set(this, path, _.defaultsDeep(value, current));
 
-        handler = _.transform(localStore, function (acc, value, key) {
-            acc[key] = {
-                get: function () {
-                    return localStore[key];
-                },
-                set: function (newValue) {
-                    var storage;
-                    if (_.isObject(newValue)) {
-                        _.assign(localStore[key], newValue);
-                        storage = addPrefix(key, localStore[key]);
-                    } else {
-                        localStore[key] = newValue;
-                        storage = _.pick(localStore, [key]);
-                    }
-                    chrome.storage.local.set(storage, _.noop);
-                }
-            };
-        }, handler);
+		var newSettings = {settings: JSON.parse(JSON.stringify(this))};
+		return new Promise(function (resolve) {
+			chrome.storage.local.set(newSettings, resolve);
+		});
+	};
 
-        handler.isReady = handler.isReady || false;
-        handler.updateLatestVersions = updateLatestVersions;
-        handler.updateFeaturePresets = updateFeaturePresets;
-    }
+	Handler.prototype.updateLatestVersions = function updateLatestVersions() {
+		var editorRcs = $.get('http://rudolph.wixpress.com/services/availableRcs?project=santa-editor');
+		var editorGA = $.get('http://rudolph.wixpress.com/services/versionsProjectGa?project=santa-editor');
+		var santaGA = $.get('http://rudolph.wixpress.com/services/versionsProjectGa?project=santa-viewer');
+		var santaRcs = $.get('http://rudolph.wixpress.com/services/availableRcs?project=santa-viewer');
+		return Promise.all([editorRcs, editorGA, santaRcs, santaGA])
+			.then(function (responses) {
+				var editorVersions = ['none', 'local', 'Latest RC'].concat(_(responses[0].result).reverse().value());
+				this.EditorSource = {
+					version: localStore.EditorSource.version || responses[1].result || 'none',
+					versions: editorVersions
+				};
 
-    init();
-    updateLatestVersions();
-    updateFeaturePresets()
-        .then(function (data) {
-            handler.features.set(data);
-        });
+				var santaVersions = ['none', 'local', 'Latest RC'].concat(_(responses[2].result).reverse().value());
+				this.ReactSource = {
+					version: localStore.ReactSource.version || responses[3].result || 'none',
+					versions: santaVersions
+				};
+			}.bind(this));
+	};
 
-    return handler;
+	Handler.prototype.updateFeaturePresets = function updateFeaturePresets() {
+		var id = '1Z-QLMn-xyesvLIuU_suoJXVnTizCTx7dkbY2hGFdSLk';
+		return googleSpreadsheet.getAsJson(id);
+	};
+
+	return new Handler();
 });

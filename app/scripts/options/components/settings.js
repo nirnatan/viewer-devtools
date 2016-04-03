@@ -10,16 +10,16 @@ define(['react', 'dataHandler', './settings.rt'], function (React, dataHandler, 
 
             setTimeout(function () {
                 this.setState({
-                    settings: dataHandler.settings.get()
+                    settings: dataHandler.settings
                 });
-            }.bind(this), 100);
+            }.bind(this), 200);
 
             return emptyState;
         },
         updateSettings: function (settings) {
             settings = _.defaults(settings, this.state.settings);
-            dataHandler.settings.set(settings);
-            this.setState(settings);
+            dataHandler.set('settings', settings);
+            this.setState({settings: settings});
         },
         render: template
     });

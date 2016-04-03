@@ -2,9 +2,9 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
     'use strict';
 
     function getSettings() {
-        var settings = dataHandler.settings.get();
-        var reactSource = dataHandler.ReactSource.get();
-        var editorSource = dataHandler.EditorSource.get();
+        var settings = dataHandler.settings;
+        var reactSource = dataHandler.ReactSource;
+        var editorSource = dataHandler.EditorSource;
         this.initialVersions = {
             ReactSource: this.backgroundPageUtils.getSantaVersion(),
             EditorSource: this.backgroundPageUtils.getEditorVersion()
@@ -45,7 +45,7 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
         },
         componentWillMount: function () {
             var backgroundPageUtils = chrome.extension.getBackgroundPage().Utils;
-            var settings = dataHandler.settings.get();
+            var settings = dataHandler.settings;
             if (settings.showComponents) {
                 backgroundPageUtils.getComponents(this.handleSearchResults);
             }
@@ -70,8 +70,8 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
             dataHandler.updateLatestVersions()
                 .then(function () {
                     var state = _.pick(this.state, ['ReactSource', 'EditorSource']);
-                    state.ReactSource.versions = dataHandler.ReactSource.get().versions;
-                    state.EditorSource.versions = dataHandler.EditorSource.get().versions;
+                    state.ReactSource.versions = dataHandler.ReactSource.versions;
+                    state.EditorSource.versions = dataHandler.EditorSource.versions;
                     this.setState(state); //eslint-disable-line react/no-did-mount-set-state
                 }.bind(this))
                 .catch(function () {
@@ -98,7 +98,7 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
         },
         updateVersions: function (type, newValue) {
             ga('send', 'event', 'Options', type, newValue);
-            dataHandler[type].set(newValue);
+            dataHandler.set(type, newValue);
             var newState = {};
             newState[type] = _.defaults(newValue, this.state[type]);
             newState.optionsSet = this.initialVersions[type] === newValue.version;

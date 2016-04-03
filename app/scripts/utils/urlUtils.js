@@ -234,8 +234,8 @@ define('utils/urlUtils', ['lodash'], function (_) {
             var isEditor = !viewerOnly;
             var queryObj = urlObj.query || {};
 
-            var packages = dataHandler.packages.get();
-            var settings = dataHandler.settings.get();
+            var packages = dataHandler.packages || {};
+            var settings = dataHandler.settings || {};
             if (settings.showComponents) {
                 packages.react = true;
             }
@@ -253,7 +253,7 @@ define('utils/urlUtils', ['lodash'], function (_) {
                 }
             }
 
-            var reactSource = dataHandler.ReactSource.get();
+            var reactSource = dataHandler.ReactSource;
             // reactSource.versions = ['none', 'local', 'Latest RC', latest rc version]
             var latestRcVersion = reactSource.versions[3];
             switch (reactSource.version) {
@@ -274,7 +274,7 @@ define('utils/urlUtils', ['lodash'], function (_) {
                     delete queryObj.WixCodeRuntimeSource;
             }
 
-            var editorSource = dataHandler.EditorSource.get();
+            var editorSource = dataHandler.EditorSource;
             if (isEditor) {
                 switch (editorSource.version) {
                     case 'none':
@@ -291,7 +291,7 @@ define('utils/urlUtils', ['lodash'], function (_) {
                 }
             }
 
-            var runningExperimentsString = this.getRunningExperimentsString(dataHandler.santaExperiments.get(), dataHandler.editorExperiments.get(), dataHandler.custom.get().experiments, queryObj.experiments);
+            var runningExperimentsString = this.getRunningExperimentsString(dataHandler.santaExperiments, dataHandler.editorExperiments, dataHandler.custom.experiments, queryObj.experiments);
             if (runningExperimentsString) {
                 queryObj.experiments = runningExperimentsString;
             } else {

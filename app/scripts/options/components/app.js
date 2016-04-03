@@ -3,7 +3,7 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
 
     function updateData(name, newValue) {
         var value = _.assign({}, this.state[name], newValue);
-        dataHandler[name].set(value);
+        dataHandler.set(name, value);
 
         var state = {};
         state[name] = value;
@@ -34,12 +34,12 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
 				remainingExperiments = _.omit(remainingExperiments, _.keys(experimentsInGroup));
 
 				acc[groupName] = _.assign(group, experimentsInGroup);
-				dataHandler[groupName].set(acc[groupName]);
+				dataHandler.set(groupName, acc[groupName]);
 			}, {});
 
 			if (!_.isEmpty(remainingExperiments)) {
 				newState.customExperiments = this.state.customExperiments ? _(this.state.customExperiments.split(',').concat(name)).map(_.trim).uniq().join(', ') : name;
-				dataHandler.custom.set({experiments: newState.customExperiments});
+				dataHandler.set('custom', {experiments: newState.customExperiments});
 			}
 
 			this.setState(newState, callback);
@@ -47,9 +47,9 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
 	}
     
     function mergeExperiments() {
-        var custom = dataHandler.custom.get();
-        var santaExperiments = dataHandler.santaExperiments.get();
-        var editorExperiments = dataHandler.editorExperiments.get();
+        var custom = dataHandler.custom;
+        var santaExperiments = dataHandler.santaExperiments;
+        var editorExperiments = dataHandler.editorExperiments;
 
         if (_.get(custom, 'experiments')) {
             var exps = _.map(custom.experiments.split(','), _.trim);
@@ -57,7 +57,7 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
             var intersection = _.intersection(exps, allExperimentsNames);
             if (!_.isEmpty(intersection)) {
                 exps = _.reject(exps, _.has.bind(_, intersection));
-                dataHandler.custom.set({experiments: exps.join(', ')});
+                dataHandler.set('custom', {experiments: exps.join(', ')});
 
                 _.forEach(intersection, function (exp) {
                     if (_.has(santaExperiments, exp)) {
@@ -68,8 +68,8 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
                     }
                 });
 
-                dataHandler.santaExperiments.set(santaExperiments);
-                dataHandler.editorExperiments.set(editorExperiments);
+                dataHandler.set('santaExperiments', santaExperiments);
+                dataHandler.set('editorExperiments', editorExperiments);
             }
         }
     }
@@ -90,15 +90,15 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
 
             setTimeout(function () {
                 mergeExperiments();
-                var custom = dataHandler.custom.get();
-                var features = dataHandler.features.get();
+                var custom = dataHandler.custom;
+                var features = dataHandler.features;
                 this.setState({
                     customExperiments: _(custom.experiments.split(',')).map(_.trim).uniq().join(', '),
-                    santaExperiments: dataHandler.santaExperiments.get(),
-                    editorExperiments: dataHandler.editorExperiments.get(),
-                    packages: dataHandler.packages.get(),
-                    ReactSource: dataHandler.ReactSource.get(),
-                    EditorSource: dataHandler.EditorSource.get(),
+                    santaExperiments: dataHandler.santaExperiments,
+                    editorExperiments: dataHandler.editorExperiments,
+                    packages: dataHandler.packages,
+                    ReactSource: dataHandler.ReactSource,
+                    EditorSource: dataHandler.EditorSource,
                     features: features
                 });
 
@@ -121,8 +121,8 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
         },
         onVersionsUpdated: function () {
             var state = _.pick(this.state, ['ReactSource', 'EditorSource']);
-            state.ReactSource.versions = dataHandler.ReactSource.get().versions;
-            state.EditorSource.versions = dataHandler.EditorSource.get().versions;
+            state.ReactSource.versions = dataHandler.ReactSource.versions;
+            state.EditorSource.versions = dataHandler.EditorSource.versions;
             this.setState(state);
         },
         onExperimentChanged: function (name) {
@@ -131,7 +131,7 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
         },
         onUserExperimentsChanged: function (e) {
             var experiments = e.target.value;
-            dataHandler.custom.set({experiments: experiments});
+            dataHandler.set('custom', {experiments: experiments});
             ga('send', 'event', 'Options', 'Custom experiments Set');
 
             this.setState({
@@ -163,7 +163,7 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
             var experiments = _(feature.experiments.split(',')).indexBy().mapValues(Boolean).value();
 	        updatedExperiments.call(this, experiments)
 	            .then(function () {
-		            if (dataHandler.settings.get().applyFeatureVersions) {
+		            if (dataHandler.settings.applyFeatureVersions) {
 		                feature.ReactSource && this.updateReactSource({version: feature.ReactSource});
 		                feature.EditorSource && this.updateEditorSource({version: feature.EditorSource});
 		            }
@@ -174,7 +174,7 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
             var value = _.mapValues(this.state[type], function () {
                 return !current;
             });
-            dataHandler[type].set(value);
+            dataHandler.set(type, value);
 
             var state = {};
             state[type] = value;
