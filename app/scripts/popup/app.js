@@ -25,7 +25,7 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
 
             if (!dataHandler.isReady) {
                 _.delay(function () {
-                    this.setState(getSettings());
+                    this.setState(getSettings.call(this));
                 }.bind(this), 300);
             }
 
