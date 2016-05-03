@@ -291,6 +291,10 @@ define('utils/urlUtils', ['lodash'], function (_) {
                 }
             }
 
+	        if (settings.useWixCodeLocalSdk) {
+	            queryObj.sdkSource = 'http://localhost/wixcode-sdk/build/wix.js';
+	        }
+
             var runningExperimentsString = this.getRunningExperimentsString(dataHandler.santaExperiments, dataHandler.editorExperiments, dataHandler.custom.experiments, queryObj.experiments);
             if (runningExperimentsString) {
                 queryObj.experiments = runningExperimentsString;

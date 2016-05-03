@@ -33,6 +33,7 @@ define([
             showPublicButton: true,
             showPreviewBtn: true,
             useWixCodeRuntimeSource: false,
+	        useWixCodeLocalSdk: false,
             applyFeatureVersions: false,
 	        username: ''
         },
