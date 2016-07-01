@@ -1,65 +1,65 @@
 define([
-    'jquery',
-    'lodash',
-    'utils/google-spreadsheet',
-    'utils/urlUtils',
-    'json!generated/santa.json',
-    'json!generated/santa-editor.json',
-    'json!generated/packages.json'
+	'jquery',
+	'lodash',
+	'utils/google-spreadsheet',
+	'utils/urlUtils',
+	'json!generated/santa.json',
+	'json!generated/santa-editor.json',
+	'json!generated/packages.json'
 ], function ($, _, googleSpreadsheet, urlUtils, viewerExp, editorExp, packagesNames) {
-    'use strict';
+	'use strict';
 
-    var localStore = {
-        santaExperiments: _(viewerExp)
-            .zipObject()
-            .mapValues(Boolean)
-            .value(),
-        editorExperiments: _(editorExp)
-            .zipObject()
-            .mapValues(Boolean)
-            .value(),
-        custom: {
-            experiments: ''
-        },
-        packages: _(packagesNames)
-            .zipObject()
-            .mapValues(Boolean)
-            .value(),
-        settings: {
-            disableLeavePagePopUp: false,
-            disableNewRelic: true,
-            showComponents: false,
-            versionSelectorInPopup: true,
-            showPublicButton: true,
-            showPreviewBtn: true,
-            useWixCodeRuntimeSource: false,
-	        useWixCodeLocalSdk: false,
-            applyFeatureVersions: false,
-	        username: ''
-        },
-        ReactSource: {
-            versions: [],
-            version: ''
-        },
-        EditorSource: {
-            versions: [],
-            version: ''
-        },
-        features: []
-    };
+	var localStore = {
+		santaExperiments: _(viewerExp)
+			.zipObject()
+			.mapValues(Boolean)
+			.value(),
+		editorExperiments: _(editorExp)
+			.zipObject()
+			.mapValues(Boolean)
+			.value(),
+		custom: {
+			experiments: ''
+		},
+		packages: _(packagesNames)
+			.zipObject()
+			.mapValues(Boolean)
+			.value(),
+		settings: {
+			disableLeavePagePopUp: false,
+			disableNewRelic: true,
+			showComponents: false,
+			versionSelectorInPopup: true,
+			showPublicButton: true,
+			showPreviewBtn: true,
+			useWixCodeRuntimeSource: false,
+			useWixCodeLocalSdk: false,
+			applyFeatureVersions: false,
+			username: ''
+		},
+		ReactSource: {
+			versions: [],
+			version: ''
+		},
+		EditorSource: {
+			versions: [],
+			version: ''
+		},
+		features: []
+	};
 
 	chrome.storage.onChanged.addListener(function () {
-        updateDataFromStorage();
-    });
+		updateDataFromStorage();
+	});
 
-    function updateDataFromStorage() {
-	    return new Promise(function (resolve) {
-		    chrome.storage.local.get('settings', function (storage) {
-			    _.merge(localStore, storage.settings);
-			    resolve();
-		    });
-	    });
-    }
+	function updateDataFromStorage() {
+		return new Promise(function (resolve) {
+			chrome.storage.local.get('settings', function (storage) {
+				_.merge(localStore, storage.settings);
+				resolve();
+			});
+		});
+	}
 
 	function Handler() {
 		_.assign(this, localStore);
@@ -73,6 +73,12 @@ define([
 		this.isReady = false;
 		this.updateLatestVersions();
 	}
+
+	Handler.prototype.reset = function reset() {
+		return new Promise(function (resolve) {
+			chrome.storage.local.set({settings: {}}, resolve);
+		});
+	};
 
 	Handler.prototype.set = function set(path, value) {
 		var current = _.get(this, path);

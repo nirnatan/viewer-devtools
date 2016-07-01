@@ -35,6 +35,7 @@
                         <baseUI.Button class="apply-feature" bsSize="small" bsStyle="primary" onClick="{this.applyFeature}">Apply</baseUI.Button>
                         <baseUI.Button class="update-features" bsStyle="link" onClick="{window.open.bind(window, 'https://docs.google.com/spreadsheets/d/1Z-QLMn-xyesvLIuU_suoJXVnTizCTx7dkbY2hGFdSLk/edit#gid=0', '_blank')}">Update</baseUI.Button>
                     </div>
+                    <baseUI.Button class="reset-settings" bsStyle="warning" onClick="{this.resetSettings}">Reset Settings</baseUI.Button>
                 </baseUI.Col>
                 <baseUI.Col class="col-menu" lg={9}>
                     <baseUI.Tabs defaultActiveKey={1}>
