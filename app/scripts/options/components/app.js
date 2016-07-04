@@ -38,7 +38,8 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
 			}, {});
 
 			if (!_.isEmpty(remainingExperiments)) {
-				newState.customExperiments = this.state.customExperiments ? _(this.state.customExperiments.split(',').concat(name)).map(_.trim).uniq().join(', ') : name;
+				remainingExperiments = _.keys(remainingExperiments);
+				newState.customExperiments = this.state.customExperiments ? _(this.state.customExperiments.split(',').concat(remainingExperiments)).map(_.trim).uniq().join(', ') : remainingExperiments;
 				dataHandler.set('custom', {experiments: newState.customExperiments});
 			}
 
