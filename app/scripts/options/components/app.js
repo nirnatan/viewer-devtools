@@ -53,7 +53,8 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
 		var editorExperiments = dataHandler.editorExperiments;
 
 		if (_.get(custom, 'experiments')) {
-			var exps = _.map(custom.experiments.split(','), _.trim);
+			const customExperiments = _.isArray(custom.experiments) ? custom.experiments : custom.experiments.split(',');
+			var exps = _.map(customExperiments, _.trim);
 			var allExperimentsNames = _(santaExperiments).union(editorExperiments).keys().value();
 			var intersection = _.intersection(exps, allExperimentsNames);
 			if (!_.isEmpty(intersection)) {
@@ -93,8 +94,9 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
 				mergeExperiments();
 				var custom = dataHandler.custom;
 				var features = dataHandler.features;
+				const customExperiments = _.isArray(custom.experiments) ? custom.experiments : custom.experiments.split(',');
 				this.setState({
-					customExperiments: _(custom.experiments.split(',')).map(_.trim).uniq().join(', '),
+					customExperiments: _(customExperiments).map(_.trim).uniq().join(', '),
 					santaExperiments: dataHandler.santaExperiments,
 					editorExperiments: dataHandler.editorExperiments,
 					packages: dataHandler.packages,
