@@ -77,7 +77,7 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
     }
 
     function getPreviewUrl() {
-        var code = '(function() { return document.getElementById("preview").src; })();';
+        var code = '(function() { try { return document.getElementById("preview").src; } catch(e) {} })();';
 
         return new Promise(function (resolve) {
             chrome.tabs.executeScript(tabId, {code: code}, function (comp) {
@@ -309,6 +309,10 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
             };
 
             getMetaElements(metaElementsCallback);
+        },
+
+        reset: function () {
+            return dataHandler.reset();
         },
 
         openEditor: function () {

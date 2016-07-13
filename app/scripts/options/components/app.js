@@ -173,7 +173,8 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
 				});
 		},
 		resetSettings: function () {
-			dataHandler.reset().then(() => location.reload());
+			Promise.all([chrome.extension.getBackgroundPage().Utils.reset(), dataHandler.reset()])
+					.then(() => location.reload());
 		},
 		selectAll: function (type) {
 			var current = _.all(this.state[type]);
