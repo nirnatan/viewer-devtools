@@ -26,6 +26,7 @@ define([
 			.mapValues(Boolean)
 			.value(),
 		settings: {
+      additionalQueryParams: '',
 			disableLeavePagePopUp: false,
 			disableNewRelic: true,
 			showComponents: false,
