@@ -5,7 +5,7 @@
     <hr/>
     <baseUI.Input type="text"
                   label="Additional Url Params"
-                  class="username"
+                  class="query-params"
                   value="{this.state.settings.additionalQueryParams}"
                   onChange="(e) => this.updateSettings({additionalQueryParams: e.target.value})"/>
     <baseUI.Input type="text"
