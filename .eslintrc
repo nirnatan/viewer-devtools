@@ -1,4 +1,7 @@
 {
+    "parserOptions": {
+      "ecmaVersion": 6
+    },
     "plugins" : ["react"],
     "rules": {
         "no-array-constructor": 2,
@@ -156,7 +159,8 @@
     "env": {
         "browser": true,
         "node": true,
-        "amd": true
+        "amd": true,
+        "es6": true
     },
     "globals": {
         "requirejs": true,

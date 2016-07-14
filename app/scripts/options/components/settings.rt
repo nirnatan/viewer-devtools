@@ -4,6 +4,11 @@
     <h3>General</h3>
     <hr/>
     <baseUI.Input type="text"
+                  label="Additional Url Params"
+                  class="username"
+                  value="{this.state.settings.additionalQueryParams}"
+                  onChange="(e) => this.updateSettings({additionalQueryParams: e.target.value})"/>
+    <baseUI.Input type="text"
                   label="Username"
                   class="username"
                   value="{this.state.settings.username}"

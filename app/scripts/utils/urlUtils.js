@@ -302,6 +302,12 @@ define('utils/urlUtils', ['lodash'], function (_) {
                 delete queryObj.experiments;
             }
 
+            var queryParams = settings.additionalQueryParams.split('&');
+            queryParams.reduce((acc, query) => {
+              const param = query.split('=');
+              return Object.assign(acc, {[param[0]]: param[1]});
+            }, queryObj);
+
             return queryObj;
         }
     };
