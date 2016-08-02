@@ -38,6 +38,13 @@ define([
 			applyFeatureVersions: false,
 			username: ''
 		},
+		platform: {
+			usePlatformOverrides: false,
+			applicationId: '',
+			port: '',
+			viewer: '',
+			editor: ''
+		},
 		ReactSource: {
 			versions: [],
 			version: ''

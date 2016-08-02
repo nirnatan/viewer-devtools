@@ -2,6 +2,7 @@
 <rt-require dependency="options/components/versionSelector" as="versionSelector"/>
 <rt-require dependency="options/components/multiSelector" as="multiSelector"/>
 <rt-require dependency="options/components/settings" as="settings"/>
+<rt-require dependency="options/components/platform" as="platform"/>
 <div>
     <baseUI.Panel class="app">
         <baseUI.Grid>
@@ -41,6 +42,9 @@
                     <baseUI.Tabs defaultActiveKey={1}>
                         <baseUI.Tab eventKey={3} title="Settings">
                             <settings/>
+                        </baseUI.Tab>
+                        <baseUI.Tab eventKey={4} title="Platform">
+                            <platform />
                         </baseUI.Tab>
                         <baseUI.Tab eventKey={1} title="Experiments">
                             <baseUI.Input type="text"

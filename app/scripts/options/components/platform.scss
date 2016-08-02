@@ -1,0 +1,35 @@
+.platform {
+  padding-top: 20px;
+
+  .form-group {
+    > * {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    label {
+      min-width: 127px;
+    }
+  }
+  .username {
+    width: 33%;
+  }
+
+  .query-params {
+    width: 80%;
+  }
+
+  .path {
+    margin-buttom: 20px;
+    .hover {
+      display: none;
+      color: #747474;
+    }
+
+    &:hover {
+      .hover {
+        display: block;
+      }
+    }
+  }
+}

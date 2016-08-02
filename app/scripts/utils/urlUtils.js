@@ -236,6 +236,7 @@ define('utils/urlUtils', ['lodash'], function (_) {
 
             var packages = dataHandler.packages || {};
             var settings = dataHandler.settings || {};
+            var platform = dataHandler.platform || {};
             if (settings.showComponents) {
                 packages.react = true;
             }
@@ -300,6 +301,12 @@ define('utils/urlUtils', ['lodash'], function (_) {
                 queryObj.experiments = runningExperimentsString;
             } else {
                 delete queryObj.experiments;
+            }
+
+            if (platform.usePlatformOverrides) {
+                const getQueryParam = ({port, applicationId}, path) => `port:${port},path:${path},id:${applicationId}`;
+                queryObj.editorPlatformAppSources = getQueryParam(platform, platform.editor);
+                queryObj.viewerPlatformAppSources = getQueryParam(platform, platform.viewer);
             }
 
             var queryParams = settings.additionalQueryParams.split('&');
