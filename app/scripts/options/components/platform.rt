@@ -1,16 +1,22 @@
 <rt-require dependency="react-bootstrap" as="baseUI"/>
 
 <div class="platform">
+    <h4>Settings</h4>
     <baseUI.Input type="checkbox"
                   label="Use Custom Application"
                   checked="{this.state.platform.usePlatformOverrides}"
                   onChange="() => this.updateUsePlatformOverrides()"/>
 
+    <baseUI.Input type="checkbox"
+                  label="Use local wixCode SDK"
+                  checked="{this.state.settings.useWixCodeLocalSdk}"
+                  onChange="() => this.updateUseWixCodeLocalSdk()"/>
+
     <hr/>
 
+    <h3>Local Application</h3>
     <p>In order to start working on you application you can create a local server that will serve the application's files.</p>
-
-    <p>Fill in the id of the application, it's port and the path to the editor and viewer parts of the application</p>
+    <p>Fill in the id of the application, it's port and the path to the editor and viewer parts of your application</p>
     <hr/>
 
     <baseUI.Input type="text"

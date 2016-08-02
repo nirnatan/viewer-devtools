@@ -51,8 +51,4 @@
                   label="Use Latest RC as WixCodeRuntimeSource when working with local code"
                   checked="{this.state.settings.useWixCodeRuntimeSource}"
                   onChange="() => this.updateSettings({useWixCodeRuntimeSource: !this.state.settings.useWixCodeRuntimeSource})"/>
-    <baseUI.Input type="checkbox"
-                  label="Use local wixCode SDK"
-                  checked="{this.state.settings.useWixCodeLocalSdk}"
-                  onChange="() => this.updateSettings({useWixCodeLocalSdk: !this.state.settings.useWixCodeLocalSdk})"/>
 </div>
