@@ -165,7 +165,7 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
 	    isImpersonationMode: function (callback) {
   		    sendToContentPage({type: 'getCurrentUsername'}, function (currentUsername) {
 		        var username = dataHandler.settings.username;
-		        callback(username && (username !== currentUsername));
+		        callback(username && username !== currentUsername);
 	        });
   	    },
 

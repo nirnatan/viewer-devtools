@@ -62,7 +62,7 @@
 
         function getId(comp) {
             var reactId = getComponentDOMNode(comp).attributes['data-reactid'];
-            return comp.props.id || (reactId && reactId.value);
+            return comp.props.id || reactId && reactId.value;
         }
 
         var components, hoveredComponent;
@@ -77,13 +77,13 @@
         events = {
             getSitePublicUrl: function () {
                 var editorAPI = window.rendered.editorAPI;
-                return (editorAPI.generalInfo && editorAPI.generalInfo.isSitePublished() && editorAPI.site.getSitePublicUrl()) || '';
+                return editorAPI.generalInfo && editorAPI.generalInfo.isSitePublished() && editorAPI.site.getSitePublicUrl() || '';
             },
             getComponents: function () {
                 components = _(getComponentsByName(''))
                     .filter(function (comp) {
                         var displayName = comp.constructor.displayName;
-                        return (displayName && displayName.indexOf('ReactDOM') !== 0) && !comp.tagName && comp.isMounted() && getComponentDOMNode(comp);
+                        return displayName && displayName.indexOf('ReactDOM') !== 0 && !comp.tagName && comp.isMounted() && getComponentDOMNode(comp);
                     })
                     .transform(function (acc, comp) {
                         acc[getId(comp)] = comp;
