@@ -130,13 +130,16 @@ define([
 				done();
 			}, done);
 
-			this.updateModifiedPackages().then(done, done);
+			this.updateModifiedPackages().then(done);
 		});
 	};
 
 	Handler.prototype.updateModifiedPackages = function updateModifiedPackages() {
-		return $.get('http://localhost/modifiedPackages').then(modifiedPackages => {
-			this.modifiedPackages = modifiedPackages;
+		return new Promise((resolve) => {
+			$.get('http://localhost/modifiedPackages').then(modifiedPackages => {
+				this.modifiedPackages = modifiedPackages;
+				resolve();
+			}, () => resolve());
 		});
 	};
 
