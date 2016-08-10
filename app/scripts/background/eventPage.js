@@ -101,10 +101,12 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
     }
 
     function applyOptions(url, viewrOnly) {
-        var urlObj = urlUtils.parseUrl(url);
-        urlObj.query = urlUtils.getOptionsQueryString(dataHandler, urlObj, viewrOnly);
-
-        return urlUtils.buildFullUrl(urlObj);
+        const urlObj = urlUtils.parseUrl(url);
+        return urlUtils.getOptionsQueryString(dataHandler, urlObj, viewrOnly)
+            .then(query => {
+                urlObj.query = query;
+                return urlUtils.buildFullUrl(urlObj);
+            });
     }
 
     function createOrActivateEditorTab(siteId, metaSiteId) {
@@ -113,22 +115,23 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
                 var baseEditorUrl = 'http://editor.wix.com/html/editor/web/renderer/edit/' + siteId;
                 var urlObj = urlUtils.parseUrl(currentUrl);
                 urlObj.query.metaSiteId = metaSiteId;
-                var editorUrl = urlUtils.setUrlParams(baseEditorUrl, urlUtils.getOptionsQueryString(dataHandler, urlObj));
+                urlUtils.setUrlParams(baseEditorUrl, urlUtils.getOptionsQueryString(dataHandler, urlObj))
+                    .then(editorUrl => {
+                        const editorTab = _.find(tabs, function (tab) {
+                            const tabUrlObj = urlUtils.parseUrl(tab.url);
+                            return tabUrlObj.query.metaSiteId === metaSiteId && _.endsWith(tabUrlObj.path, siteId);
+                        });
 
-                var editorTab = _.find(tabs, function (tab) {
-                    var tabUrlObj = urlUtils.parseUrl(tab.url);
-                    return tabUrlObj.query.metaSiteId === metaSiteId && _.endsWith(tabUrlObj.path, siteId);
-                });
-
-                if (!editorTab) {
-                    chrome.tabs.create({url: editorUrl});
-                } else {
-                    chrome.tabs.update(editorTab.id, {selected: true});
-                }
+                        if (!editorTab) {
+                            chrome.tabs.create({url: editorUrl});
+                        } else {
+                            chrome.tabs.update(editorTab.id, {selected: true});
+                        }
+                    });
             });
         }
 
-        dataHandler.updateLatestVersions()
+        dataHandler.update()
             .then(setUrl)
             .catch(setUrl);
     }
@@ -189,18 +192,18 @@ require(['lodash', 'dataHandler', 'utils/urlUtils'], function (_, dataHandler, u
             function updateUrl() {
                 utils.isEditor(function (editor) {
                     if (editor) {
-                        chrome.tabs.update(tabId, {url: applyOptions(currentUrl, false)});
+                        applyOptions(currentUrl, false).then(url => chrome.tabs.update(tabId, {url}));
                     }
                 });
 
                 utils.isViewer(function (viewer) {
                     if (viewer) {
-                        chrome.tabs.update(tabId, {url: applyOptions(currentUrl, true)});
+                        applyOptions(currentUrl, true).then(url => chrome.tabs.update(tabId, {url}));
                     }
                 });
             }
 
-            dataHandler.updateLatestVersions()
+            dataHandler.update()
                 .then(updateUrl)
                 .catch(updateUrl);
         },

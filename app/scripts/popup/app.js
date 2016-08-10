@@ -24,9 +24,9 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
             this.backgroundPageUtils = chrome.extension.getBackgroundPage().Utils;
 
             if (!dataHandler.isReady) {
-                _.delay(function () {
+                _.delay(() => {
                     this.setState(getSettings.call(this));
-                }.bind(this), 300);
+                }, 300);
             }
 
             return _.assign({
@@ -50,33 +50,33 @@ define(['react', 'lodash', 'options/dataHandler', 'popup/app.rt'], function (Rea
                 backgroundPageUtils.getComponents(this.handleSearchResults);
             }
 
-            backgroundPageUtils.getSiteLocations(function (locations) {
+            backgroundPageUtils.getSiteLocations(locations => {
                 this.setState({
                     locations: {
                         previewUrl: settings.showPreviewBtn && locations.previewUrl,
                         publicUrl: settings.showPublicButton && locations.publicUrl
                     }
                 });
-            }.bind(this));
-            backgroundPageUtils.isEditor(this.updateState.bind(this, 'isEditor'));
-            backgroundPageUtils.isViewer(this.updateState.bind(this, 'isViewer'));
-            backgroundPageUtils.isPreview(this.updateState.bind(this, 'isPreview'));
-	        var updateImpersonationMode = this.updateState.bind(this, 'isImpersonationMode');
-	        setTimeout(function () {
+            });
+            backgroundPageUtils.isEditor(value => this.updateState('isEditor', value));
+            backgroundPageUtils.isViewer(value => this.updateState('isViewer', value));
+            backgroundPageUtils.isPreview(value => this.updateState('isPreview', value));
+	        const updateImpersonationMode = value => this.updateState('isImpersonationMode', value);
+	        setTimeout(() => {
 		        backgroundPageUtils.isImpersonationMode(updateImpersonationMode);
 	        }, 100);
         },
         componentDidMount: function () {
-            dataHandler.updateLatestVersions()
-                .then(function () {
+            dataHandler.update()
+                .then(() => {
                     var state = _.pick(this.state, ['ReactSource', 'EditorSource']);
                     state.ReactSource.versions = dataHandler.ReactSource.versions;
                     state.EditorSource.versions = dataHandler.EditorSource.versions;
                     this.setState(state); //eslint-disable-line react/no-did-mount-set-state
-                }.bind(this))
-                .catch(function () {
+                })
+                .catch(() => {
                     this.setState({updateFailed: true}); //eslint-disable-line react/no-did-mount-set-state
-                }.bind(this));
+                });
         },
         componentWillUpdate: function () {
             if (this.state.showComponents && this.state.loading) {

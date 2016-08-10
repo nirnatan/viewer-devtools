@@ -228,92 +228,101 @@ define('utils/urlUtils', ['lodash'], (_) => {
       return _(experimentsObj).pick(Boolean).keys().union(all).compact().uniq().join(',');
     },
     getOptionsQueryString: function(dataHandler, urlObj, viewerOnly) {
-      var isEditor = !viewerOnly;
-      var queryObj = urlObj.query || {};
+      return dataHandler.updateModifiedPackages()
+        .then(() => {
+          var isEditor = !viewerOnly;
+          var queryObj = urlObj.query || {};
 
-      var packages = dataHandler.packages || {};
-      var settings = dataHandler.settings || {};
-      var platform = dataHandler.platform || {};
-      if (settings.showComponents) {
-        packages.react = true;
-      }
-
-      queryObj.debug = _.all(packages) ? 'all' : _(packages).pick(Boolean).keys().join(',');
-
-      if (isEditor && settings.disableLeavePagePopUp) {
-        queryObj.leavePagePopUp = false;
-      }
-
-      if (settings.disableNewRelic) {
-        queryObj.petri_ovr = 'specs.EnableNewRelicInSanta:false'; // jshint ignore:line
-        if (isEditor) {
-          queryObj.petri_ovr += ';specs.DisableNewRelicScriptsSantaEditor:true';
-        }
-      }
-
-      var reactSource = dataHandler.ReactSource;
-      // reactSource.versions = ['none', 'local', 'Latest RC', latest rc version]
-      var latestRcVersion = reactSource.versions[3];
-      switch (reactSource.version) {
-        case 'none':
-          break;
-        case 'local':
-          queryObj.ReactSource = 'http://localhost';
-          if (settings.useWixCodeRuntimeSource) {
-            queryObj.WixCodeRuntimeSource = latestRcVersion;
+          var packages = dataHandler.packages || {};
+          var modifiedPackages = dataHandler.modifiedPackages || [];
+          var settings = dataHandler.settings || {};
+          var platform = dataHandler.platform || {};
+          if (settings.showComponents) {
+            packages.react = true;
           }
-          break;
-        case 'Latest RC':
-          queryObj.ReactSource = latestRcVersion;
-          delete queryObj.WixCodeRuntimeSource;
-          break;
-        default:
-          queryObj.ReactSource = reactSource.version;
-          delete queryObj.WixCodeRuntimeSource;
-      }
 
-      var editorSource = dataHandler.EditorSource;
-      if (isEditor) {
-        switch (editorSource.version) {
-          case 'none':
-            break;
-          case 'local':
-            queryObj.EditorSource = 'http://localhost/editor-base';
-            break;
-          case 'Latest RC':
-            // editorSource.versions = ['none', 'local', 'Latest RC', latest rc version]
-            queryObj.EditorSource = editorSource.versions[3];
-            break;
-          default:
-            queryObj.EditorSource = editorSource.version;
-        }
-      }
+          if (_.all(packages)) {
+            queryObj.debug = 'all';
+          } else {
+            const allPackages = settings.debugModifiedPackages ? _.assign(packages, _.zipObject(modifiedPackages, _.times(modifiedPackages.length, ()=>true))) : packages;
+            queryObj.debug = _(allPackages).pick(Boolean).keys().join(',');
+          }
 
-      if (settings.useWixCodeLocalSdk) {
-        queryObj.sdkSource = 'http://localhost/wixcode-sdk/build/wix.js';
-      }
+          if (isEditor && settings.disableLeavePagePopUp) {
+            queryObj.leavePagePopUp = false;
+          }
 
-      var runningExperimentsString = this.getRunningExperimentsString(dataHandler.santaExperiments, dataHandler.editorExperiments, dataHandler.custom.experiments, queryObj.experiments);
-      if (runningExperimentsString) {
-        queryObj.experiments = runningExperimentsString;
-      } else {
-        delete queryObj.experiments;
-      }
+          if (settings.disableNewRelic) {
+            queryObj.petri_ovr = 'specs.EnableNewRelicInSanta:false'; // jshint ignore:line
+            if (isEditor) {
+              queryObj.petri_ovr += ';specs.DisableNewRelicScriptsSantaEditor:true';
+            }
+          }
 
-      if (platform.usePlatformOverrides) {
-        const getQueryParam = ({ port, applicationId }, path) => `port:${port},path:${path},id:${applicationId}`;
-        queryObj.editorPlatformAppSources = getQueryParam(platform, platform.editor);
-        queryObj.viewerPlatformAppSources = getQueryParam(platform, platform.viewer);
-      }
+          var reactSource = dataHandler.ReactSource;
+          // reactSource.versions = ['none', 'local', 'Latest RC', latest rc version]
+          var latestRcVersion = reactSource.versions[3];
+          switch (reactSource.version) {
+            case 'none':
+              break;
+            case 'local':
+              queryObj.ReactSource = 'http://localhost';
+              if (settings.useWixCodeRuntimeSource) {
+                queryObj.WixCodeRuntimeSource = latestRcVersion;
+              }
+              break;
+            case 'Latest RC':
+              queryObj.ReactSource = latestRcVersion;
+              delete queryObj.WixCodeRuntimeSource;
+              break;
+            default:
+              queryObj.ReactSource = reactSource.version;
+              delete queryObj.WixCodeRuntimeSource;
+          }
 
-      var queryParams = settings.additionalQueryParams.split('&');
-      queryParams.reduce((acc, query) => {
-        const param = query.split('=');
-        return Object.assign(acc, {
-          [param[0]]: param[1] });
-      }, queryObj);
+          var editorSource = dataHandler.EditorSource;
+          if (isEditor) {
+            switch (editorSource.version) {
+              case 'none':
+                break;
+              case 'local':
+                queryObj.EditorSource = 'http://localhost/editor-base';
+                break;
+              case 'Latest RC':
+                // editorSource.versions = ['none', 'local', 'Latest RC', latest rc version]
+                queryObj.EditorSource = editorSource.versions[3];
+                break;
+              default:
+                queryObj.EditorSource = editorSource.version;
+            }
+          }
 
-      return queryObj;
+          if (settings.useWixCodeLocalSdk) {
+            queryObj.sdkSource = 'http://localhost/wixcode-sdk/build/wix.js';
+          }
+
+          var runningExperimentsString = this.getRunningExperimentsString(dataHandler.santaExperiments, dataHandler.editorExperiments, dataHandler.custom.experiments, queryObj.experiments);
+          if (runningExperimentsString) {
+            queryObj.experiments = runningExperimentsString;
+          } else {
+            delete queryObj.experiments;
+          }
+
+          if (platform.usePlatformOverrides) {
+            const getQueryParam = ({ port, applicationId }, path) => `port:${port},path:${path},id:${applicationId}`;
+            queryObj.editorPlatformAppSources = getQueryParam(platform, platform.editor);
+            queryObj.viewerPlatformAppSources = getQueryParam(platform, platform.viewer);
+          }
+
+          var queryParams = settings.additionalQueryParams.split('&');
+          queryParams.reduce((acc, query) => {
+            const param = query.split('=');
+            return Object.assign(acc, {
+              [param[0]]: param[1] });
+          }, queryObj);
+
+          return queryObj;
+        });
     }
   };
 

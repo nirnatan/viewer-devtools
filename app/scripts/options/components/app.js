@@ -23,7 +23,7 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
 	}
 
 	function updatedExperiments(experiments) {
-		return new Promise(function (callback) {
+		return new Promise(callback => {
 			var remainingExperiments = _.clone(experiments);
 			var groups = ['santaExperiments', 'editorExperiments'];
 			var currentState = _.clone(this.state);
@@ -44,7 +44,7 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
 			}
 
 			this.setState(newState, callback);
-		}.bind(this));
+		});
 	}
 
 	function mergeExperiments() {
@@ -58,7 +58,7 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
 			var allExperimentsNames = _(santaExperiments).union(editorExperiments).keys().value();
 			var intersection = _.intersection(exps, allExperimentsNames);
 			if (!_.isEmpty(intersection)) {
-				exps = _.reject(exps, _.has.bind(_, intersection));
+				exps = _.reject(exps, exp => _.has(intersection, exp));
 				dataHandler.set('custom', {experiments: exps.join(', ')});
 
 				_.forEach(intersection, function (exp) {
@@ -87,10 +87,12 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
 				ReactSource: {},
 				EditorSource: {},
 				updateFailed: false,
-				features: []
+				features: [],
+				settings: {},
+				modifiedPackages: []
 			};
 
-			setTimeout(function () {
+			setTimeout(() => {
 				mergeExperiments();
 				var custom = dataHandler.custom;
 				var features = dataHandler.features;
@@ -102,25 +104,27 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
 					packages: dataHandler.packages,
 					ReactSource: dataHandler.ReactSource,
 					EditorSource: dataHandler.EditorSource,
+					settings: dataHandler.settings,
+					modifiedPackages: dataHandler.modifiedPackages,
 					features: features
 				});
 
 				if (_.isEmpty(features)) {
 					dataHandler.updateFeaturePresets()
-						.then(function (features) {
-							this.setState({features: features});
-						}.bind(this));
+						.then(featurePresets => {
+							this.setState({features: featurePresets});
+						});
 				}
-			}.bind(this), 100);
+			}, 100);
 
 			return emptyState;
 		},
 		componentDidMount: function () {
-			dataHandler.updateLatestVersions()
+			dataHandler.update()
 				.then(this.onVersionsUpdated)
-				.catch(function () {
+				.catch(() => {
 					this.setState({updateFailed: true});
-				}.bind(this));
+				});
 		},
 		onVersionsUpdated: function () {
 			var state = _.pick(this.state, ['ReactSource', 'EditorSource']);
@@ -186,6 +190,25 @@ define(['react', 'react-dom', 'lodash', 'dataHandler', './app.rt'], function (Re
 			var state = {};
 			state[type] = value;
 			this.setState(state);
+		},
+		debugModifiedPackages() {
+			const {settings: {debugModifiedPackages}} = this.state;
+			const newSettings = _.defaults({debugModifiedPackages: !debugModifiedPackages}, this.state);
+
+			dataHandler.set('settings', newSettings);
+			this.setState({settings: newSettings});
+		},
+		setModifiedPackages() {
+			dataHandler.updateModifiedPackages()
+				.then(() => {
+					const packages = _.mapValues(this.state.packages, () => false);
+					dataHandler.modifiedPackages.forEach(packageName => {
+						packages[packageName] = true;
+					});
+
+					this.setState({packages: packages});
+					dataHandler.set('packages', packages);
+				});
 		},
 		render: template
 	});

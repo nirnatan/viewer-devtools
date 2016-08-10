@@ -65,6 +65,14 @@
                             </div>
                         </baseUI.Tab>
                         <baseUI.Tab eventKey={2} title="Debug Packages">
+                            <div class="debug-modified-packages">
+                              <baseUI.Input type="checkbox"
+                                            checked="{this.state.settings.debugModifiedPackages}"
+                                            onChange="{this.debugModifiedPackages}"
+                                            label="Auto debug modified packages"/>
+                              <baseUI.Button bsSize="small" bsStyle="primary" onClick="{this.setModifiedPackages}">Set Modified</baseUI.Button>
+                            </div>
+                            <hr class="separator"/>
                             <multiSelector class="col-3" items="{this.state.packages}"
                                            selectAll="{this.selectAll.bind(this, 'packages')}"
                                            onItemChanged="{this.onPackageChanged}"/>

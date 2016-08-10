@@ -4,6 +4,19 @@
 .app {
   margin: 10px 30px;
 
+  .debug-modified-packages {
+    > .form-group {
+      margin-top: 10px;
+      margin-right: 15px;
+      display: inline-block;
+    }
+  }
+
+  .separator {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
   .panel-body {
 
     > .form-group {
