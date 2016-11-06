@@ -1,4 +1,0 @@
-<div>
-    <!--<button onClick="{this.inspectElement}" class="inspect">Inspect</button>-->
-    <div ref="json"></div>
-</div>
