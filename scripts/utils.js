@@ -45,11 +45,16 @@ const getPackages = root => {
 };
 
 const createConfig = (output, project) => {
+  var outputDirectory = path.join(__dirname, '..', 'src', 'generated');
+  if (!fs.existsSync(outputDirectory)){
+    fs.mkdirSync(outputDirectory);
+  }
+
   const root = '/Users/Nir_Natan/Projects';
   return getExperiments(path.join(root, project))
     .then(experiments => (
       new Promise(res => {
-        fs.writeFile(path.join(__dirname, '..', 'src', 'generated', output), JSON.stringify({
+        fs.writeFile(path.join(outputDirectory, output), JSON.stringify({
           packages: getPackages(path.join(root, project)),
           experiments,
         }), res);
