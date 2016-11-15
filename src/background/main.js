@@ -2,27 +2,59 @@ import { startsWith } from 'lodash';
 import URL from 'url-parse';
 import buildUrl from './urlBuilder';
 
-let currentUrl;
-let tabId;
-
-chrome.tabs.onActiveChanged.addListener(id => {
-  chrome.tabs.get(id, tab => {
-    if (tab.url.indexOf('chrome-devtools') !== 0 && tab.url.indexOf('chrome-extension') !== 0) {
-      currentUrl = tab.url;
-      tabId = id;
+const getActiveTab = () => {
+  return new Promise(res => {
+    chrome.tabs.query({ active: true, currentWindow: true }, t => res(t[0]));
+  }).then(tab => {
+    if (tab) {
+      return tab;
     }
+    return new Promise(res => {
+      setTimeout(() => {
+        getActiveTab().then(res);
+      }, 100);
+    });
   });
-});
+};
 
-chrome.tabs.onUpdated.addListener((id, changeInfo, tab) => {
-  if (tabId === id) {
-    currentUrl = changeInfo.url || tab.url;
-  }
-});
+const executeScript = script => {
+  return getActiveTab().then(({ id, url }) => {
+    if (startsWith(url, 'chrome://')) {
+      return Promise.resolve();
+    }
+
+    return new Promise(res => {
+      chrome.tabs.executeScript(id, {
+        code: script,
+      }, results => res(results && results[0]));
+    });
+  });
+};
+
+const isViewer = () => executeScript("!!Array.from(document.getElementsByTagName('meta')).find(e => e.httpEquiv === 'X-Wix-Renderer-Server')");
+
+const isEditor = () => executeScript("!!Array.from(document.getElementsByTagName('meta')).find(e => e.httpEquiv === 'X-Wix-Editor-Server')");
+
+const updateBrowserActionIcon = () => {
+  Promise.all([isEditor(), isViewer()]).then(([editor, viewer]) => {
+    const iconSufix = (editor || viewer) ? '' : '-disabled';
+    chrome.browserAction.setIcon({
+      path: {
+        19: `assets/images/icon-19${iconSufix}.png`,
+        38: `assets/images/icon-38${iconSufix}.png`,
+      },
+    });
+  });
+};
+
+chrome.tabs.onActiveChanged.addListener(() => updateBrowserActionIcon());
+chrome.tabs.onUpdated.addListener(() => updateBrowserActionIcon());
 
 const applySettings = (option = 'All') => {
-  buildUrl(currentUrl, option).then(url => {
-    chrome.tabs.update(tabId, { url });
+  getActiveTab().then(({ url, id }) => {
+    buildUrl(url, option).then(newUrl => {
+      chrome.tabs.update(id, { url: newUrl });
+    });
   });
 };
 
@@ -31,9 +63,11 @@ const logBackIn = () => {
 };
 
 const sendToContentPage = request => (
-  new Promise((res => {
-    chrome.tabs.sendMessage(tabId, request, res);
-  }))
+  getActiveTab().then(({ id }) => {
+    return new Promise((res => {
+      chrome.tabs.sendMessage(id, request, res);
+    }));
+  })
 );
 
 const getCurrentUsername = () => {
@@ -41,11 +75,13 @@ const getCurrentUsername = () => {
 };
 
 const addExperiment = experiment => {
-  const parsedUrl = new URL(currentUrl, true);
-  delete parsedUrl.search;
-  parsedUrl.query.experiments = parsedUrl.query.experiments ? `${parsedUrl.query.experiments},${experiment}` : experiment;
+  getActiveTab().then(({ url, id }) => {
+    const parsedUrl = new URL(url, true);
+    delete parsedUrl.search;
+    parsedUrl.query.experiments = parsedUrl.query.experiments ? `${parsedUrl.query.experiments},${experiment}` : experiment;
 
-  chrome.tabs.update(tabId, { url: parsedUrl.toString() });
+    chrome.tabs.update(id, { url: parsedUrl.toString() });
+  });
 };
 
 const openOptionsPage = () => {
@@ -54,46 +90,39 @@ const openOptionsPage = () => {
 };
 
 const debugPackage = (project, pkg) => {
-  const parsedUrl = new URL(currentUrl, true);
-  delete parsedUrl.search;
-  if (!parsedUrl.query.debug) {
-    parsedUrl.query.debug = pkg;
-    chrome.tabs.update(tabId, { url: parsedUrl.toString() });
-    return;
-  }
+  getActiveTab().then(({ id, url }) => {
+    const parsedUrl = new URL(url, true);
+    delete parsedUrl.search;
+    if (!parsedUrl.query.debug) {
+      parsedUrl.query.debug = pkg;
+      chrome.tabs.update(id, { url: parsedUrl.toString() });
+      return;
+    }
 
-  const packages = parsedUrl.query.debug.split(',');
-  if (parsedUrl.query.debug === 'all' || packages.indexOf(pkg) !== -1) {
-    return;
-  }
+    const packages = parsedUrl.query.debug.split(',');
+    if (parsedUrl.query.debug === 'all' || packages.indexOf(pkg) !== -1) {
+      return;
+    }
 
-
-  chrome.tabs.update(tabId, { url: parsedUrl.toString() });
-};
-
-const executeScript = script => {
-  return new Promise(res => {
-    chrome.tabs.executeScript(tabId, {
-      code: script,
-    }, results => res(results[0]));
+    chrome.tabs.update(id, { url: parsedUrl.toString() });
   });
 };
 
-const isViewer = () => executeScript("!!Array.from(document.getElementsByTagName('meta')).find(e => e.httpEquiv === 'X-Wix-Renderer-Server')");
-
-const isEditor = () => executeScript("!!Array.from(document.getElementsByTagName('meta')).find(e => e.httpEquiv === 'X-Wix-Editor-Server')");
-
 const isMobileView = () => {
-  const parsedUrl = new URL(currentUrl, true);
-  return parsedUrl.query.showMobileView === 'true';
+  getActiveTab().then(({ url }) => {
+    const parsedUrl = new URL(url, true);
+    return parsedUrl.query.showMobileView === 'true';
+  });
 };
 
 const setMobileView = isMobile => {
-  const parsedUrl = new URL(currentUrl, true);
-  delete parsedUrl.search;
-  parsedUrl.query.showMobileView = isMobile;
+  getActiveTab().then(({ url, id }) => {
+    const parsedUrl = new URL(url, true);
+    delete parsedUrl.search;
+    parsedUrl.query.showMobileView = isMobile;
 
-  chrome.tabs.update(tabId, { url: parsedUrl.toString() });
+    chrome.tabs.update(id, { url: parsedUrl.toString() });
+  });
 };
 
 const openEditor = () => {
