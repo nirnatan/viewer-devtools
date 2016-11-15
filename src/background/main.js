@@ -108,12 +108,12 @@ const debugPackage = (project, pkg) => {
   });
 };
 
-const isMobileView = () => {
+const isMobileView = () => (
   getActiveTab().then(({ url }) => {
     const parsedUrl = new URL(url, true);
     return parsedUrl.query.showMobileView === 'true';
-  });
-};
+  })
+);
 
 const setMobileView = isMobile => {
   getActiveTab().then(({ url, id }) => {
