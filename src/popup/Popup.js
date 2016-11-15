@@ -118,7 +118,6 @@ const Popup = (props) => {
           applySettings(applyOptions.DEBUG);
         }}
       />
-      <Divider style={styles.divider} />
       <AutoCompleteWithAction
         floatingLabelText="Add Experiment"
         dataSource={getExperiments(props.experiments)}
@@ -138,7 +137,6 @@ const Popup = (props) => {
         </ButtonWithPopup>
         <ActionItems buttonStyle={styles.button} settings={props.settings} />
       </div>
-      <Divider style={styles.divider} />
     </div>
   );
 };
@@ -156,7 +154,6 @@ Popup.propTypes = {
   // State
   experiment: PropTypes.string.isRequired,
   package: PropTypes.string.isRequired,
-  username: PropTypes.string.isRequired,
 
   // State Actions
   setSelectedExperiment: PropTypes.func.isRequired,
