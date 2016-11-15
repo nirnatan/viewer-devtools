@@ -1,5 +1,5 @@
 import URL from 'url-parse';
-import { pickBy, reduce } from 'lodash';
+import { pickBy, reduce, uniq } from 'lodash';
 import { getStoreData } from '../store/localStorage';
 
 const getDebugPackages = projectsPackages => {
@@ -63,12 +63,12 @@ const applyExperiments = (queryObj, experiments, features) => {
   openedExperiments.push(...experiments.additional.on);
   openedExperiments = reduce(features, (acc, feature) => (feature.active ? acc.concat(feature.experiments) : acc), openedExperiments);
   if (openedExperiments.length) {
-    experimentsParams.experiments = openedExperiments.join(',');
+    experimentsParams.experiments = uniq(openedExperiments).join(',');
   }
   const closedExperiments = types.reduce((acc, type) => acc.concat(Object.keys(pickBy(experiments[type].off))), []);
   closedExperiments.push(...experiments.additional.off);
   if (closedExperiments.length) {
-    experimentsParams.experimentsoff = closedExperiments.join(',');
+    experimentsParams.experimentsoff = uniq(closedExperiments).join(',');
   }
 
   return Object.assign({}, queryObj, experimentsParams);
