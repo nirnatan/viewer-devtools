@@ -19,7 +19,7 @@ const getActiveTab = () => {
 
 const executeScript = script => {
   return getActiveTab().then(({ id, url }) => {
-    if (startsWith(url, 'chrome://')) {
+    if (startsWith(url, 'chrome')) {
       return Promise.resolve();
     }
 
