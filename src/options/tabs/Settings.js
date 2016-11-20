@@ -21,7 +21,8 @@ const Settings = (props) => {
       <TextField
         style={styles.additionalQueryParams}
         floatingLabelText="Additional Query Params"
-        value={props.settings.additionalQueryParams}
+        key={props.settings.additionalQueryParams}
+        defaultValue={props.settings.additionalQueryParams}
         hintText="Enter additional query params you want to add to your url..."
         onBlur={evt => props.updateSettings({ additionalQueryParams: evt.target.value })}
       />
