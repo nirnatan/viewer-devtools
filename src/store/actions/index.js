@@ -115,10 +115,6 @@ export const removeAppCustomVersion = (id) => ({
   id,
 });
 
-export const toggleLatestRcForViewerWorker = () => ({
-  type: 'TOGGLE_UES_LATEST_RC_FOR_VIEWER_WORKER',
-});
-
 export const toggleLocalWixCodeSdk = () => ({
   type: 'TOGGLE_UES_LOCAL_WIX_CODE_SDK',
 });

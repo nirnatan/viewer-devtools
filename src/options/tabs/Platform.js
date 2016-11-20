@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { mapProps } from 'recompose';
 import { reduce } from 'lodash';
@@ -20,13 +19,6 @@ const Platform = props => {
   let appId;
   let appVersion;
   return (<div style={styles.platform}>
-    <Toggle
-      style={styles.useCustomApp}
-      label="Use Latest RC for the viewer worker runtime (only when working with local code)"
-      labelPosition="right"
-      toggled={props.platform.useLatestRcForViewerWorker}
-      onToggle={() => props.toggleLatestRcForViewerWorker()}
-    />
     <Toggle
       style={styles.useCustomApp}
       label="Use local wixCode SDK"
@@ -98,13 +90,13 @@ const Platform = props => {
 const { PropTypes } = React;
 Platform.propTypes = {
   platform: PropTypes.shape({
-    useLatestRcForViewerWorker: PropTypes.bool,
     useCustomApp: PropTypes.bool,
     applicationId: PropTypes.string,
     port: PropTypes.string,
     editor: PropTypes.string,
     viewer: PropTypes.string,
     appsCustomVersions: PropTypes.object.isRequired,
+    useLocalWixCodeSdk: PropTypes.bool.isRequired,
   }),
 
   // Actions
@@ -113,7 +105,7 @@ Platform.propTypes = {
   updatePort: PropTypes.func.isRequired,
   updatePlatformEditor: PropTypes.func.isRequired,
   updatePlatformViewer: PropTypes.func.isRequired,
-  toggleLatestRcForViewerWorker: PropTypes.func.isRequired,
+  toggleLocalWixCodeSdk: PropTypes.func.isRequired,
   addAppCustomVersion: PropTypes.func.isRequired,
   removeAppCustomVersion: PropTypes.func.isRequired,
 };

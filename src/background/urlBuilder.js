@@ -88,7 +88,7 @@ const applyPlatform = (queryObj, platform, versions) => {
   if (viewerPlatformAppSources) {
     platformQueryParams.viewerPlatformAppSources = viewerPlatformAppSources;
   }
-  if (versions.viewer.selected === 'local' && platform.useLatestRcForViewerWorker) {
+  if (versions.viewer.selected === 'local') {
     platformQueryParams.WixCodeRuntimeSource = versions.viewer.versions[0];
   }
   if (platform.useLocalWixCodeSdk) {

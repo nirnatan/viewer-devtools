@@ -1,7 +1,6 @@
 import Immutable from 'immutable';
 
 const DEFAULT_STORE = Immutable.fromJS({
-  useLatestRcForViewerWorker: false,
   useLocalWixCodeSdk: false,
   useCustomApp: false,
   applicationId: '',
@@ -21,8 +20,6 @@ const removeAppCustomVersion = (state, { id }) => {
 
 const platform = (state = DEFAULT_STORE, action) => {
   switch (action.type) {
-    case 'TOGGLE_UES_LATEST_RC_FOR_VIEWER_WORKER':
-      return state.updateIn(['useLatestRcForViewerWorker'], value => !value);
     case 'TOGGLE_UES_LOCAL_WIX_CODE_SDK':
       return state.updateIn(['useLocalWixCodeSdk'], value => !value);
     case 'UPDATE_PLATFORM_APPLICATION_ID':
