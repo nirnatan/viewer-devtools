@@ -21,14 +21,14 @@ const Settings = (props) => {
       <TextField
         style={styles.additionalQueryParams}
         floatingLabelText="Additional Query Params"
-        key={props.settings.additionalQueryParams}
+        key={props.settings.additionalQueryParams || 'additionalQueryParams'}
         defaultValue={props.settings.additionalQueryParams}
         hintText="Enter additional query params you want to add to your url..."
         onBlur={evt => props.updateSettings({ additionalQueryParams: evt.target.value })}
       />
       <TextField
         floatingLabelText="Username"
-        key={props.settings.username}
+        key={props.settings.username || 'username'}
         defaultValue={props.settings.username}
         hintText="Enter your username"
         onBlur={evt => props.updateSettings({ username: evt.target.value })}
