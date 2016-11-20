@@ -57,7 +57,7 @@ const styles = {
     flexDirection: 'row-reverse',
     justifyContent: 'space-between',
   },
-  buttons: { display: 'flex', flexDirection: 'row' },
+  buttons: { display: 'flex', flexDirection: 'row', marginTop: 15, marginBottom: 25 },
   button: { marginRight: 10 },
 };
 
@@ -115,7 +115,20 @@ const Popup = (props) => {
       </div>
       <h3>Change Version</h3>
       <Versions flat />
+      <div style={styles.buttons}>
+        <ButtonWithPopup label="Apply" onClick={applySettings(applyOptions.ALL)} style={styles.button}>
+          <Menu>
+            <MenuItem primaryText="Apply All" onTouchTap={applySettings(applyOptions.ALL)} />
+            <MenuItem primaryText="Apply Experiments" onTouchTap={applySettings(applyOptions.EXPERIMENTS)} />
+            <MenuItem primaryText="Apply Versions" onTouchTap={applySettings(applyOptions.VERSIONS)} />
+            <MenuItem primaryText="Apply Debug" onTouchTap={applySettings(applyOptions.DEBUG)} />
+            <MenuItem primaryText="Apply Platform" onTouchTap={applySettings(applyOptions.PLATFORM)} />
+          </Menu>
+        </ButtonWithPopup>
+        <ActionItems buttonStyle={styles.button} settings={props.settings} />
+      </div>
       <Divider style={styles.divider} />
+      <h3>Quick Actions</h3>
       <div style={styles.debug}>
         <AutoCompleteWithAction
           floatingLabelText="Add Package to debug"
@@ -133,19 +146,6 @@ const Popup = (props) => {
         onNewRequest={exp => props.setSelectedExperiment(exp)}
         onActionClicked={() => getBackgroundPage().then(({ Utils }) => Utils.addExperiment(props.experiment))}
       />
-      <Divider style={styles.divider} />
-      <div style={styles.buttons}>
-        <ButtonWithPopup label="Apply" onClick={applySettings(applyOptions.ALL)} style={styles.button}>
-          <Menu>
-            <MenuItem primaryText="Apply All" onTouchTap={applySettings(applyOptions.ALL)} />
-            <MenuItem primaryText="Apply Experiments" onTouchTap={applySettings(applyOptions.EXPERIMENTS)} />
-            <MenuItem primaryText="Apply Versions" onTouchTap={applySettings(applyOptions.VERSIONS)} />
-            <MenuItem primaryText="Apply Debug" onTouchTap={applySettings(applyOptions.DEBUG)} />
-            <MenuItem primaryText="Apply Platform" onTouchTap={applySettings(applyOptions.PLATFORM)} />
-          </Menu>
-        </ButtonWithPopup>
-        <ActionItems buttonStyle={styles.button} settings={props.settings} />
-      </div>
     </div>
   );
 };
