@@ -5,6 +5,8 @@ import { withState, mapProps, compose } from 'recompose';
 import Divider from 'material-ui/Divider';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
+import RaisedButton from 'material-ui/RaisedButton';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
 import AutoCompleteWithAction from '../components/AutoCompleteWithAction';
 import ButtonWithPopup from '../components/ButtonWithPopup';
 import Versions from '../components/Versions';
@@ -41,9 +43,9 @@ const styles = {
   divider: { marginTop: 10, marginBottom: 10 },
   impersonateImg: { height: 36, width: 36 },
   impersonate: { padding: 10, paddingBottom: 0, cursor: 'pointer', display: 'inline-block' },
-  debugPackages: {
-    autoComplete: { display: 'inline-block' },
-  },
+  debug: { display: 'flex', alignItems: 'center' },
+  debugAll: { height: 36, marginLeft: 20, fontSize: 'smaller' },
+  debugAllText: { lineHeight: 'inherit' },
   settings: { width: 30, height: 30, cursor: 'pointer' },
   fixed: {
     position: 'fixed',
@@ -88,6 +90,16 @@ const getExperiments = experiments => {
     .sort();
 };
 
+const addPackage = (packageToAdd) => {
+  const [pkg, project] = packageToAdd.split('_');
+  getBackgroundPage().then(({ Utils }) => Utils.debugPackage(project, pkg));
+};
+
+const debugAll = () => getBackgroundPage().then(({ Utils }) => {
+  Utils.debugAll();
+  window.close();
+});
+
 const Popup = (props) => {
   return (
     <div style={styles.popup}>
@@ -104,20 +116,17 @@ const Popup = (props) => {
       <h3>Change Version</h3>
       <Versions flat />
       <Divider style={styles.divider} />
-      <AutoCompleteWithAction
-        floatingLabelText="Add Package to debug"
-        dataSource={getPackages(props.packages)}
-        onNewRequest={pkg => {
-          props.setSelectedPackage(`${pkg.value.props.primaryText}_${pkg.value.props.secondaryText}`);
-        }}
-        onActionClicked={() => {
-          const [pkg, project] = props.package.split('_');
-          getBackgroundPage()
-            .then(({ Utils }) => Utils.debugPackage(project, pkg));
-          props.setPackage(project, pkg);
-          applySettings(applyOptions.DEBUG);
-        }}
-      />
+      <div style={styles.debug}>
+        <AutoCompleteWithAction
+          floatingLabelText="Add Package to debug"
+          dataSource={getPackages(props.packages)}
+          onNewRequest={pkg => props.setSelectedPackage(`${pkg.value.props.primaryText}_${pkg.value.props.secondaryText}`)}
+          onActionClicked={() => addPackage(props.package)}
+        />
+        <FloatingActionButton mini onClick={debugAll} style={styles.debugAll}>
+          <span style={styles.debugAllText}>Debug All</span>
+        </FloatingActionButton>
+      </div>
       <AutoCompleteWithAction
         floatingLabelText="Add Experiment"
         dataSource={getExperiments(props.experiments)}

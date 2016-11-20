@@ -108,6 +108,19 @@ const debugPackage = (project, pkg) => {
   });
 };
 
+const debugAll = () => {
+  getActiveTab().then(({ id, url }) => {
+    const parsedUrl = new URL(url, true);
+    delete parsedUrl.search;
+    if (parsedUrl.query.debug === 'all') {
+      return;
+    }
+
+    parsedUrl.query.debug = 'all';
+    chrome.tabs.update(id, { url: parsedUrl.toString() });
+  });
+};
+
 const isMobileView = () => (
   getActiveTab().then(({ url }) => {
     const parsedUrl = new URL(url, true);
@@ -167,6 +180,7 @@ window.Utils = {
   setMobileView,
   addExperiment,
   debugPackage,
+  debugAll,
   openOptionsPage,
   openEditor,
 };
