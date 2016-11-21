@@ -1,12 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { mapProps, compose, lifecycle } from 'recompose';
+import { mapProps } from 'recompose';
 import Divider from 'material-ui/Divider';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Subheader from 'material-ui/Subheader';
 import Paper from 'material-ui/Paper';
-import { requestVersions } from '../store/utils';
 import * as actionCreators from '../store/actions/index';
 
 const styles = {
@@ -76,17 +75,7 @@ Versions.propTypes = {
   selectVersion: PropTypes.func.isRequired,
 };
 
-const enhance = compose(
-  mapProps(props => Object.assign({}, props, { editor: props.editor.toJS(), viewer: props.viewer.toJS() })),
-  lifecycle({
-    componentWillMount() {
-      requestVersions()
-        .then(({ editor, viewer }) => {
-          this.props.updateVersions({ editor, viewer });
-        });
-    },
-  })
-);
+const enhance = mapProps(props => Object.assign({}, props, { editor: props.editor.toJS(), viewer: props.viewer.toJS() }));
 
 export default connect(({ versions }, props) => {
   return Object.assign({

@@ -4,9 +4,9 @@ import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import Paper from 'material-ui/Paper';
 import { mapValues } from 'lodash';
-import { compose, mapProps, lifecycle, withState } from 'recompose';
+import { compose, mapProps, withState } from 'recompose';
 import MultiSelectCard from '../../components/MultiSelectCard';
-import { requestFeatures, getSpreadsheetURL } from '../../store/utils';
+import { getSpreadsheetURL } from '../../store/utils';
 import * as actionCreators from '../../store/actions/index';
 
 const styles = {
@@ -55,12 +55,7 @@ Features.propTypes = {
 
 const enhance = compose(
   withState('dialogOpen', 'openDialog', false),
-  mapProps(props => Object.assign({}, props, { features: props.features.toJS() })),
-  lifecycle({
-    componentWillMount() {
-      requestFeatures().then(features => this.props.updateFeatures(features));
-    },
-  })
+  mapProps(props => Object.assign({}, props, { features: props.features.toJS() }))
 );
 
 export default connect(({ features }) => ({ features }), actionCreators)(enhance(Features));
