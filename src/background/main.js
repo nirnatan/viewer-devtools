@@ -104,6 +104,7 @@ const debugPackage = (project, pkg) => {
       return;
     }
 
+    parsedUrl.query.debug = packages.concat(pkg).join(',');
     chrome.tabs.update(id, { url: parsedUrl.toString() });
   });
 };

@@ -92,7 +92,10 @@ const getExperiments = experiments => {
 
 const addPackage = (packageToAdd) => {
   const [pkg, project] = packageToAdd.split('_');
-  getBackgroundPage().then(({ Utils }) => Utils.debugPackage(project, pkg));
+  getBackgroundPage().then(({ Utils }) => {
+    Utils.debugPackage(project, pkg);
+    window.close();
+  });
 };
 
 const debugAll = () => getBackgroundPage().then(({ Utils }) => {
@@ -144,7 +147,10 @@ const Popup = (props) => {
         floatingLabelText="Add Experiment"
         dataSource={getExperiments(props.experiments)}
         onNewRequest={exp => props.setSelectedExperiment(exp)}
-        onActionClicked={() => getBackgroundPage().then(({ Utils }) => Utils.addExperiment(props.experiment))}
+        onActionClicked={() => getBackgroundPage().then(({ Utils }) => {
+          Utils.addExperiment(props.experiment);
+          window.close();
+        })}
       />
     </div>
   );
