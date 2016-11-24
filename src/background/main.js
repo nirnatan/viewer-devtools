@@ -85,8 +85,14 @@ const addExperiment = experiment => {
 };
 
 const openOptionsPage = () => {
-  const optionsURL = chrome.extension.getURL('options.html');
-  window.open(optionsURL);
+  const url = chrome.extension.getURL('options.html');
+  chrome.tabs.query({ url, currentWindow: true }, tabs => {
+    if (!tabs || tabs.length === 0) {
+      window.open(url);
+    } else {
+      chrome.tabs.update(tabs[0].id, { selected: true });
+    }
+  });
 };
 
 const debugPackage = (project, pkg) => {
