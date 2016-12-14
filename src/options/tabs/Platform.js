@@ -36,30 +36,30 @@ const Platform = props => {
     <TextField
       disabled={!props.platform.useCustomApp}
       floatingLabelText="Application ID"
-      value={props.platform.applicationId}
+      defaultValue={props.platform.applicationId}
       hintText="Enter your application id"
-      onChange={evt => props.updatePlatformApplicationId(evt.target.value)}
+      onBlur={evt => props.updatePlatformApplicationId(evt.target.value)}
     /><br />
     <TextField
       disabled={!props.platform.useCustomApp}
       floatingLabelText="Port"
-      value={props.platform.port}
+      defaultValue={props.platform.port}
       hintText="Enter the port of your local server"
-      onChange={evt => props.updatePort(evt.target.value)}
+      onBlur={evt => props.updatePort(evt.target.value)}
     /><br />
     <TextField
       disabled={!props.platform.useCustomApp}
       floatingLabelText="Editor Worker"
-      value={props.platform.editor}
+      defaultValue={props.platform.editor}
       hintText="Enter your Editor file name"
-      onChange={evt => props.updatePlatformEditor(evt.target.value)}
+      onBlur={evt => props.updatePlatformEditor(evt.target.value)}
     /><br />
     <TextField
       disabled={!props.platform.useCustomApp}
       floatingLabelText="Viewer Worker"
-      value={props.platform.viewer}
+      defaultValue={props.platform.viewer}
       hintText="Enter your Viewer file name"
-      onChange={evt => props.updatePlatformViewer(evt.target.value)}
+      onBlur={evt => props.updatePlatformViewer(evt.target.value)}
     />
     <Divider />
     <div style={styles.customAppVersions}>
