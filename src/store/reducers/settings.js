@@ -4,6 +4,7 @@ const DEFAULT_SETTINGS = Immutable.fromJS({
   additionalQueryParams: '',
   disableLeavePagePopUp: false,
   disableNewRelic: true,
+  disableHttps: true,
   showPublicButton: true,
   showPreviewBtn: true,
   username: '',

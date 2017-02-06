@@ -45,6 +45,10 @@ const applySettings = (queryObj, settings) => {
   if (settings.disableNewRelic) {
     result.petri_ovr = 'specs.EnableNewRelicInSanta:false;specs.DisableNewRelicScriptsSantaEditor:true';
   }
+  if (settings.disableHttps) {
+      const disableHttps = 'specs.HttpsAllowedForPremiumSites:false;specs.HttpsAllowedForFreeSites:false';
+      result.petri_ovr = result.petri_ovr ? `${result.petri_ovr};${disableHttps}` :  disableHttps;
+  }
   if (settings.useWixCodeLocalSdk) {
     result.sdkSource = 'http://localhost/wixcode-sdk/build/wix.js';
   }
@@ -139,6 +143,9 @@ export default (location, option) => {
         result = result.then(queryObj => applyVersions(queryObj, store.versions));
       }
       if (option === 'All') {
+        if (store.settings.disableHttps) {
+            parsedUrl.protocol = 'http';
+        }
         result = result.then(queryObj => applySettings(queryObj, store.settings));
       }
       return result;

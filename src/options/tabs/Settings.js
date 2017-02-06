@@ -39,6 +39,13 @@ const Settings = (props) => {
         labelPosition="right"
         toggled={props.settings.disableNewRelic}
         onToggle={() => props.updateSettings({ disableNewRelic: !props.settings.disableNewRelic })}
+      /><br />
+      <Toggle
+        style={styles.toggle}
+        label="Disable HTTPS"
+        labelPosition="right"
+        toggled={props.settings.disableHttps}
+        onToggle={() => props.updateSettings({ disableHttps: !props.settings.disableHttps })}
       />
       <Subheader>Editor</Subheader>
       <Toggle
