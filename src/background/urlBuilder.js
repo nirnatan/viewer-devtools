@@ -52,6 +52,9 @@ const applySettings = (queryObj, settings) => {
   if (settings.useWixCodeLocalSdk) {
     result.sdkSource = 'http://localhost/wixcode-sdk/build/wix.js';
   }
+	if (settings.disableSampleRatio) {
+		result.sampleratio = 'none';
+	}
   if (settings.additionalQueryParams) {
     const additionalQueryParams = new URL(`//dummy?${settings.additionalQueryParams}`, true).query;
     Object.assign(result, additionalQueryParams);

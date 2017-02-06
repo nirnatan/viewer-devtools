@@ -2,9 +2,10 @@ import Immutable from 'immutable';
 
 const DEFAULT_SETTINGS = Immutable.fromJS({
   additionalQueryParams: '',
-  disableLeavePagePopUp: false,
+  disableLeavePagePopUp: true,
   disableNewRelic: true,
   disableHttps: true,
+  disableSampleRatio: false,
   showPublicButton: true,
   showPreviewBtn: true,
   username: '',

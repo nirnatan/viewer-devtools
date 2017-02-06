@@ -15,6 +15,16 @@ const styles = {
 };
 
 const Settings = (props) => {
+  const getToggle = (label, settingsKey) => (
+    <Toggle
+      style={styles.toggle}
+      label={label}
+      labelPosition="right"
+      toggled={props.settings[settingsKey]}
+      onToggle={() => props.updateSettings({[settingsKey]: !props.settings[settingsKey]})}
+    />
+  );
+
   return (
     <div style={styles.general}>
       <Subheader>General</Subheader>
@@ -33,43 +43,13 @@ const Settings = (props) => {
         hintText="Enter your username"
         onBlur={evt => props.updateSettings({ username: evt.target.value })}
       /><br />
-      <Toggle
-        style={styles.toggle}
-        label="Disable NewRelic"
-        labelPosition="right"
-        toggled={props.settings.disableNewRelic}
-        onToggle={() => props.updateSettings({ disableNewRelic: !props.settings.disableNewRelic })}
-      /><br />
-      <Toggle
-        style={styles.toggle}
-        label="Disable HTTPS"
-        labelPosition="right"
-        toggled={props.settings.disableHttps}
-        onToggle={() => props.updateSettings({ disableHttps: !props.settings.disableHttps })}
-      />
+      {getToggle('Disable NewRelic', 'disableNewRelic')}<br />
+      {getToggle('Disable HTTPS', 'disableHttps')}<br />
+      {getToggle('Disable BI sample ratio', 'disableSampleRatio')}
       <Subheader>Editor</Subheader>
-      <Toggle
-        style={styles.toggle}
-        label="Disable Leave Page confirmation Popup"
-        labelPosition="right"
-        toggled={props.settings.disableLeavePagePopUp}
-        onToggle={() => props.updateSettings({ disableLeavePagePopUp: !props.settings.disableLeavePagePopUp })}
-      />
-      <Toggle
-        style={styles.toggle}
-        label="Show open 'Preview' frame in a new window"
-        labelPosition="right"
-        toggled={props.settings.showPreviewButton}
-        onToggle={() => props.updateSettings({ showPreviewButton: !props.settings.showPreviewButton })}
-      />
-      <Toggle
-        style={styles.toggle}
-        label="Show open 'Public' site in a new window"
-        labelPosition="right"
-        toggled={props.settings.showPublicButton}
-        onToggle={() => props.updateSettings({ showPublicButton: !props.settings.showPublicButton })}
-      />
-
+      {getToggle('Disable Leave Page confirmation Popup', 'disableLeavePagePopUp')}
+      {getToggle("Show open 'Preview' frame in a new window", 'showPreviewButton')}
+      {getToggle("Show open 'Public' site in a new window", 'showPublicButton')}
     </div>
   );
 };
@@ -80,6 +60,8 @@ Settings.propTypes = {
     additionalQueryParams: PropTypes.string,
     disableLeavePagePopUp: PropTypes.bool,
     disableNewRelic: PropTypes.bool,
+    disableHttps: PropTypes.bool,
+    disableSampleRatio: PropTypes.bool,
     versionSelectorInPopup: PropTypes.bool,
     showPublicButton: PropTypes.bool,
     showPreviewButton: PropTypes.bool,
