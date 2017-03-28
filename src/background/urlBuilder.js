@@ -105,7 +105,7 @@ const applyPlatform = (queryObj, platform, versions) => {
   return Object.assign({}, queryObj, platformQueryParams);
 };
 
-const applyVersions = (queryObj, versions) => {
+const applyVersions = (queryObj, versions, localServerPort) => {
   const versionsParams = {};
   const updateVersions = (project, param) => {
     switch (versions[project].selected) {
@@ -115,7 +115,7 @@ const applyVersions = (queryObj, versions) => {
         versionsParams[param] = versions[project].versions[0];
         break;
       case 'local':
-        versionsParams[param] = `http://localhost${project === 'editor' ? '/editor-base' : ''}`;
+        versionsParams[param] = `http://localhost${localServerPort && localServerPort !== '80' ? `:${localServerPort}` : ''}${project === 'editor' ? '/editor-base' : ''}`;
         break;
       default:
         versionsParams[param] = versions[project].selected;
@@ -143,7 +143,7 @@ export default (location, option) => {
         result = result.then(queryObj => applyPlatform(queryObj, store.platform, store.versions));
       }
       if (option === 'All' || option === 'Versions') {
-        result = result.then(queryObj => applyVersions(queryObj, store.versions));
+        result = result.then(queryObj => applyVersions(queryObj, store.versions, store.settings.localServerPort));
       }
       if (option === 'All') {
         if (store.settings.disableHttps) {

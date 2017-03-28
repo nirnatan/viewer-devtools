@@ -43,6 +43,13 @@ const Settings = (props) => {
         hintText="Enter your username"
         onBlur={evt => props.updateSettings({ username: evt.target.value })}
       /><br />
+      <TextField
+        floatingLabelText="Local Server Port"
+        key={props.settings.localServerPort}
+        defaultValue={props.settings.localServerPort}
+        hintText="Enter The port of your local server (e.g. 80 or 8888)"
+        onBlur={evt => props.updateSettings({ localServerPort: evt.target.value })}
+      /><br />
       {getToggle('Disable NewRelic', 'disableNewRelic')}<br />
       {getToggle('Disable HTTPS', 'disableHttps')}<br />
       {getToggle('Disable BI sample ratio', 'disableSampleRatio')}
@@ -68,6 +75,7 @@ Settings.propTypes = {
     useWixCodeRuntimeSource: PropTypes.bool,
     applyFeatureVersions: PropTypes.bool,
     username: PropTypes.string,
+    localServerPort: PropTypes.string,
   }).isRequired,
 
   // Actions
