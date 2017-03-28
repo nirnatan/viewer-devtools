@@ -58,6 +58,11 @@ export const setPackage = (project, packageName, value = true) => ({
   value,
 });
 
+export const updateServerPort = (port) => ({
+  type: 'UPDATE_LOCAL_SERVER_PORT',
+  port,
+});
+
 export const selectVersion = (project, version) => ({
   type: 'SELECT_VERSION',
   project,

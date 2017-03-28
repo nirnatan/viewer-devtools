@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { mapProps } from 'recompose';
+import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
@@ -15,6 +16,10 @@ const styles = {
   menuItem: {
     width: 180,
   },
+  localPort: {
+    marginLeft: 17,
+    width: '84%',
+  }
 };
 
 const getItems = (versions) => {
@@ -29,8 +34,25 @@ const getItems = (versions) => {
   );
 
   return ['none', 'local', 'Latest RC'].map(createMenuItem)
-    .concat([<Divider key="divider" />])
+    .concat([<Divider key="divider"/>])
     .concat(versions.map(createMenuItem));
+};
+
+const LocalServerPort = (props) => {
+  return <TextField
+    style={styles.localPort}
+    floatingLabelText="Server Port"
+    key={props.port || 'localServerPort'}
+    defaultValue={props.port}
+    hintText="Enter your server port"
+    onBlur={evt => props.onChange(evt.target.value)}
+  />
+};
+
+const { PropTypes } = React;
+LocalServerPort.PropTypes = {
+  port: PropTypes.string,
+  onChange: PropTypes.func.isRequired
 };
 
 const Versions = (props) => {
@@ -45,6 +67,7 @@ const Versions = (props) => {
       <DropDownMenu style={styles.dropDown} value={props.viewer.selected} onChange={onChange('viewer')}>
         {getItems(props.viewer.versions)}
       </DropDownMenu>
+      {!props.flat && (props.editor.selected === 'local' || props.viewer.selected === 'local') ? <LocalServerPort port={props.localServerPort} onChange={props.updateServerPort}/> : null}
     </div>
   );
 
@@ -59,7 +82,6 @@ const Versions = (props) => {
   );
 };
 
-const { PropTypes } = React;
 Versions.propTypes = {
   viewer: PropTypes.shape({
     versions: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -69,17 +91,20 @@ Versions.propTypes = {
     versions: PropTypes.arrayOf(PropTypes.string).isRequired,
     selected: PropTypes.string,
   }),
+  localServerPort: PropTypes.string,
   flat: PropTypes.bool,
 
   // Actions
   selectVersion: PropTypes.func.isRequired,
+  updateServerPort: PropTypes.func.isRequired,
 };
 
-const enhance = mapProps(props => Object.assign({}, props, { editor: props.editor.toJS(), viewer: props.viewer.toJS() }));
+const enhance = mapProps(props => Object.assign({}, props, {editor: props.editor.toJS(), viewer: props.viewer.toJS()}));
 
 export default connect(({ versions }, props) => {
   return Object.assign({
     editor: versions.get('editor'),
     viewer: versions.get('viewer'),
+    localServerPort: versions.get('localServerPort'),
   }, props);
 }, actionCreators)(enhance(Versions));

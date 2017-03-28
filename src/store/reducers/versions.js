@@ -9,6 +9,7 @@ const DEFAULT_STORE = Immutable.fromJS({
     versions: [],
     selected: null,
   },
+  localServerPort: '80'
 });
 
 const selectVersion = (state, { project, version }) => {
@@ -31,6 +32,8 @@ const versions = (state = DEFAULT_STORE, action) => {
       return selectVersion(state, action);
     case 'UPDATE_VERSIONS':
       return updateVersions(state, action);
+    case 'UPDATE_LOCAL_SERVER_PORT':
+      return state.set('localServerPort', action.port);
     default:
       return state;
   }

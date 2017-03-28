@@ -9,7 +9,6 @@ const DEFAULT_SETTINGS = Immutable.fromJS({
   showPublicButton: true,
   showPreviewBtn: true,
   username: '',
-  localServerPort: '',
 });
 
 const settings = (state = DEFAULT_SETTINGS, action) => {
