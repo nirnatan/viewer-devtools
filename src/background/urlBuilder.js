@@ -73,6 +73,8 @@ const applyExperiments = (queryObj, experiments, features) => {
   openedExperiments.push(...experiments.additional.on);
   openedExperiments = reduce(features, (acc, feature) => (feature.active ? acc.concat(feature.experiments) : acc), openedExperiments);
   if (openedExperiments.length) {
+    const prevExperiments = queryObj.experiments.split(',');
+    openedExperiments.push.apply(openedExperiments, prevExperiments);
     experimentsParams.experiments = uniq(openedExperiments).join(',');
   }
   const closedExperiments = types.reduce((acc, type) => acc.concat(Object.keys(pickBy(experiments[type].off))), []);
