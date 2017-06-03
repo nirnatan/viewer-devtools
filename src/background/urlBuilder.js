@@ -146,7 +146,7 @@ export default (location, option) => {
       if (option === 'All' || option === 'Versions') {
         result = result.then(queryObj => applyVersions(queryObj, store.versions));
       }
-      if (option === 'All') {
+      if (option === 'All' || option === 'Settings') {
         if (store.settings.disableHttps) {
             parsedUrl.protocol = 'http';
         }
