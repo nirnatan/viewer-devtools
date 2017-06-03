@@ -55,6 +55,9 @@ const applySettings = (queryObj, settings) => {
 	if (settings.disableSampleRatio) {
 		result.sampleratio = 'none';
 	}
+  if (settings.disableHotReload) {
+    result.hot = false;
+  }
   if (settings.additionalQueryParams) {
     const additionalQueryParams = new URL(`//dummy?${settings.additionalQueryParams}`, true).query;
     Object.assign(result, additionalQueryParams);
