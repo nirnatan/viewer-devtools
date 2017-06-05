@@ -55,6 +55,9 @@ const applySettings = (queryObj, settings) => {
 	if (settings.disableSampleRatio) {
 		result.sampleratio = 'none';
 	}
+  if (settings.disableHotReload) {
+    result.hot = false;
+  }
   if (settings.additionalQueryParams) {
     const additionalQueryParams = new URL(`//dummy?${settings.additionalQueryParams}`, true).query;
     Object.assign(result, additionalQueryParams);
@@ -70,6 +73,8 @@ const applyExperiments = (queryObj, experiments, features) => {
   openedExperiments.push(...experiments.additional.on);
   openedExperiments = reduce(features, (acc, feature) => (feature.active ? acc.concat(feature.experiments) : acc), openedExperiments);
   if (openedExperiments.length) {
+    const prevExperiments = queryObj.experiments.split(',');
+    openedExperiments.push.apply(openedExperiments, prevExperiments);
     experimentsParams.experiments = uniq(openedExperiments).join(',');
   }
   const closedExperiments = types.reduce((acc, type) => acc.concat(Object.keys(pickBy(experiments[type].off))), []);
@@ -146,7 +151,7 @@ export default (location, option) => {
       if (option === 'All' || option === 'Versions') {
         result = result.then(queryObj => applyVersions(queryObj, store.versions));
       }
-      if (option === 'All') {
+      if (option === 'All' || option === 'Settings') {
         if (store.settings.disableHttps) {
             parsedUrl.protocol = 'http';
         }

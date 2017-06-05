@@ -27,6 +27,7 @@ const applyOptions = {
   EXPERIMENTS: 'Experiments',
   VERSIONS: 'Versions',
   DEBUG: 'Debug',
+  SETTINGS: 'Settings',
   PLATFORM: 'Platform',
 };
 
@@ -126,6 +127,7 @@ const Popup = (props) => {
             <MenuItem primaryText="Apply Versions" onTouchTap={applySettings(applyOptions.VERSIONS)} />
             <MenuItem primaryText="Apply Debug" onTouchTap={applySettings(applyOptions.DEBUG)} />
             <MenuItem primaryText="Apply Platform" onTouchTap={applySettings(applyOptions.PLATFORM)} />
+            <MenuItem primaryText="Apply Settings" onTouchTap={applySettings(applyOptions.SETTINGS)} />
           </Menu>
         </ButtonWithPopup>
         <ActionItems buttonStyle={styles.button} settings={props.settings} />

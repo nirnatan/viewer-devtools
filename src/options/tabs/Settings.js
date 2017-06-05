@@ -46,6 +46,7 @@ const Settings = (props) => {
       {getToggle('Disable NewRelic', 'disableNewRelic')}<br />
       {getToggle('Disable HTTPS', 'disableHttps')}<br />
       {getToggle('Disable BI sample ratio', 'disableSampleRatio')}
+      {getToggle('Disable hot reload', 'disableHotReload')}
       <Subheader>Editor</Subheader>
       {getToggle('Disable Leave Page confirmation Popup', 'disableLeavePagePopUp')}
       {getToggle("Show open 'Preview' frame in a new window", 'showPreviewButton')}
@@ -62,6 +63,7 @@ Settings.propTypes = {
     disableNewRelic: PropTypes.bool,
     disableHttps: PropTypes.bool,
     disableSampleRatio: PropTypes.bool,
+    disableHotReload: PropTypes.bool,
     versionSelectorInPopup: PropTypes.bool,
     showPublicButton: PropTypes.bool,
     showPreviewButton: PropTypes.bool,

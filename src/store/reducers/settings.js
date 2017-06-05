@@ -6,6 +6,7 @@ const DEFAULT_SETTINGS = Immutable.fromJS({
   disableNewRelic: true,
   disableHttps: true,
   disableSampleRatio: false,
+  disableHotReload: false,
   showPublicButton: true,
   showPreviewBtn: true,
   username: '',
