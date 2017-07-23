@@ -51,6 +51,7 @@ const applySettings = (queryObj, settings) => {
   }
   if (settings.useWixCodeLocalSdk) {
     result.sdkSource = 'http://localhost/wixcode-sdk/build/wix.js';
+    result['js-wixcode-sdk-override'] = 'http://localhost/wixcode-sdk/build';
   }
 	if (settings.disableSampleRatio) {
 		result.sampleratio = 'none';
@@ -105,6 +106,7 @@ const applyPlatform = (queryObj, platform, versions) => {
   }
   if (platform.useLocalWixCodeSdk) {
     platformQueryParams.sdkSource = 'http://localhost/wixcode-sdk/build/wix.js';
+    platformQueryParams['js-wixcode-sdk-override'] = 'http://localhost/wixcode-sdk/build';
   }
 
   return Object.assign({}, queryObj, platformQueryParams);
