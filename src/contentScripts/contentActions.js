@@ -5,7 +5,7 @@
       const cookie = document.cookie;
       const wixClient = cookie.split('; ').find(v => v && v.indexOf && v.indexOf('wixClient') === 0);
 
-      return usernameRegex.exec(wixClient)[1];
+      return wixClient && usernameRegex.exec(wixClient)[1];
     },
   };
 
