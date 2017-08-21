@@ -1,6 +1,6 @@
 {
   "name": "SantaDevTools",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "manifest_version": 2,
   "description": "Santa Devloper Tools",
   "icons": {
@@ -32,6 +32,15 @@
       ],
       "js": [
         "scripts/contentScripts.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "https://github.com/wix-private/*/pull/*"
+      ],
+      "js": [
+        "scripts/pullRequest.js"
       ],
       "run_at": "document_end"
     }
