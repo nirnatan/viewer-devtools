@@ -50,7 +50,6 @@ const applySettings = (queryObj, settings) => {
       result.petri_ovr = result.petri_ovr ? `${result.petri_ovr};${disableHttps}` :  disableHttps;
   }
   if (settings.useWixCodeLocalSdk) {
-    result.sdkSource = 'http://localhost/wixcode-sdk/build/wix.js';
     result['js-wixcode-sdk-override'] = 'http://localhost/wixcode-sdk/build';
   }
 	if (settings.disableSampleRatio) {
@@ -105,7 +104,6 @@ const applyPlatform = (queryObj, platform, versions) => {
     platformQueryParams.WixCodeRuntimeSource = versions.viewer.versions[0];
   }
   if (platform.useLocalWixCodeSdk) {
-    platformQueryParams.sdkSource = 'http://localhost/wixcode-sdk/build/wix.js';
     platformQueryParams['js-wixcode-sdk-override'] = 'http://localhost/wixcode-sdk/build';
   }
 
