@@ -46,7 +46,7 @@ const applySettings = (queryObj, settings) => {
     result.petri_ovr = 'specs.EnableNewRelicInSanta:false;specs.DisableNewRelicScriptsSantaEditor:true';
   }
   if (settings.disableHttps) {
-      const disableHttps = 'specs.HttpsAllowedForPremiumSites:false;specs.HttpsAllowedForFreeSites:false';
+      const disableHttps = 'specs.HttpsAllowedForPremiumSites:false;specs.HttpsAllowedForFreeSites:false;specs.UseHttpsInEditor:false';
       result.petri_ovr = result.petri_ovr ? `${result.petri_ovr};${disableHttps}` :  disableHttps;
   }
   if (settings.useWixCodeLocalSdk) {
