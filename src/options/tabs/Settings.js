@@ -21,7 +21,7 @@ const Settings = (props) => {
       label={label}
       labelPosition="right"
       toggled={props.settings[settingsKey]}
-      onToggle={() => props.updateSettings({[settingsKey]: !props.settings[settingsKey]})}
+      onToggle={() => props.updateSettings({ [settingsKey]: !props.settings[settingsKey] })}
     />
   );
 
@@ -48,6 +48,7 @@ const Settings = (props) => {
       {getToggle('Disable BI sample ratio', 'disableSampleRatio')}
       {getToggle('Disable hot reload', 'disableHotReload')}
       <Subheader>Editor</Subheader>
+      {getToggle('Show Current Versions in Popup', 'showCurrentVersions')}
       {getToggle('Disable Leave Page confirmation Popup', 'disableLeavePagePopUp')}
       {getToggle("Show open 'Preview' frame in a new window", 'showPreviewButton')}
       {getToggle("Show open 'Public' site in a new window", 'showPublicButton')}
@@ -70,6 +71,7 @@ Settings.propTypes = {
     useWixCodeRuntimeSource: PropTypes.bool,
     applyFeatureVersions: PropTypes.bool,
     username: PropTypes.string,
+    showCurrentVersions: PropTypes.bool,
   }).isRequired,
 
   // Actions

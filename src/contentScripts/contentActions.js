@@ -7,6 +7,14 @@
 
       return wixClient && usernameRegex.exec(wixClient)[1];
     },
+    getCurrentVersions() {
+      const editorBaseParts = _(window.editorBase).split('/').compact();
+      const santaBaseParts = _(window.santaBase).split('/').compact();
+      return {
+        santa: santaBaseParts.includes('localhost') ? 'localhost' : santaBaseParts.last(),
+        editor: editorBaseParts.includes('localhost') ? 'localhost' : editorBaseParts.last(),
+      };
+    },
   };
 
   function handleEvent(evt) {

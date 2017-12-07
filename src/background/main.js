@@ -26,7 +26,9 @@ const executeScript = script => {
     return new Promise(res => {
       chrome.tabs.executeScript(id, {
         code: script,
-      }, results => res(results && results[0]));
+      }, results => {
+        return res(results && results[0]);
+      });
     });
   });
 };
@@ -47,7 +49,28 @@ const updateBrowserActionIcon = () => {
   });
 };
 
-chrome.tabs.onActiveChanged.addListener(() => updateBrowserActionIcon());
+const sendToContentPage = request => (
+  getActiveTab().then(({ id }) => {
+    return new Promise((res => {
+      chrome.tabs.sendMessage(id, request, res);
+    }));
+  })
+);
+
+const getCurrentUsername = () => {
+  return sendToContentPage({ type: 'getCurrentUsername' });
+};
+
+const getCurrentVersions = () => {
+  return sendToContentPage({ type: 'getCurrentVersions' });
+};
+
+chrome.tabs.onActiveChanged.addListener(() => {
+  updateBrowserActionIcon();
+  getCurrentVersions().then(ver => {
+    window.ver = ver;
+  });
+});
 chrome.tabs.onUpdated.addListener(() => updateBrowserActionIcon());
 
 const applySettings = (option = 'All') => {
@@ -60,18 +83,6 @@ const applySettings = (option = 'All') => {
 
 const logBackIn = () => {
   chrome.tabs.create({ url: 'https://users.wix.com/wix-users/login/form' });
-};
-
-const sendToContentPage = request => (
-  getActiveTab().then(({ id }) => {
-    return new Promise((res => {
-      chrome.tabs.sendMessage(id, request, res);
-    }));
-  })
-);
-
-const getCurrentUsername = () => {
-  return sendToContentPage({ type: 'getCurrentUsername' });
 };
 
 const addExperiment = experiment => {
@@ -190,4 +201,5 @@ window.Utils = {
   debugAll,
   openOptionsPage,
   openEditor,
+  getCurrentVersions,
 };

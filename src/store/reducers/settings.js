@@ -10,6 +10,7 @@ const DEFAULT_SETTINGS = Immutable.fromJS({
   showPublicButton: true,
   showPreviewBtn: true,
   username: '',
+  showCurrentVersions: false,
 });
 
 const settings = (state = DEFAULT_SETTINGS, action) => {
