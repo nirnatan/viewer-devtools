@@ -29,7 +29,7 @@
   };
 
   chrome.extension.onMessage.addListener((msg, sender, sendResponse) => {
-    injectScript('scripts/contentActions.js')
+    injectScript('contentActions.js')
       .then(() => {
         sendMessageToActionScript(msg, sender, sendResponse);
       });

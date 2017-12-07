@@ -29,6 +29,7 @@ module.exports = {
     background: path.resolve('src/background', 'main.js'),
     options: path.resolve('src/options', 'main.js'),
     popup: path.resolve('src/popup', 'main.js'),
+    contentActions: path.resolve('src/contentScripts', 'contentActions.js'),
   },
   output: {
     path: path.resolve('build'),

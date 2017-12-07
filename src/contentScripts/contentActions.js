@@ -1,3 +1,7 @@
+import split from 'lodash/split';
+import compact from 'lodash/compact';
+import last from 'lodash/last';
+
 (function contentActions() {
   const usernameRegex = new RegExp('=([^|]*)');
   const events = {
@@ -8,11 +12,11 @@
       return wixClient && usernameRegex.exec(wixClient)[1];
     },
     getCurrentVersions() {
-      const editorBaseParts = _(window.editorBase).split('/').compact();
-      const santaBaseParts = _(window.santaBase).split('/').compact();
+      const editorBaseParts = compact(split(window.editorBase, '/'));
+      const santaBaseParts = compact(split(window.santaBase, '/'));
       return {
-        santa: santaBaseParts.includes('localhost') ? 'localhost' : santaBaseParts.last(),
-        editor: editorBaseParts.includes('localhost') ? 'localhost' : editorBaseParts.last(),
+        santa: santaBaseParts.includes('localhost') ? 'localhost' : last(santaBaseParts),
+        editor: editorBaseParts.includes('localhost') ? 'localhost' : last(editorBaseParts),
       };
     },
   };
