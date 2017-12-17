@@ -37,7 +37,7 @@ const applyDebug = (queryObj, { autoDebugModified, editor, viewer }) => {
   });
 };
 
-const applySettings = (queryObj, settings) => {
+const applySettings = (queryObj, settings, protocol) => {
   const result = Object.assign({}, queryObj);
   if (settings.disableLeavePagePopUp) {
     result.leavePagePopUp = false;
@@ -45,16 +45,12 @@ const applySettings = (queryObj, settings) => {
   if (settings.disableNewRelic) {
     result.petri_ovr = 'specs.EnableNewRelicInSanta:false;specs.DisableNewRelicScriptsSantaEditor:true';
   }
-  if (settings.disableHttps) {
-      const disableHttps = 'specs.HttpsAllowedForPremiumSites:false;specs.HttpsAllowedForFreeSites:false;specs.UseHttpsInEditor:false';
-      result.petri_ovr = result.petri_ovr ? `${result.petri_ovr};${disableHttps}` :  disableHttps;
-  }
   if (settings.useWixCodeLocalSdk) {
-    result['js-wixcode-sdk-override'] = 'http://localhost/wixcode-sdk/build';
+    result['js-wixcode-sdk-override'] = `${protocol}//localhost/wixcode-sdk/build`;
   }
-	if (settings.disableSampleRatio) {
-		result.sampleratio = 'none';
-	}
+  if (settings.disableSampleRatio) {
+    result.sampleratio = 'none';
+  }
   if (settings.disableHotReload) {
     result.hot = false;
   }
@@ -73,8 +69,8 @@ const applyExperiments = (queryObj, experiments, features) => {
   openedExperiments.push(...experiments.additional.on);
   openedExperiments = reduce(features, (acc, feature) => (feature.active ? acc.concat(feature.experiments) : acc), openedExperiments);
   if (openedExperiments.length) {
-    const prevExperiments = queryObj.experiments && queryObj.experiments.split(',');
-    openedExperiments.push.apply(openedExperiments, prevExperiments);
+    const prevExperiments = queryObj.experiments ? queryObj.experiments.split(',') : [];
+    openedExperiments.push(...prevExperiments);
     experimentsParams.experiments = uniq(openedExperiments).join(',');
   }
   const closedExperiments = types.reduce((acc, type) => acc.concat(Object.keys(pickBy(experiments[type].off))), []);
@@ -86,7 +82,7 @@ const applyExperiments = (queryObj, experiments, features) => {
   return Object.assign({}, queryObj, experimentsParams);
 };
 
-const applyPlatform = (queryObj, platform, versions) => {
+const applyPlatform = (queryObj, platform, versions, protocol) => {
   const { useCustomApp, port, applicationId, editor, viewer, appsCustomVersions } = platform;
   const getLocalApp = path => (useCustomApp ? [`port:${port},path:${path},id:${applicationId}`] : []);
   const customVersions = reduce(appsCustomVersions, (acc, version, appId) => acc.concat(`${appId}:${version}`), []);
@@ -104,15 +100,15 @@ const applyPlatform = (queryObj, platform, versions) => {
     platformQueryParams.WixCodeRuntimeSource = versions.viewer.versions[0];
   }
   if (platform.useLocalWixCodeSdk) {
-    platformQueryParams['js-wixcode-sdk-override'] = 'http://localhost/wixcode-sdk/build';
+    platformQueryParams['js-wixcode-sdk-override'] = `${protocol}//localhost/wixcode-sdk/build`;
   }
 
   return Object.assign({}, queryObj, platformQueryParams);
 };
 
-const applyVersions = (queryObj, versions) => {
+const applyVersions = (queryObj, versions, protocol) => {
   const versionsParams = {};
-  const {localServerPort} = versions;
+  const { localServerPort } = versions;
   const updateVersions = (project, param) => {
     switch (versions[project].selected) {
       case null:
@@ -121,7 +117,7 @@ const applyVersions = (queryObj, versions) => {
         versionsParams[param] = versions[project].versions[0];
         break;
       case 'local':
-        versionsParams[param] = `http://localhost${localServerPort && localServerPort !== '80' ? `:${localServerPort}` : ''}${project === 'editor' ? '/editor-base' : ''}`;
+        versionsParams[param] = `${protocol}//localhost${localServerPort && localServerPort !== '80' ? `:${localServerPort}` : ''}${project === 'editor' ? '/editor-base' : ''}`;
         break;
       default:
         versionsParams[param] = versions[project].selected;
@@ -146,16 +142,13 @@ export default (location, option) => {
         result = result.then(queryObj => applyExperiments(queryObj, store.experiments, store.features));
       }
       if (option === 'All' || option === 'Platform') {
-        result = result.then(queryObj => applyPlatform(queryObj, store.platform, store.versions));
+        result = result.then(queryObj => applyPlatform(queryObj, store.platform, store.versions, parsedUrl.protocol));
       }
       if (option === 'All' || option === 'Versions') {
-        result = result.then(queryObj => applyVersions(queryObj, store.versions));
+        result = result.then(queryObj => applyVersions(queryObj, store.versions, parsedUrl.protocol));
       }
       if (option === 'All' || option === 'Settings') {
-        if (store.settings.disableHttps) {
-            parsedUrl.protocol = 'http';
-        }
-        result = result.then(queryObj => applySettings(queryObj, store.settings));
+        result = result.then(queryObj => applySettings(queryObj, store.settings, parsedUrl.protocol));
       }
       return result;
     })

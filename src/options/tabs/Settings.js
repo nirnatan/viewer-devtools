@@ -44,7 +44,6 @@ const Settings = (props) => {
         onBlur={evt => props.updateSettings({ username: evt.target.value })}
       /><br />
       {getToggle('Disable NewRelic', 'disableNewRelic')}<br />
-      {getToggle('Disable HTTPS', 'disableHttps')}<br />
       {getToggle('Disable BI sample ratio', 'disableSampleRatio')}
       {getToggle('Disable hot reload', 'disableHotReload')}
       <Subheader>Editor</Subheader>
@@ -62,7 +61,6 @@ Settings.propTypes = {
     additionalQueryParams: PropTypes.string,
     disableLeavePagePopUp: PropTypes.bool,
     disableNewRelic: PropTypes.bool,
-    disableHttps: PropTypes.bool,
     disableSampleRatio: PropTypes.bool,
     disableHotReload: PropTypes.bool,
     versionSelectorInPopup: PropTypes.bool,
