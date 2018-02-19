@@ -1,6 +1,6 @@
 (function contentScript() {
   const buildTypesByProject = {
-    'santa': 'Santa_Santa',
+    'santa': 'Santa_SantaNew',
     'santa-editor': 'Santa_SantaEditor',
   };
 
