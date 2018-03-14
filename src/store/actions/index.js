@@ -69,6 +69,12 @@ export const selectVersion = (project, version) => ({
   version,
 });
 
+export const selectVersions = (editor, viewer) => ({
+  type: 'SELECT_VERSIONS',
+  editor,
+  viewer,
+});
+
 export const updateVersions = ({ editor, viewer }) => ({
   type: 'UPDATE_VERSIONS',
   editor,

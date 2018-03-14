@@ -1,12 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { sortBy, get, isEmpty } from 'lodash';
+import { sortBy, get } from 'lodash';
 import { withState, mapProps, compose, lifecycle } from 'recompose';
 import Divider from 'material-ui/Divider';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import Subheader from 'material-ui/Subheader';
-import RaisedButton from 'material-ui/RaisedButton';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import AutoCompleteWithAction from '../components/AutoCompleteWithAction';
 import ButtonWithPopup from '../components/ButtonWithPopup';

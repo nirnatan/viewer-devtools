@@ -6,7 +6,7 @@ import Paper from 'material-ui/Paper';
 import { mapValues } from 'lodash';
 import { compose, mapProps, withState } from 'recompose';
 import MultiSelectCard from '../../components/MultiSelectCard';
-import { getSpreadsheetURL } from '../../store/utils';
+import { getSpreadsheetURL, SPREADSHEETS_IDS } from '../../store/utils';
 import * as actionCreators from '../../store/actions/index';
 
 const styles = {
@@ -34,7 +34,7 @@ const Features = (props) => (
       contentStyle={styles.modalContentStyle}
       actions={<FlatButton label="Close" onClick={() => props.openDialog(false)} />}
     >
-      <iframe src={getSpreadsheetURL()} style={styles.spreedsheet} />
+      <iframe src={getSpreadsheetURL(SPREADSHEETS_IDS.FEATURES)} style={styles.spreedsheet} />
     </Dialog>
   </Paper>
 );

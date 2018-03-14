@@ -18,12 +18,14 @@ export const requestVersions = () => {
   })).then(() => result);
 };
 
-const id = '1Z-QLMn-xyesvLIuU_suoJXVnTizCTx7dkbY2hGFdSLk';
-export const getSpreadsheetURL = () => {
-  return `https://docs.google.com/spreadsheets/d/${id}/edit#gid=0`;
+export const SPREADSHEETS_IDS = {
+  FEATURES: '1Z-QLMn-xyesvLIuU_suoJXVnTizCTx7dkbY2hGFdSLk',
+  NAMED_VERSIONS: '1ncHxk6CSE7BZOZVtRhUNb7bp-dL9gJeJUWOUmw3AjC0',
 };
 
-export const requestFeatures = () => {
+export const getSpreadsheetURL = id => `https://docs.google.com/spreadsheets/d/${id}/edit#gid=0`;
+
+export const readSpreadsheet = id => {
   return new Promise((res, rej) => {
     ajax({
       url: `https://spreadsheets.google.com/feeds/cells/${id}/od6/public/basic?alt=json`,
@@ -40,8 +42,7 @@ export const requestFeatures = () => {
             const key = content[i];
             row[key] = content[index];
           }
-          row.experiments = row.experiments ? row.experiments.split(',').map(v => v.trim()) : [];
-          data[row.Feature] = row;
+          data[row[content[0]]] = row;
         }
 
         res(data);

@@ -1,4 +1,5 @@
 import React from 'react';
+import { map, findKey } from 'lodash';
 import { connect } from 'react-redux';
 import { mapProps } from 'recompose';
 import TextField from 'material-ui/TextField';
@@ -19,55 +20,75 @@ const styles = {
   localPort: {
     marginLeft: 17,
     width: '84%',
-  }
+  },
 };
 
-const getItems = (versions) => {
-  const createMenuItem = version => (
-    <MenuItem
-      style={styles.menuItem}
-      value={version === 'none' ? null : version}
-      label={version}
-      key={version}
-      primaryText={version}
-    />
-  );
+const createMenuItem = version => (
+  <MenuItem
+    style={styles.menuItem}
+    value={version === 'none' ? null : version}
+    label={version}
+    key={version}
+    primaryText={version}
+  />
+);
 
+const getItems = (versions) => {
   return ['none', 'local', 'Latest RC'].map(createMenuItem)
-    .concat([<Divider key="divider"/>])
+    .concat([<Divider key="divider" />])
     .concat(versions.map(createMenuItem));
 };
 
 const LocalServerPort = (props) => {
-  return <TextField
+  return (<TextField
     style={styles.localPort}
     floatingLabelText="Server Port"
     key={props.port || 'localServerPort'}
     defaultValue={props.port}
     hintText="Enter your server port"
     onBlur={evt => props.onChange(evt.target.value)}
-  />
+  />);
 };
 
 const { PropTypes } = React;
-LocalServerPort.PropTypes = {
+LocalServerPort.propTypes = {
   port: PropTypes.string,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+};
+
+const getName = (editor, viewer, names) => {
+  return findKey(names, { editor, viewer }) || 'Custom';
 };
 
 const Versions = (props) => {
   const onChange = project => (event, key, version) => props.selectVersion(project, version);
+  const onRealsedVersionChange = (event, key, version) => {
+    const versions = props.namedVersions[version];
+    props.selectVersions(versions.editor, versions.viewer);
+  };
   const content = (
-    <div>
-      <Subheader style={{ display: 'inline-block', minWidth: 60, width: 'auto' }}>Editor</Subheader>
-      <DropDownMenu style={styles.dropDown} value={props.editor.selected} onChange={onChange('editor')}>
-        {getItems(props.editor.versions)}
-      </DropDownMenu>
-      <Subheader style={{ display: 'inline-block', minWidth: 60, width: 'auto' }}>Viewer</Subheader>
-      <DropDownMenu style={styles.dropDown} value={props.viewer.selected} onChange={onChange('viewer')}>
-        {getItems(props.viewer.versions)}
-      </DropDownMenu>
-      {!props.flat && (props.editor.selected === 'local' || props.viewer.selected === 'local') ? <LocalServerPort port={props.localServerPort} onChange={props.updateServerPort}/> : null}
+    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex' }}>
+        <Subheader style={{ display: 'inline-block', minWidth: 60, width: 'auto' }}>Editor</Subheader>
+        <DropDownMenu style={styles.dropDown} value={props.editor.selected} onChange={onChange('editor')}>
+          {getItems(props.editor.versions)}
+        </DropDownMenu>
+      </div>
+      <div style={{ display: 'flex' }}>
+        <Subheader style={{ display: 'inline-block', minWidth: 60, width: 'auto' }}>Viewer</Subheader>
+        <DropDownMenu style={styles.dropDown} value={props.viewer.selected} onChange={onChange('viewer')}>
+          {getItems(props.viewer.versions)}
+        </DropDownMenu>
+      </div>
+      <div style={{ display: 'flex' }}>
+        <Subheader style={{ display: 'inline-block', minWidth: 60, width: 'auto' }}>Name</Subheader>
+        <DropDownMenu style={styles.dropDown} value={getName(props.editor.selected, props.viewer.selected, props.namedVersions)} onChange={onRealsedVersionChange}>
+          {createMenuItem('Custom')}
+          <Divider key="divider" />
+          {map(props.namedVersions, (v, name) => createMenuItem(name))}
+        </DropDownMenu>
+      </div>
+      {!props.flat && (props.editor.selected === 'local' || props.viewer.selected === 'local') ? <LocalServerPort port={props.localServerPort} onChange={props.updateServerPort} /> : null}
     </div>
   );
 
@@ -91,6 +112,10 @@ Versions.propTypes = {
     versions: PropTypes.arrayOf(PropTypes.string).isRequired,
     selected: PropTypes.string,
   }),
+  namedVersions: PropTypes.shape({
+    versions: PropTypes.arrayOf(PropTypes.string).isRequired,
+    selected: PropTypes.string,
+  }),
   localServerPort: PropTypes.string,
   flat: PropTypes.bool,
 
@@ -99,12 +124,13 @@ Versions.propTypes = {
   updateServerPort: PropTypes.func.isRequired,
 };
 
-const enhance = mapProps(props => Object.assign({}, props, {editor: props.editor.toJS(), viewer: props.viewer.toJS()}));
+const enhance = mapProps(props => Object.assign({}, props, { editor: props.editor.toJS(), viewer: props.viewer.toJS(), namedVersions: props.namedVersions.toJS() }));
 
 export default connect(({ versions }, props) => {
   return Object.assign({
     editor: versions.get('editor'),
     viewer: versions.get('viewer'),
+    namedVersions: versions.get('namedVersions'),
     localServerPort: versions.get('localServerPort'),
   }, props);
 }, actionCreators)(enhance(Versions));

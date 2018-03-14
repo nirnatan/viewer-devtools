@@ -9,11 +9,16 @@ const DEFAULT_STORE = Immutable.fromJS({
     versions: [],
     selected: null,
   },
-  localServerPort: '80'
+  localServerPort: '80',
+  namedVersions: {},
 });
 
 const selectVersion = (state, { project, version }) => {
   return state.updateIn([project, 'selected'], () => version);
+};
+
+const selectVersions = (state, { editor, viewer }) => {
+  return state.updateIn(['editor', 'selected'], () => editor).updateIn(['viewer', 'selected'], () => viewer);
 };
 
 const updateVersions = (state, { editor, viewer }) => {
@@ -30,6 +35,8 @@ const versions = (state = DEFAULT_STORE, action) => {
   switch (action.type) {
     case 'SELECT_VERSION':
       return selectVersion(state, action);
+    case 'SELECT_VERSIONS':
+      return selectVersions(state, action);
     case 'UPDATE_VERSIONS':
       return updateVersions(state, action);
     case 'UPDATE_LOCAL_SERVER_PORT':
