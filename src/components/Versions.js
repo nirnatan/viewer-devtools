@@ -60,12 +60,18 @@ const getName = (editor, viewer, names) => {
   return findKey(names, { editor, viewer }) || 'Custom';
 };
 
+const getNamedMenuItems = namedVersions => {
+  const sortedItems = map(namedVersions, ({ editor, viewer }, name) => ({ editor, viewer, name })).sort(({ viewer: a }, { viewer: b }) => b > a);
+  return map(sortedItems, ({ name }) => createMenuItem(name));
+};
+
 const Versions = (props) => {
   const onChange = project => (event, key, version) => props.selectVersion(project, version);
   const onRealsedVersionChange = (event, key, version) => {
     const versions = props.namedVersions[version];
     props.selectVersions(versions.editor, versions.viewer);
   };
+
   const content = (
     <div style={{ display: 'flex', flexWrap: 'wrap' }}>
       <div style={{ display: 'flex' }}>
@@ -85,7 +91,7 @@ const Versions = (props) => {
         <DropDownMenu style={styles.dropDown} value={getName(props.editor.selected, props.viewer.selected, props.namedVersions)} onChange={onRealsedVersionChange}>
           {createMenuItem('Custom')}
           <Divider key="divider" />
-          {map(props.namedVersions, (v, name) => createMenuItem(name))}
+          {getNamedMenuItems(props.namedVersions)}
         </DropDownMenu>
       </div>
       {!props.flat && (props.editor.selected === 'local' || props.viewer.selected === 'local') ? <LocalServerPort port={props.localServerPort} onChange={props.updateServerPort} /> : null}
@@ -121,6 +127,7 @@ Versions.propTypes = {
 
   // Actions
   selectVersion: PropTypes.func.isRequired,
+  selectVersions: PropTypes.func.isRequired,
   updateServerPort: PropTypes.func.isRequired,
 };
 
