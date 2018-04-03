@@ -1,5 +1,5 @@
 import React from 'react';
-import { map, findKey } from 'lodash';
+import { map, findKey, reverse, sortBy } from 'lodash';
 import { connect } from 'react-redux';
 import { mapProps } from 'recompose';
 import TextField from 'material-ui/TextField';
@@ -61,7 +61,7 @@ const getName = (editor, viewer, names) => {
 };
 
 const getNamedMenuItems = namedVersions => {
-  const sortedItems = map(namedVersions, ({ editor, viewer }, name) => ({ editor, viewer, name })).sort(({ viewer: a }, { viewer: b }) => b > a);
+  const sortedItems = reverse(sortBy(map(namedVersions, ({ editor, viewer }, name) => ({ editor, viewer, name })), 'viewer'));
   return map(sortedItems, ({ name }) => createMenuItem(name));
 };
 
