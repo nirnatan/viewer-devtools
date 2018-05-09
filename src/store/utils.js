@@ -1,21 +1,32 @@
 import { map, findIndex } from 'lodash';
 import { ajax } from 'jquery';
 
-export const requestVersions = () => {
-  const requests = {
-    editor: 'http://rudolph.wixpress.com/services/availableRcs?project=santa-editor',
-    viewer: 'http://rudolph.wixpress.com/services/availableRcs?project=santa-viewer',
-  };
+const semVer = /\d\.(\d+)\.(\d+)/;
+const sortSemVer = (first, second) => {
+  const [, minorA, patchA] = semVer.exec(first);
+  const [, minorB, patchB] = semVer.exec(second);
+  return parseInt(minorB, 10) - parseInt(minorA, 10) || parseInt(patchB, 10) - parseInt(patchA, 10);
+};
 
-  const result = { editor: [], viewer: [] };
-  return Promise.all(map(requests, (url, key) => {
-    return fetch(url)
-      .then(res => res.json())
-      .then(res => {
-        result[key] = res.result;
-      })
-      .catch(() => {});
-  })).then(() => result);
+const getVersionsForProject = (project) => {
+  const request = fetch(`https://repo.dev.wixpress.com/artifactory/libs-releases-local/com/wixpress/html-client/${project}`);
+
+  return request
+    .then((res) => res.text())
+    .then(text => {
+      const div = window.document.createElement('div');
+      div.innerHTML = text;
+      return Array.from(div.querySelectorAll('a'))
+      .map(anchorElement => anchorElement.innerText.replace('/', ''))
+      .filter(v => semVer.test(v))
+      .sort(sortSemVer)
+      .slice(0, 1000);
+    });
+};
+
+export const requestVersions = () => {
+  return Promise.all([getVersionsForProject('santa'), getVersionsForProject('santa-editor')])
+    .then(([viewer, editor]) => ({ editor, viewer }));
 };
 
 export const SPREADSHEETS_IDS = {
