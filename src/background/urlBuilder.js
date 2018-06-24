@@ -130,6 +130,22 @@ const applyVersions = (queryObj, versions, protocol) => {
   return Object.assign({}, queryObj, versionsParams);
 };
 
+const convertLocalDebugToSsrDebug = (parsedUrl) => {
+  delete parsedUrl.query.EditorSource;
+
+  if (parsedUrl.query.ReactSource === 'https://localhost') {
+    parsedUrl.query.ssrDebug = 'true';
+    delete parsedUrl.query.ReactSource;
+  }
+
+  if (parsedUrl.query.ssrDebug === 'true') {
+    parsedUrl.protocol = 'http';
+    parsedUrl.query.ssrIndicator = 'true';
+  }
+
+  return parsedUrl.toString();
+};
+
 export default (location, option) => {
   const parsedUrl = new URL(location, true);
   return getStoreData()
@@ -155,6 +171,10 @@ export default (location, option) => {
     .then(queryObj => {
       parsedUrl.query = queryObj;
       delete parsedUrl.search;
+      if (parsedUrl.host !== 'editor.wix.com') {
+        return convertLocalDebugToSsrDebug(parsedUrl);
+      }
+
       return parsedUrl.toString();
     });
 };
