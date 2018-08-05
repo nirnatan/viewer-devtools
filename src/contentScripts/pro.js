@@ -101,6 +101,11 @@ function init(window) {
     return editorAPI.components.getContainer(ref);
   };
 
+  const getSelectedType = () => {
+    const ref = getSelected();
+    editorAPI.components.getType(ref);
+  };
+
   const getSelectedData = () => {
     const ref = getSelected();
     return getData(ref);
@@ -163,6 +168,24 @@ function init(window) {
 
   const openNewBoForSite = () => window.open(`https://bo.wix.com/user-manager/users/byGuid/${editorModel.metaSiteId}`, '_blank');
 
+  const openWithClosedExperiments = () => window.open(window.location.href.concat('&experimentsoff=').concat(Object.keys(editorModel.runningExperiments).join(',')));
+
+  const deleteAllPagesExceptCurrent = () => {
+    const currentPage = editorAPI.pages.getCurrentPage().id;
+    const pagesToDelete = _.filter(allPages, page => {
+      return page !== currentPage;
+    });
+    _.forEach(pagesToDelete, page => {
+      editorAPI.documentServices.pages.remove(page);
+    });
+  };
+
+  const resetMobileLayoutOnAllPages = () => {
+    editorAPI.mobileConversion.resetMobileLayoutOnAllPages();
+  };
+
+  const removePageById = pageId => editorAPI.documentServices.pages.remove(pageId);
+
   return {
     allComps,
 
@@ -188,6 +211,8 @@ function init(window) {
 
     getParent,
 
+    getSelectedType,
+
     getSelectedData,
 
     getSelectedStyle,
@@ -209,6 +234,14 @@ function init(window) {
     openOldBoForSite,
 
     openNewBoForSite,
+
+    openWithClosedExperiments,
+
+    deleteAllPagesExceptCurrent,
+
+    resetMobileLayoutOnAllPages,
+
+    removePageById,
   };
 }
 
