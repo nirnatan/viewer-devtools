@@ -176,7 +176,7 @@ function init(window) {
       return page !== currentPage;
     });
     _.forEach(pagesToDelete, page => {
-      editorAPI.documentServices.pages.remove(page);
+      editorAPI.pages.remove(page);
     });
   };
 
@@ -184,7 +184,12 @@ function init(window) {
     editorAPI.mobileConversion.resetMobileLayoutOnAllPages();
   };
 
-  const removePageById = pageId => editorAPI.documentServices.pages.remove(pageId);
+  const removePageById = pageId => {
+    if (!_.includes(allPages, pageId)) {
+      throw new Error(`${ERROR_HEADER} No such pageId.`);
+    }
+    editorAPI.pages.remove(pageId);
+  };
 
   return {
     allComps,
