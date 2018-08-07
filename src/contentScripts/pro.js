@@ -2,6 +2,14 @@ const _ = require('lodash'); // should it be here or take it from the window?
 
 const ERROR_HEADER = 'Pro Debugger Error:';
 
+function getAllComponents(editorAPI) {
+  return editorAPI.components.getAllComponents();
+}
+
+function getAllPagesInEditor(editorAPI) {
+  return editorAPI.pages.getPageIdList();
+}
+
 function isValidIdOrRef(allPages, allComps, ref) {
   if (_.isObject(ref)) {
     ref = ref.id;
@@ -14,7 +22,9 @@ function isValidIdOrRef(allPages, allComps, ref) {
   }), ref);
 }
 
-function getCompRef(editorAPI, allPages, allComps, id) {
+function getCompRef(editorAPI, id) {
+  const allComps = getAllComponents(editorAPI);
+  const allPages = getAllPagesInEditor(editorAPI);
   if (!isValidIdOrRef(allPages, allComps, id)) {
     throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
   }
@@ -24,16 +34,18 @@ function getCompRef(editorAPI, allPages, allComps, id) {
 function init(window) {
   const { editorAPI, editorModel } = window;
 
-  const allComps = editorAPI.components.getAllComponents();
+  const getAllComps = () => getAllComponents(editorAPI);
 
-  const allPages = editorAPI.pages.getPageIdList();
+  const getAllPages = () => getAllPagesInEditor(editorAPI);
 
-  const pagesMap = _.reduce(editorAPI.pages.getPageIdList(), (acc, value) => {
-    acc.push({ id: value, title: editorAPI.pages.data.get(value).title });
-    return acc;
-  }, []);
+  const getPagesMap = () => {
+    return _.reduce(editorAPI.pages.getPageIdList(), (acc, value) => {
+      acc.push({ id: value, title: editorAPI.pages.data.get(value).title });
+      return acc;
+    }, []);
+  };
 
-  const getRef = _.partial(getCompRef, editorAPI, allPages, allComps);
+  const getRef = _.partial(getCompRef, editorAPI);
 
   const getSelected = () => {
     const selected = editorAPI.selection.getSelectedComponents();
@@ -44,7 +56,7 @@ function init(window) {
   };
 
   const getData = ref => {
-    if (!isValidIdOrRef(allPages, allComps, ref)) {
+    if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
       throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
     }
     ref = getRef(ref);
@@ -52,7 +64,7 @@ function init(window) {
   };
 
   const getLayout = ref => {
-    if (!isValidIdOrRef(allPages, allComps, ref)) {
+    if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
       throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
     }
     ref = _.isString(ref) ? editorAPI.components.get.byId(ref) : ref;
@@ -60,7 +72,7 @@ function init(window) {
   };
 
   const getSkin = ref => {
-    if (!isValidIdOrRef(allPages, allComps, ref)) {
+    if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
       throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
     }
     ref = getRef(ref);
@@ -68,7 +80,7 @@ function init(window) {
   };
 
   const getType = ref => {
-    if (!isValidIdOrRef(allPages, allComps, ref)) {
+    if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
       throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
     }
     ref = getRef(ref);
@@ -76,7 +88,7 @@ function init(window) {
   };
 
   const getStyle = ref => {
-    if (!isValidIdOrRef(allPages, allComps, ref)) {
+    if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
       throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
     }
     ref = getRef(ref);
@@ -84,17 +96,17 @@ function init(window) {
   };
 
   const getPageOf = ref => {
-    if (!isValidIdOrRef(allPages, allComps, ref)) {
+    if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
       throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
     }
     ref = getRef(ref);
     const pageRef = editorAPI.components.getPage(ref);
-    const page = pagesMap.filter(p => p.id === pageRef.id);
+    const page = getPagesMap().filter(p => p.id === pageRef.id);
     return page[0];
   };
 
-  const getParent = ref => {
-    if (!isValidIdOrRef(allPages, allComps, ref)) {
+  const getParentOf = ref => {
+    if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
       throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
     }
     ref = getRef(ref);
@@ -103,7 +115,7 @@ function init(window) {
 
   const getSelectedType = () => {
     const ref = getSelected();
-    editorAPI.components.getType(ref);
+    return getType(ref);
   };
 
   const getSelectedData = () => {
@@ -132,7 +144,7 @@ function init(window) {
   };
 
   const selectComp = ref => {
-    if (!isValidIdOrRef(allPages, allComps, ref)) {
+    if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
       throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
     }
     ref = getRef(ref);
@@ -140,10 +152,10 @@ function init(window) {
   };
 
   const navigateTo = ref => {
-    if (!isValidIdOrRef(allPages, allComps, ref)) {
+    if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
       throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
     }
-    if (_.includes(allPages, ref)) {
+    if (_.includes(getAllPagesInEditor(editorAPI), ref)) {
       editorAPI.pages.navigateTo(ref);
     } else {
       if (_.isString(ref)) {
@@ -166,13 +178,15 @@ function init(window) {
 
   const openOldBoForSite = () => window.open(`https://bo.wix.com/bo/api/userManager?siteSubmitData=${editorModel.metaSiteId}`, '_blank');
 
-  const openNewBoForSite = () => window.open(`https://bo.wix.com/user-manager/users/byGuid/${editorModel.metaSiteId}`, '_blank');
+  const openNewBoForUser = () => window.open(`https://bo.wix.com/user-manager/users/byGuid/${editorModel.permissionsInfo.loggedInUserId}`, '_blank');
 
   const openWithClosedExperiments = () => window.open(window.location.href.concat('&experimentsoff=').concat(Object.keys(editorModel.runningExperiments).join(',')));
 
+  const openSentryWithUserFiltering = () => window.open(`https://sentry.io/wix_o/santa-editor/?query=user:"id:${editorModel.permissionsInfo.loggedInUserId}"`, '_blank');
+
   const deleteAllPagesExceptCurrent = () => {
     const currentPage = editorAPI.pages.getCurrentPage().id;
-    const pagesToDelete = _.filter(allPages, page => {
+    const pagesToDelete = _.filter(getAllPagesInEditor(editorAPI), page => {
       return page !== currentPage;
     });
     _.forEach(pagesToDelete, page => {
@@ -185,18 +199,18 @@ function init(window) {
   };
 
   const removePageById = pageId => {
-    if (!_.includes(allPages, pageId)) {
+    if (!_.includes(getAllPagesInEditor(editorAPI), pageId)) {
       throw new Error(`${ERROR_HEADER} No such pageId.`);
     }
     editorAPI.pages.remove(pageId);
   };
 
   return {
-    allComps,
+    getAllComps,
 
-    allPages,
+    getAllPages,
 
-    pagesMap,
+    getPagesMap,
 
     getRef,
 
@@ -214,7 +228,7 @@ function init(window) {
 
     getPageOf,
 
-    getParent,
+    getParentOf,
 
     getSelectedType,
 
@@ -238,7 +252,7 @@ function init(window) {
 
     openOldBoForSite,
 
-    openNewBoForSite,
+    openNewBoForUser,
 
     openWithClosedExperiments,
 
@@ -247,6 +261,8 @@ function init(window) {
     resetMobileLayoutOnAllPages,
 
     removePageById,
+
+    openSentryWithUserFiltering,
   };
 }
 
