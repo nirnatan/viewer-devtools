@@ -95,6 +95,14 @@ function init(window) {
     return editorAPI.components.style.get(ref);
   };
 
+  const getSerialize = ref => {
+    if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
+      throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
+    }
+    ref = getRef(ref);
+    return editorAPI.components.serialize(ref);
+  };
+
   const getPageOf = ref => {
     if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
       throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
@@ -164,8 +172,10 @@ function init(window) {
       editorAPI.pages.navigateTo(getPageOf(ref).id);
       editorAPI.documentServices.waitForChangesApplied(() => {
         selectComp(ref);
-        console.log(serializeSelected()); // eslint-disable-line no-console
-        editorAPI.scroll.scrollTo({ scrollTop: getSelectedLayout().y });
+        editorAPI.documentServices.waitForChangesApplied(() => {
+          console.log(getSerialize(ref)); // eslint-disable-line no-console
+          editorAPI.scroll.scrollTo({scrollTop: getSelectedLayout().y});
+        });
       });
     }
   };
@@ -225,6 +235,8 @@ function init(window) {
     getType,
 
     getStyle,
+
+    getSerialize,
 
     getPageOf,
 
