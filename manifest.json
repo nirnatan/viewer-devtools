@@ -1,6 +1,6 @@
 {
   "name": "SantaDevTools",
-  "version": "1.0.26",
+  "version": "1.0.27",
   "manifest_version": 2,
   "description": "Santa Devloper Tools",
   "icons": {
@@ -41,6 +41,16 @@
       ],
       "js": [
         "scripts/pullRequest.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "https://pullrequest-tc.dev.wixpress.com/*",
+        "http://pullrequest-tc.dev.wixpress.com/*"
+      ],
+      "js": [
+        "scripts/pullrequest-tc.js"
       ],
       "run_at": "document_end"
     },
