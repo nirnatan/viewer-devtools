@@ -37,10 +37,12 @@
     },
     {
       "matches": [
-        "https://github.com/wix-private/*/pull/*"
+        "https://github.com/wix-private/santa/pull/*",
+        "https://github.com/wix-private/santa-core/pull/*",
+        "https://github.com/wix-private/santa-editor/pull/*"
       ],
       "js": [
-        "scripts/pullRequest.js"
+        "scripts/githubHelper.js"
       ],
       "run_at": "document_end"
     },
