@@ -26,7 +26,7 @@ function getCompRef(editorAPI, id) {
   const allComps = getAllComponents(editorAPI);
   const allPages = getAllPagesInEditor(editorAPI);
   if (!isValidIdOrRef(allPages, allComps, id)) {
-    throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
+    throw new Error(`${ERROR_HEADER} No such pageId, pageRef, compId or compRef.`);
   }
   return _.isString(id) ? editorAPI.components.get.byId(id) : id;
 }
@@ -45,6 +45,15 @@ function init(window) {
     }, []);
   };
 
+  const getAllCompsInCurrentPage = () => editorAPI.components.getAllComponents(editorAPI.pages.getCurrentPage().id);
+
+  const getAllCompsIn = pageId => {
+    if (!isValidIdOrRef(pageId)) {
+      throw new Error(`${ERROR_HEADER} No such pageId or PageRef`);
+    }
+    return editorAPI.components.getAllComponents(pageId);
+  };
+
   const getRef = _.partial(getCompRef, editorAPI);
 
   const getSelected = () => {
@@ -57,7 +66,7 @@ function init(window) {
 
   const getData = ref => {
     if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
-      throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
+      throw new Error(`${ERROR_HEADER} No such pageId, pageRef, compId or compRef.`);
     }
     ref = getRef(ref);
     return editorAPI.components.data.get(ref);
@@ -65,7 +74,7 @@ function init(window) {
 
   const getLayout = ref => {
     if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
-      throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
+      throw new Error(`${ERROR_HEADER} No such pageId, pageRef, compId or compRef.`);
     }
     ref = _.isString(ref) ? editorAPI.components.get.byId(ref) : ref;
     return editorAPI.components.layout.get(ref);
@@ -73,7 +82,7 @@ function init(window) {
 
   const getSkin = ref => {
     if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
-      throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
+      throw new Error(`${ERROR_HEADER} No such pageId, pageRef, compId or compRef.`);
     }
     ref = getRef(ref);
     return editorAPI.components.skin.get(ref);
@@ -81,7 +90,7 @@ function init(window) {
 
   const getType = ref => {
     if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
-      throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
+      throw new Error(`${ERROR_HEADER} No such pageId, pageRef, compId or compRef.`);
     }
     ref = getRef(ref);
     return editorAPI.components.getType(ref);
@@ -89,7 +98,7 @@ function init(window) {
 
   const getStyle = ref => {
     if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
-      throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
+      throw new Error(`${ERROR_HEADER} No such pageId, pageRef, compId or compRef.`);
     }
     ref = getRef(ref);
     return editorAPI.components.style.get(ref);
@@ -97,7 +106,7 @@ function init(window) {
 
   const getSerialize = ref => {
     if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
-      throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
+      throw new Error(`${ERROR_HEADER} No such pageId, pageRef, compId or compRef.`);
     }
     ref = getRef(ref);
     return editorAPI.components.serialize(ref);
@@ -105,7 +114,7 @@ function init(window) {
 
   const getPageOf = ref => {
     if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
-      throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
+      throw new Error(`${ERROR_HEADER} No such pageId, pageRef, compId or compRef.`);
     }
     ref = getRef(ref);
     const pageRef = editorAPI.components.getPage(ref);
@@ -115,7 +124,7 @@ function init(window) {
 
   const getParentOf = ref => {
     if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
-      throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
+      throw new Error(`${ERROR_HEADER} No such pageId, pageRef, compId or compRef.`);
     }
     ref = getRef(ref);
     return editorAPI.components.getContainer(ref);
@@ -146,6 +155,45 @@ function init(window) {
     return getSkin(ref);
   };
 
+  const updateData = (ref, newData) => {
+    if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
+      throw new Error(`${ERROR_HEADER} No such pageId, pageRef, compId or compRef.`);
+    }
+    ref = getRef(ref);
+    return editorAPI.components.data.update(ref, newData);
+  };
+
+  const updateLayout = (ref, newLayout) => {
+    if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
+      throw new Error(`${ERROR_HEADER} No such pageId, pageRef, compId or compRef.`);
+    }
+    ref = getRef(ref);
+    return editorAPI.components.layout.update(ref, newLayout);
+  };
+
+  const updateStyle = (ref, newStyle) => {
+    if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
+      throw new Error(`${ERROR_HEADER} No such pageId, pageRef, compId or compRef.`);
+    }
+    ref = getRef(ref);
+    return editorAPI.components.style.update(ref, newStyle);
+  };
+
+  const updateSelectedData = newData => {
+    const ref = getSelected();
+    return editorAPI.components.data.update(ref, newData);
+  };
+
+  const updateSelectedLayout = newLayout => {
+    const ref = getSelected();
+    return editorAPI.components.layout.update(ref, newLayout);
+  };
+
+  const updateSelectedStyle = newStyle => {
+    const ref = getSelected();
+    return editorAPI.components.style.update(ref, newStyle);
+  };
+
   const serializeSelected = () => {
     const ref = getSelected();
     return editorAPI.components.serialize(ref);
@@ -153,7 +201,7 @@ function init(window) {
 
   const selectComp = ref => {
     if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
-      throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
+      throw new Error(`${ERROR_HEADER} No such pageId, pageRef, compId or compRef.`);
     }
     ref = getRef(ref);
     editorAPI.selection.selectComponentByCompRef(ref);
@@ -161,7 +209,7 @@ function init(window) {
 
   const navigateTo = ref => {
     if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
-      throw new Error(`${ERROR_HEADER} No such pageId, compId or compRef.`);
+      throw new Error(`${ERROR_HEADER} No such pageId, pageRef, compId or compRef.`);
     }
     if (_.includes(getAllPagesInEditor(editorAPI), ref)) {
       editorAPI.pages.navigateTo(ref);
@@ -174,7 +222,7 @@ function init(window) {
         selectComp(ref);
         editorAPI.documentServices.waitForChangesApplied(() => {
           console.log(getSerialize(ref)); // eslint-disable-line no-console
-          editorAPI.scroll.scrollTo({scrollTop: getSelectedLayout().y});
+          editorAPI.scroll.scrollTo({ scrollTop: getSelectedLayout().y });
         });
       });
     }
@@ -193,6 +241,8 @@ function init(window) {
   const openWithClosedExperiments = () => window.open(window.location.href.concat('&experimentsoff=').concat(Object.keys(editorModel.runningExperiments).join(',')));
 
   const openSentryWithUserFiltering = () => window.open(`https://sentry.io/wix_o/santa-editor/?query=user:"id:${editorModel.permissionsInfo.loggedInUserId}"`, '_blank');
+
+  const openSentryWithMetaSiteFiltering = () => window.open(`https://sentry.io/wix_o/santa-editor/?query=metaSiteId:"${editorModel.metaSiteId}"`, '_blank');
 
   const deleteAllPagesExceptCurrent = () => {
     const currentPage = editorAPI.pages.getCurrentPage().id;
@@ -216,39 +266,77 @@ function init(window) {
   };
 
   return {
-    getAllComps,
+    get: {
+      getAllComps,
 
-    getAllPages,
+      getAllPages,
 
-    getPagesMap,
+      getPagesMap,
 
-    getRef,
+      getAllCompsInCurrentPage,
 
-    getData,
+      getAllCompsIn,
 
-    getSelected,
+      getRef,
 
-    getSelectedLayout,
+      getData,
 
-    getSkin,
+      getSelected,
 
-    getType,
+      getSelectedLayout,
 
-    getStyle,
+      getSkin,
 
-    getSerialize,
+      getType,
 
-    getPageOf,
+      getStyle,
 
-    getParentOf,
+      getSerialize,
 
-    getSelectedType,
+      getPageOf,
 
-    getSelectedData,
+      getParentOf,
 
-    getSelectedStyle,
+      getSelectedType,
 
-    getSelectedSkin,
+      getSelectedData,
+
+      getSelectedStyle,
+
+      getSelectedSkin,
+    },
+
+    update: {
+      updateData,
+
+      updateLayout,
+
+      updateStyle,
+
+      updateSelectedData,
+
+      updateSelectedLayout,
+
+      updateSelectedStyle,
+    },
+
+    open: {
+      openPreview,
+
+      openLiveSite,
+
+      openLiveSiteWithoutSSR,
+
+      openOldBoForSite,
+
+      openNewBoForUser,
+
+      openWithClosedExperiments,
+
+      openSentryWithUserFiltering,
+
+      openSentryWithMetaSiteFiltering,
+    },
 
     serializeSelected,
 
@@ -256,25 +344,11 @@ function init(window) {
 
     navigateTo,
 
-    openPreview,
-
-    openLiveSite,
-
-    openLiveSiteWithoutSSR,
-
-    openOldBoForSite,
-
-    openNewBoForUser,
-
-    openWithClosedExperiments,
-
     deleteAllPagesExceptCurrent,
 
     resetMobileLayoutOnAllPages,
 
     removePageById,
-
-    openSentryWithUserFiltering,
   };
 }
 
