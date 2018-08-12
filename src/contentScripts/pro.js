@@ -244,6 +244,8 @@ function init(window) {
 
   const openSentryWithMetaSiteFiltering = () => window.open(`https://sentry.io/wix_o/santa-editor/?query=metaSiteId:"${editorModel.metaSiteId}"`, '_blank');
 
+  const openFullStoryForUser = () => window.open(`https://app.fullstory.com/ui/1zuo/segments/everyone/people:search:((NOW%2FDAY-29DAY:NOW%2FDAY%2B1DAY):((UserAppKey:==:"${editorModel.permissionsInfo.loggedInUserId}")):():():():)/0`, '_blank');
+
   const deleteAllPagesExceptCurrent = () => {
     const currentPage = editorAPI.pages.getCurrentPage().id;
     const pagesToDelete = _.filter(getAllPagesInEditor(editorAPI), page => {
@@ -267,78 +269,82 @@ function init(window) {
 
   return {
     get: {
-      getAllComps,
+      allComps: getAllComps,
 
-      getAllPages,
+      allPages: getAllPages,
 
-      getPagesMap,
+      pagesMap: getPagesMap,
 
-      getAllCompsInCurrentPage,
+      allCompsInCurrentPage: getAllCompsInCurrentPage,
 
-      getAllCompsIn,
+      allCompsIn: getAllCompsIn,
 
-      getRef,
+      pointerOf: getRef,
 
-      getData,
+      data: getData,
 
-      getSelected,
+      layout: getLayout,
 
-      getSelectedLayout,
+      skin: getSkin,
 
-      getSkin,
+      type: getType,
 
-      getType,
+      style: getStyle,
 
-      getStyle,
+      selected: getSelected,
 
-      getSerialize,
+      serialize: getSerialize,
 
-      getPageOf,
+      serializeSelected,
 
-      getParentOf,
+      selectedType: getSelectedType,
 
-      getSelectedType,
+      selectedLayout: getSelectedLayout,
 
-      getSelectedData,
+      selectedData: getSelectedData,
 
-      getSelectedStyle,
+      selectedStyle: getSelectedStyle,
 
-      getSelectedSkin,
+      selectedSkin: getSelectedSkin,
+
+      pageOf: getPageOf,
+
+      parentOf: getParentOf,
     },
 
     update: {
-      updateData,
+      data: updateData,
 
-      updateLayout,
+      layout: updateLayout,
 
-      updateStyle,
+      style: updateStyle,
 
-      updateSelectedData,
+      selectedData: updateSelectedData,
 
-      updateSelectedLayout,
+      selectedLayout: updateSelectedLayout,
 
-      updateSelectedStyle,
+      selectedStyle: updateSelectedStyle,
     },
 
     open: {
-      openPreview,
+      preview: openPreview,
 
-      openLiveSite,
+      liveSite: openLiveSite,
 
-      openLiveSiteWithoutSSR,
+      liveSiteWithoutSSR: openLiveSiteWithoutSSR,
 
-      openOldBoForSite,
+      oldBoForSite: openOldBoForSite,
 
-      openNewBoForUser,
+      newBoForUser: openNewBoForUser,
 
-      openWithClosedExperiments,
+      withClosedExperiments: openWithClosedExperiments,
 
-      openSentryWithUserFiltering,
+      sentryWithUserFiltering: openSentryWithUserFiltering,
 
-      openSentryWithMetaSiteFiltering,
+      sentryWithMetaSiteFiltering: openSentryWithMetaSiteFiltering,
+
+      fullStoryForUser: openFullStoryForUser,
     },
-
-    serializeSelected,
 
     selectComp,
 
