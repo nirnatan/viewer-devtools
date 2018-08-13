@@ -31,9 +31,7 @@ function getCompRef(editorAPI, id) {
   return _.isString(id) ? editorAPI.components.get.byId(id) : id;
 }
 
-function init(window) {
-  const { editorAPI, editorModel } = window;
-
+function init({ editorAPI, editorModel }) {
   const getAllComps = () => getAllComponents(editorAPI);
 
   const getAllPages = () => getAllPagesInEditor(editorAPI);
@@ -54,7 +52,7 @@ function init(window) {
     return editorAPI.components.getAllComponents(pageId);
   };
 
-  const getRef = _.partial(getCompRef, editorAPI);
+  const getRef = id => getCompRef(editorAPI, id);
 
   const getSelected = () => {
     const selected = editorAPI.selection.getSelectedComponents();
