@@ -1,7 +1,15 @@
 /* global _ */
+const pro = require('./pro');
+
 (() => {
   const loadEditorAPI = () => {
     window.editorAPI = window.editorAPI || _.get(window, 'rendered.props.children.props.editorAPI') || _.get(window, 'testApi.editorAPI;');
+  };
+
+  const loadEditorProDebugger = () => {
+    if (window.editorAPI && window.editorModel) {
+      window.pro = pro.init(window);
+    }
   };
 
   const loadAsync = (srcName, targetName, innerStuff) => {
@@ -29,6 +37,7 @@
       $rendered = newValue;
       init();
       loadEditorAPI();
+      loadEditorProDebugger();
     },
   });
 })();
