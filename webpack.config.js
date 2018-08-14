@@ -30,6 +30,7 @@ module.exports = {
     options: path.resolve('src/options', 'main.js'),
     popup: path.resolve('src/popup', 'main.js'),
     contentActions: path.resolve('src/contentScripts', 'contentActions.js'),
+    editorHelper: path.resolve('src/contentScripts', 'editorHelper.js'),
   },
   output: {
     path: path.resolve('build'),

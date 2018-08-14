@@ -1,6 +1,6 @@
 {
   "name": "SantaDevTools",
-  "version": "1.0.28",
+  "version": "1.0.29",
   "manifest_version": 2,
   "description": "Santa Devloper Tools",
   "icons": {
@@ -78,7 +78,7 @@
   ],
   "web_accessible_resources": [
     "contentActions.js",
-    "scripts/editorHelper.js"
+    "editorHelper.js"
   ],
   "background": {
     "scripts": [

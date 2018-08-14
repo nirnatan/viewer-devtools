@@ -1,5 +1,4 @@
-const _ = require('lodash'); // should it be here or take it from the window?
-
+/* global _ */
 const ERROR_HEADER = 'Pro Debugger Error:';
 
 function getAllComponents(editorAPI) {
@@ -356,4 +355,4 @@ function init({ editorAPI, editorModel }) {
   };
 }
 
-module.exports = init;
+module.exports = { init };
