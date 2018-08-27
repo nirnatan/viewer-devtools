@@ -114,9 +114,7 @@ function init({ editorAPI, editorModel }) {
       throw new Error(`${ERROR_HEADER} No such pageId, pageRef, compId or compRef.`);
     }
     ref = getRef(ref);
-    const pageRef = editorAPI.components.getPage(ref);
-    const page = getPagesMap().filter(p => p.id === pageRef.id);
-    return page[0];
+    return editorAPI.components.getPage(ref);
   };
 
   const getParentOf = ref => {
@@ -150,6 +148,18 @@ function init({ editorAPI, editorModel }) {
   const getSelectedSkin = () => {
     const ref = getSelected();
     return getSkin(ref);
+  };
+
+  const getChildrenOf = ref => {
+    if (!isValidIdOrRef(getAllPagesInEditor(editorAPI), getAllComponents(editorAPI), ref)) {
+      throw new Error(`${ERROR_HEADER} No such pageId, pageRef, compId or compRef.`);
+    }
+    return editorAPI.components.getChildren(ref);
+  };
+
+  const getSelectedChildren = () => {
+    const ref = getSelected();
+    return getChildrenOf(ref);
   };
 
   const updateData = (ref, newData) => {
@@ -225,7 +235,13 @@ function init({ editorAPI, editorModel }) {
     }
   };
 
-  const openPreview = () => window.open(editorModel.previewUrl, '_blank');
+  const openPreview = () => {
+    if (!editorAPI.generalInfo.isSitePublished()) {
+      throw new Error(`${ERROR_HEADER} You can't open preview frame because site isn't published.`);
+    }
+    const previewUrl = `${editorModel.previewUrl}&isEdited=true&isSantaEditor=true&dsOrigin=Editor1.4`;
+    window.open(previewUrl, '_blank');
+  };
 
   const openLiveSite = () => window.open(editorModel.publicUrl, '_blank');
 
@@ -233,15 +249,19 @@ function init({ editorAPI, editorModel }) {
 
   const openOldBoForSite = () => window.open(`https://bo.wix.com/bo/api/userManager?siteSubmitData=${editorModel.metaSiteId}`, '_blank');
 
-  const openNewBoForUser = () => window.open(`https://bo.wix.com/user-manager/users/byGuid/${editorModel.permissionsInfo.loggedInUserId}`, '_blank');
+  const openNewBoForUser = () => window.open(`https://bo.wix.com/user-manager/users/byGuid/${editorModel.permissionsInfo.ownerId}`, '_blank');
 
   const openWithClosedExperiments = () => window.open(window.location.href.concat('&experimentsoff=').concat(Object.keys(editorModel.runningExperiments).join(',')));
 
-  const openSentryWithUserFiltering = () => window.open(`https://sentry.io/wix_o/santa-editor/?query=user:"id:${editorModel.permissionsInfo.loggedInUserId}"`, '_blank');
+  const openSentryWithUserFiltering = () => window.open(`https://sentry.io/wix_o/santa-editor/?query=user:"id:${editorModel.permissionsInfo.ownerId}"`, '_blank');
 
   const openSentryWithMetaSiteFiltering = () => window.open(`https://sentry.io/wix_o/santa-editor/?query=metaSiteId:"${editorModel.metaSiteId}"`, '_blank');
 
-  const openFullStoryForUser = () => window.open(`https://app.fullstory.com/ui/1zuo/segments/everyone/people:search:((NOW%2FDAY-29DAY:NOW%2FDAY%2B1DAY):((UserAppKey:==:"${editorModel.permissionsInfo.loggedInUserId}")):():():():)/0`, '_blank');
+  const openFullStoryForUser = () => window.open(`https://app.fullstory.com/ui/1zuo/segments/everyone/people:search:((NOW%2FDAY-29DAY:NOW%2FDAY%2B1DAY):((UserAppKey:==:"${editorModel.permissionsInfo.ownerId}")):():():():)/0`, '_blank');
+
+  const isExperimentOn = experiment => _.get(editorModel.runningExperiments, experiment); // MorBR
+
+  // const isOpen = experiment =>
 
   const deleteAllPagesExceptCurrent = () => {
     const currentPage = editorAPI.pages.getCurrentPage().id;
@@ -263,6 +283,8 @@ function init({ editorAPI, editorModel }) {
     }
     editorAPI.pages.remove(pageId);
   };
+
+  const hasEnabledWixCode = () => editorAPI.wixCode.isProvisioned();
 
   return {
     get: {
@@ -307,6 +329,10 @@ function init({ editorAPI, editorModel }) {
       pageOf: getPageOf,
 
       parentOf: getParentOf,
+
+      childrenOf: getChildrenOf,
+
+      selectedChildren: getSelectedChildren,
     },
 
     update: {
@@ -352,6 +378,10 @@ function init({ editorAPI, editorModel }) {
     resetMobileLayoutOnAllPages,
 
     removePageById,
+
+    hasEnabledWixCode,
+
+    isExperimentOn,
   };
 }
 
