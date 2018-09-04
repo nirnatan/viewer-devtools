@@ -1,5 +1,5 @@
 /* global _ */
-const pro = require('./pro');
+import pro from './pro';
 
 (() => {
   const loadEditorAPI = () => {

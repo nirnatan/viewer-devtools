@@ -49,6 +49,10 @@ const updateBrowserActionIcon = () => {
   });
 };
 
+const markYouBrokeSanta = () => {
+
+};
+
 const sendToContentPage = request => (
   getActiveTab().then(({ id }) => {
     return new Promise((res => {
@@ -66,6 +70,7 @@ const getCurrentVersions = () => {
 };
 
 chrome.tabs.onActiveChanged.addListener(() => {
+  markYouBrokeSanta();
   updateBrowserActionIcon();
   getCurrentVersions().then(ver => {
     window.ver = ver;

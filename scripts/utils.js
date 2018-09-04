@@ -45,8 +45,8 @@ const getPackages = root => {
 };
 
 const createConfig = (output, project) => {
-  var outputDirectory = path.join(__dirname, '..', 'src', 'generated');
-  if (!fs.existsSync(outputDirectory)){
+  let outputDirectory = path.join(__dirname, '..', 'src', 'generated');
+  if (!fs.existsSync(outputDirectory)) {
     fs.mkdirSync(outputDirectory);
   }
 
@@ -54,10 +54,12 @@ const createConfig = (output, project) => {
   return getExperiments(path.join(root, project))
     .then(experiments => (
       new Promise(res => {
-        fs.writeFile(path.join(outputDirectory, output), JSON.stringify({
+        const content = `/* eslint-disable */
+        module.exports = ${JSON.stringify({
           packages: getPackages(path.join(root, project)),
           experiments,
-        }), res);
+        })};`;
+        fs.writeFile(path.join(outputDirectory, output), content, res);
       })
     ));
 };

@@ -3,23 +3,15 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const WebpackShellPlugin = require('webpack-shell-plugin');
 
-const loaders = [
+const rules = [
   {
     test: /\.json?$/,
-    loader: 'json',
+    use: [{ loader: 'json-loader' }],
   },
   {
     test: /\.jsx??$/,
     exclude: /node_modules/,
-    loader: "babel",
-    query: {
-      presets: [
-        "es2015",
-        "react",
-        "stage-0",
-      ],
-      plugins: [],
-    },
+    use: [{ loader: 'babel-loader' }],
   },
 ];
 
@@ -31,6 +23,7 @@ module.exports = {
     popup: path.resolve('src/popup', 'main.js'),
     contentActions: path.resolve('src/contentScripts', 'contentActions.js'),
     editorHelper: path.resolve('src/contentScripts', 'editorHelper.js'),
+    youBrokeSanta: path.resolve('src/contentScripts', 'youBrokeSanta.js'),
   },
   output: {
     path: path.resolve('build'),
@@ -39,8 +32,8 @@ module.exports = {
   },
   plugins: [
     new WebpackShellPlugin({ onBuildStart: [
-      'node scripts/utils.js editor.json santa-editor',
-      'node scripts/utils.js viewer.json santa',
+      'node scripts/utils.js editor.js santa-editor/santa-editor',
+      'node scripts/utils.js viewer.js santa',
     ] }),
     new CopyWebpackPlugin([
       {
@@ -79,7 +72,7 @@ module.exports = {
     }),
   ],
   module: {
-    loaders,
+    rules,
   },
   devServer: {
     contentBase: './build',

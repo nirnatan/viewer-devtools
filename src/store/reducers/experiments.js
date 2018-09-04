@@ -1,6 +1,6 @@
 import Immutable from 'immutable';
-import viewer from '../../generated/viewer.json';
-import editor from '../../generated/editor.json';
+import viewer from '../../generated/viewer';
+import editor from '../../generated/editor';
 
 const toObject = (array, value) => (array.reduce((acc, exp) => Object.assign(acc, { [exp]: value }), {}));
 

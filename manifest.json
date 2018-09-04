@@ -1,6 +1,6 @@
 {
   "name": "SantaDevTools",
-  "version": "1.0.31",
+  "version": "1.0.32",
   "manifest_version": 2,
   "description": "Santa Devloper Tools",
   "icons": {
@@ -31,7 +31,8 @@
         "<all_urls>"
       ],
       "js": [
-        "scripts/contentScripts.js"
+        "scripts/contentScripts.js",
+        "youBrokeSanta.js"
       ],
       "run_at": "document_end"
     },
@@ -58,6 +59,18 @@
     },
     {
       "matches": [
+        "https://pullrequest-tc.dev.wixpress.com/login.html",
+        "http://pullrequest-tc.dev.wixpress.com/login.html",
+        "https://tc.dev.wixpress.com/login.html",
+        "http://tc.dev.wixpress.com/login.html"
+      ],
+      "js": [
+        "scripts/teamcityLoginHelper.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
         "https://jira.wixpress.com/*"
       ],
       "js": [
@@ -78,7 +91,9 @@
   ],
   "web_accessible_resources": [
     "contentActions.js",
-    "editorHelper.js"
+    "editorHelper.js",
+    "youBrokeSanta.js",
+    "youBrokeSanta.js.map"
   ],
   "background": {
     "scripts": [
