@@ -1,4 +1,6 @@
-import { some, forEach } from 'lodash';
+import forEach from 'lodash/forEach';
+import some from 'lodash/some';
+import isEmpty from 'lodash/isEmpty';
 
 const run = async () => {
   const main = document.createElement('div');
@@ -42,15 +44,15 @@ const run = async () => {
     document.querySelector('.you-broke-santa').appendChild(innerDiv.firstChild);
   };
 
-  const username = new Promise(res => chrome.storage.local.get('teamCityUsername', ({ teamCityUsername }) => res(teamCityUsername)));
+  const username = await new Promise(res => chrome.storage.local.get('teamCityUsername', ({ teamCityUsername }) => res(teamCityUsername)));
   if (!username) {
     return;
   }
   const currentBuilds = await fetch('https://localhost/proxy?src=http://rudolph.wixpress.com/services/getAllCurrentBuildStates').then(res => res.json());
-  forEach(currentBuilds, ({ buildData }, artifact) => {
-    const { state, status, lastChanges, title, webUrl: url } = buildData;
-    if (state === 'finished' && status !== 'SUCCESS' && lastChanges) {
-      const youHaveChanges = some(lastChanges.changes, change => change.username === username);
+  forEach(currentBuilds, ({ buildData, changes }, artifact) => {
+    const { state, status, title, webUrl: url } = buildData;
+    if (state === 'finished' && status !== 'SUCCESS' && !isEmpty(changes)) {
+      const youHaveChanges = some(changes, change => change.username === username);
       if (youHaveChanges) {
         fetch(`https://localhost/proxy?src=http://rudolph.wixpress.com/services/getBuildInvestigators?artifact=${artifact}`)
             .then(res => res.json())
