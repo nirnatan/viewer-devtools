@@ -272,6 +272,12 @@ function init({ editorAPI, editorModel }) {
 
   const openFullStoryForUser = () => window.open(`https://app.fullstory.com/ui/1zuo/segments/everyone/people:search:((NOW%2FDAY-29DAY:NOW%2FDAY%2B1DAY):((UserAppKey:==:"${editorModel.permissionsInfo.ownerId}")):():():():)/0`, '_blank');
 
+  const performAutoSave = () => editorAPI.autosave();
+
+  const enableAutosave = () => editorAPI.dsActions.initAutosave(editorAPI.autosaveManager.getAutosaveConfig({ enabled: true }));
+
+  const disableAutosave = () => editorAPI.dsActions.initAutosave(editorAPI.autosaveManager.getAutosaveConfig({ enabled: false }));
+
   const isExperimentOn = experiment => _.get(editorModel.runningExperiments, experiment); // MorBR
 
   // const isOpen = experiment =>
@@ -380,6 +386,14 @@ function init({ editorAPI, editorModel }) {
       sentryWithMetaSiteFiltering: openSentryWithMetaSiteFiltering,
 
       fullStoryForUser: openFullStoryForUser,
+    },
+
+    autosave: {
+      perform: performAutoSave,
+
+      enable: enableAutosave,
+
+      disable: disableAutosave,
     },
 
     selectComp,
