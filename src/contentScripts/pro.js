@@ -9,6 +9,14 @@ function getAllPagesInEditor(editorAPI) {
   return editorAPI.pages.getPageIdList();
 }
 
+function getRelease(version) {
+  version = version.split('.');
+  version.pop();
+  version.push('x');
+  version = version.join('.');
+  return version;
+}
+
 function isValidIdOrRef(allPages, allComps, ref) {
   if (_.isObject(ref)) {
     ref = ref.id;
@@ -270,6 +278,8 @@ function init({ editorAPI, editorModel }) {
 
   const openSentryWithMetaSiteFiltering = () => window.open(`https://sentry.io/wix_o/santa-editor/?query=metaSiteId:"${editorModel.metaSiteId}"`, '_blank');
 
+  const openSentryReleaseFiltering = () => window.open(`https://sentry.io/wix_o/santa-editor/?query=release:"${getRelease(editorModel.editorVersion)}"`, '_blank');
+
   const openFullStoryForUser = () => window.open(`https://app.fullstory.com/ui/1zuo/segments/everyone/people:search:((NOW%2FDAY-29DAY:NOW%2FDAY%2B1DAY):((UserAppKey:==:"${editorModel.permissionsInfo.ownerId}")):():():():)/0`, '_blank');
 
   const performAutoSave = () => editorAPI.autosave();
@@ -386,6 +396,8 @@ function init({ editorAPI, editorModel }) {
       sentryWithMetaSiteFiltering: openSentryWithMetaSiteFiltering,
 
       fullStoryForUser: openFullStoryForUser,
+
+      sentryReleaseFiltering: openSentryReleaseFiltering,
     },
 
     autosave: {
