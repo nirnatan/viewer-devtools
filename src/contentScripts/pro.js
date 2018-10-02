@@ -9,6 +9,14 @@ function getAllPagesInEditor(editorAPI) {
   return editorAPI.pages.getPageIdList();
 }
 
+function getRelease(version) {
+  version = version.split('.');
+  version.pop();
+  version.push('x');
+  version = version.join('.');
+  return version;
+}
+
 function isValidIdOrRef(allPages, allComps, ref) {
   if (_.isObject(ref)) {
     ref = ref.id;
@@ -243,6 +251,19 @@ function init({ editorAPI, editorModel }) {
     window.open(previewUrl, '_blank');
   };
 
+  const wrap = object => {
+    const handler = {
+      get(obj, prop) {
+        return wrap(obj[prop]);
+      },
+      set(obj, prop, value) {
+        debugger; // eslint-disable-line no-restricted-syntax, no-debugger
+        return Reflect.set(obj, prop, value);
+      },
+    };
+    return _.isObject(object) ? new Proxy(object, handler) : object;
+  };
+
   const openLiveSite = () => window.open(editorModel.publicUrl, '_blank');
 
   const openLiveSiteWithoutSSR = () => window.open(`${editorModel.publicUrl}?forceSsr=false&petri_ovr=specs.SantaServerSideRendering:false&debug=all`, '_blank');
@@ -257,7 +278,15 @@ function init({ editorAPI, editorModel }) {
 
   const openSentryWithMetaSiteFiltering = () => window.open(`https://sentry.io/wix_o/santa-editor/?query=metaSiteId:"${editorModel.metaSiteId}"`, '_blank');
 
+  const openSentryReleaseFiltering = () => window.open(`https://sentry.io/wix_o/santa-editor/?query=release:"${getRelease(editorModel.editorVersion)}"`, '_blank');
+
   const openFullStoryForUser = () => window.open(`https://app.fullstory.com/ui/1zuo/segments/everyone/people:search:((NOW%2FDAY-29DAY:NOW%2FDAY%2B1DAY):((UserAppKey:==:"${editorModel.permissionsInfo.ownerId}")):():():():)/0`, '_blank');
+
+  const performAutoSave = () => editorAPI.autosave();
+
+  const enableAutosave = () => editorAPI.dsActions.initAutosave(editorAPI.autosaveManager.getAutosaveConfig({ enabled: true }));
+
+  const disableAutosave = () => editorAPI.dsActions.initAutosave(editorAPI.autosaveManager.getAutosaveConfig({ enabled: false }));
 
   const isExperimentOn = experiment => _.get(editorModel.runningExperiments, experiment); // MorBR
 
@@ -367,6 +396,16 @@ function init({ editorAPI, editorModel }) {
       sentryWithMetaSiteFiltering: openSentryWithMetaSiteFiltering,
 
       fullStoryForUser: openFullStoryForUser,
+
+      sentryReleaseFiltering: openSentryReleaseFiltering,
+    },
+
+    autosave: {
+      perform: performAutoSave,
+
+      enable: enableAutosave,
+
+      disable: disableAutosave,
     },
 
     selectComp,
@@ -382,6 +421,8 @@ function init({ editorAPI, editorModel }) {
     hasEnabledWixCode,
 
     isExperimentOn,
+
+    wrap,
   };
 }
 
