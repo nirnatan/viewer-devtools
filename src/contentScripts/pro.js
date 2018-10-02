@@ -243,6 +243,19 @@ function init({ editorAPI, editorModel }) {
     window.open(previewUrl, '_blank');
   };
 
+  const wrap = object => {
+    const handler = {
+      get(obj, prop) {
+        return wrap(obj[prop]);
+      },
+      set(obj, prop, value) {
+        debugger; // eslint-disable-line no-restricted-syntax, no-debugger
+        return Reflect.set(obj, prop, value);
+      },
+    };
+    return _.isObject(object) ? new Proxy(object, handler) : object;
+  };
+
   const openLiveSite = () => window.open(editorModel.publicUrl, '_blank');
 
   const openLiveSiteWithoutSSR = () => window.open(`${editorModel.publicUrl}?forceSsr=false&petri_ovr=specs.SantaServerSideRendering:false&debug=all`, '_blank');
@@ -382,6 +395,8 @@ function init({ editorAPI, editorModel }) {
     hasEnabledWixCode,
 
     isExperimentOn,
+
+    wrap,
   };
 }
 
