@@ -60,13 +60,13 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'SantaDevTools Options',
       main: 'options.js',
-      template: path.resolve('src', 'index.ejs'),
+      template: path.resolve('src', 'index.html'),
       filename: 'options.html',
     }),
     new HtmlWebpackPlugin({
       title: 'SantaDevTools Popup',
       main: 'popup.js',
-      template: path.resolve('src', 'index.ejs'),
+      template: path.resolve('src', 'index.html'),
       filename: 'popup.html',
       css: 'popup.css',
     }),
