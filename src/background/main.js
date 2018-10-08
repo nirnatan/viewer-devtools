@@ -33,9 +33,9 @@ const executeScript = script => {
   });
 };
 
-const isViewer = () => executeScript("!!Array.from(document.getElementsByTagName('meta')).find(e => e.httpEquiv === 'X-Wix-Renderer-Server')");
+const isViewer = () => executeScript("!!Array.from(document.getElementsByTagName('meta')).find(e => e.httpEquiv.indexOf('X-Wix') !== -1)");
 
-const isEditor = () => executeScript("!!Array.from(document.getElementsByTagName('meta')).find(e => e.httpEquiv === 'X-Wix-Editor-Server')");
+const isEditor = () => getActiveTab().then(tab => tab.url.indexOf('editor.wix.com') !== -1);
 
 const updateBrowserActionIcon = () => {
   Promise.all([isEditor(), isViewer()]).then(([editor, viewer]) => {
