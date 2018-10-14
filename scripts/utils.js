@@ -12,7 +12,7 @@ const getExperiments = root => (
     };
 
     glob('/packages/**/*.js', options, (err, files) => {
-      const experimentRegex = /experiment\.isOpen\(['"](.*?)['"]\)/g;
+      const experimentRegex = /(experiment\.(isOpen|getValue)\(['"](.*?)['"](,\s\w+)?\))|(.isExperimentOpen\(['"](.*?)['"]\))/g;
       const result = [];
       let counter = files.length;
       files.forEach(file => {
@@ -24,7 +24,7 @@ const getExperiments = root => (
 
           let experiment = experimentRegex.exec(data);
           while (experiment) {
-            result.push(experiment[1]);
+            result.push(experiment[3] || experiment[6]);
             experiment = experimentRegex.exec(data);
           }
 
@@ -45,7 +45,7 @@ const getPackages = root => {
 };
 
 const createConfig = (output, project) => {
-  let outputDirectory = path.join(__dirname, '..', 'src', 'generated');
+  const outputDirectory = path.join(__dirname, '..', 'src', 'generated');
   if (!fs.existsSync(outputDirectory)) {
     fs.mkdirSync(outputDirectory);
   }
