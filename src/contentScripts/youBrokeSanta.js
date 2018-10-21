@@ -50,6 +50,9 @@ const run = async () => {
   }
   const currentBuilds = await fetch('https://localhost/proxy?src=http://rudolph.wixpress.com/services/getAllCurrentBuildStates').then(res => res.json());
   forEach(currentBuilds, ({ buildData, changes }, artifact) => {
+    if (!buildData) {
+      return;
+    }
     const { state, status, title, webUrl: url } = buildData;
     if (state === 'finished' && status !== 'SUCCESS' && !isEmpty(changes)) {
       const youHaveChanges = some(changes, change => change.username === username);
