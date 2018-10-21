@@ -48,25 +48,30 @@ const run = async () => {
   if (!username) {
     return;
   }
-  const currentBuilds = await fetch('https://localhost/proxy?src=http://rudolph.wixpress.com/services/getAllCurrentBuildStates').then(res => res.json());
-  forEach(currentBuilds, ({ buildData, changes }, artifact) => {
-    if (!buildData) {
-      return;
-    }
-    const { state, status, title, webUrl: url } = buildData;
-    if (state === 'finished' && status !== 'SUCCESS' && !isEmpty(changes)) {
-      const youHaveChanges = some(changes, change => change.username === username);
-      if (youHaveChanges) {
-        fetch(`https://localhost/proxy?src=http://rudolph.wixpress.com/services/getBuildInvestigators?artifact=${artifact}`)
-            .then(res => res.json())
-            .then(investigators => {
-              if (!some(investigators, i => i === username)) {
-                addYouBrokeSanta({ url, title });
-              }
-            });
+
+  try {
+    const currentBuilds = await fetch('https://localhost/proxy?src=http://rudolph.wixpress.com/services/getAllCurrentBuildStates').then(res => res.json());
+    forEach(currentBuilds, ({ buildData, changes }, artifact) => {
+      if (!buildData) {
+        return;
       }
-    }
-  });
+      const { state, status, title, webUrl: url } = buildData;
+      if (state === 'finished' && status !== 'SUCCESS' && !isEmpty(changes)) {
+        const youHaveChanges = some(changes, change => change.username === username);
+        if (youHaveChanges) {
+          fetch(`https://localhost/proxy?src=http://rudolph.wixpress.com/services/getBuildInvestigators?artifact=${artifact}`)
+              .then(res => res.json())
+              .then(investigators => {
+                if (!some(investigators, i => i === username)) {
+                  addYouBrokeSanta({ url, title });
+                }
+              });
+        }
+      }
+    });
+  } catch (error) {
+    return;
+  }
 };
 
 if (window.location.host !== 'tc.dev.wixpress.com' && window.location.host !== 'pullrequest-tc.dev.wixpress.com') {
