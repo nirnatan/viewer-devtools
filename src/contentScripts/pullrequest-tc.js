@@ -7,6 +7,7 @@
     Santa_Santa: 'santa',
     MonoRepoTest_SantaEditor: 'santa-editor',
     MonoRepoTest_SantaCore: 'santa-core',
+    Bolt_Bolt: 'bolt',
   };
 
   const projectId = Object.keys(projects).find(pId => window.location.search.indexOf(`=${pId}`) !== -1);

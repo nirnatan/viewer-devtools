@@ -21,6 +21,8 @@
           return `http://pullrequest-tc.dev.wixpress.com/viewType.html?buildTypeId=MonoRepoTest_SantaEditor&branch_MonoRepoTest=${pullRequestNumber}&tab=buildTypeStatusDiv`;
         case 'santa-core':
           return `http://pullrequest-tc.dev.wixpress.com/viewType.html?buildTypeId=MonoRepoTest_SantaCore&branch_MonoRepoTest=${pullRequestNumber}&tab=buildTypeStatusDiv`;
+        case 'bolt':
+          return `http://pullrequest-tc.dev.wixpress.com/viewType.html?buildTypeId=Bolt_Bolt&branch_Bolt=${pullRequestNumber}/merge&tab=buildTypeStatusDiv`;
         default:
           return '';
       }
