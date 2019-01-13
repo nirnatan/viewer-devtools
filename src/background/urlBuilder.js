@@ -25,7 +25,7 @@ const applyDebug = (queryObj, { autoDebugModified, editor, viewer }) => {
       .catch(() => res([]));
   }).then(modifiedPackages => {
     if (editor.all && viewer.all) {
-      return Object.assign({}, queryObj, { debug: 'all' });
+      return Object.assign({}, queryObj, { debug: 'all', debugViewer: 'all' });
     }
 
     const debug = modifiedPackages.concat(getDebugPackages(editor)).concat(getDebugPackages(viewer));
