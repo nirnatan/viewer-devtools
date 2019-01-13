@@ -47,7 +47,7 @@
     "shelljs": "^0.7.3",
     "webpack": "4.17.2",
     "webpack-cli": "3.1.0",
-    "webpack-dev-server": "3.1.7",
+    "webpack-dev-server": "^3.1.14",
     "webpack-shell-plugin": "0.5.0"
   },
   "author": "WebpackBin",

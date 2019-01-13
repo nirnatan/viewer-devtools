@@ -28,7 +28,7 @@
       }
     };
 
-    const projectRegEx = /https:\/\/github.com\/wix-private\/(.*)\/pull\/(.*)/;
+    const projectRegEx = /https:\/\/github.com\/wix-private\/(.*)\/pull\/(\d+)/;
     const [, project, pullRequestNumber] = projectRegEx.exec(location.href);
     const href = getTeamcityUrl(project, pullRequestNumber);
 
