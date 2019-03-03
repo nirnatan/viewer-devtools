@@ -9,6 +9,7 @@ const DEFAULT_SETTINGS = Immutable.fromJS({
   showPublicButton: true,
   showPreviewBtn: true,
   username: '',
+  useBolt: false,
   showCurrentVersions: false,
 });
 
