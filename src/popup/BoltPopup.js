@@ -54,7 +54,7 @@ const BoltPopup = () => <div style={styles.popup}>
       onClick={() => getBackgroundPage().then(({ Utils }) => Utils.openOptionsPage())}
     />
   </div>
-  <img alt="bolt" src="https://web.whatsapp.com/pp?e=https%3A%2F%2Fpps.whatsapp.net%2Fv%2Ft61.11540-24%2F51974803_1280718338745565_5141758748817096704_n.jpg%3Foe%3D5C7FD0B0%26oh%3D8c53599567961f26826784037312ee6a&t=l&u=972524887202-1541434223%40g.us&i=1550490263" style={styles.image} />
+  <img alt="bolt" src="https://static.wixstatic.com/media/cadfaa_e3cf4de25b0a4a62b56cd0c7adab1893~mv2.jpeg/v1/fill/w_200,h_200,al_c,q_80,usm_0.66_1.00_0.01/boltSanta.webp" style={styles.image} />
   <div style={styles.buttons}>
     <div style={styles.button}>
       <RaisedButton label="SSR Debug" onClick={applyOnClick('Bolt_SSR_Debug')} />
