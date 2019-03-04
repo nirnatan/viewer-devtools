@@ -1,6 +1,6 @@
 {
   "name": "SantaDevTools",
-  "version": "1.0.46",
+  "version": "1.0.47",
   "manifest_version": 2,
   "description": "Santa Devloper Tools",
   "icons": {
@@ -100,13 +100,15 @@
     "scripts": [
       "background.js"
     ],
-    "persistent": false
+    "persistent": true
   },
   "options_page": "options.html",
   "permissions": [
     "http://*/*",
     "https://*/*",
     "storage",
+    "webRequest",
+    "webRequestBlocking",
     "tabs"
   ]
 }

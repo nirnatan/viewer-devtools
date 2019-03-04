@@ -168,17 +168,22 @@ export default (location, option) => {
         result = result.then(queryObj => applySettings(queryObj, store.settings, parsedUrl.protocol));
       }
       if (option === 'Bolt_SSR_Debug') {
-        result = result.then(queryObj => Object.assign({
-          forceBolt: 'true',
-          ssrDebug: 'true',
-          petri_ovr: 'specs.ForceSsrWebWorker:local',
-        }, queryObj));
+        result = result.then(queryObj => {
+          delete queryObj.BoltSource;
+
+          return Object.assign({}, queryObj, {
+            forceBolt: 'true',
+            ssrDebug: 'true',
+            petri_ovr: 'specs.ForceSsrWebWorker:local',
+          });
+        });
       }
       if (option === 'Bolt_Client_Debug') {
         result = result.then(queryObj => {
           delete queryObj.ssrDebug;
 
           return Object.assign({}, queryObj, {
+            carmiDebug: 'true',
             forceBolt: 'true',
             petri_ovr: 'specs.ExcludeSiteFromSsr:true',
             BoltSource: 'https://localhost:8081',

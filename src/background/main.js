@@ -17,6 +17,15 @@ const getActiveTab = () => {
   });
 };
 
+chrome.webRequest.onBeforeRequest.addListener(({ url }) => {
+  if (url.includes('ssrDebug=true') && url.startsWith('https://')) {
+    return { redirectUrl: url.replace('https://', 'http://') };
+  }
+
+  return {};
+}, { urls: ['<all_urls>'] }, ['blocking']);
+
+
 const executeScript = script => {
   return getActiveTab().then(({ id, url }) => {
     if (startsWith(url, 'chrome')) {
