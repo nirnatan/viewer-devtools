@@ -23,12 +23,12 @@ module.exports = {
     popup: path.resolve('src/popup', 'main.js'),
     contentActions: path.resolve('src/contentScripts', 'contentActions.js'),
     editorHelper: path.resolve('src/contentScripts', 'editorHelper.js'),
-    youBrokeSanta: path.resolve('src/contentScripts', 'youBrokeSanta.js'),
   },
   output: {
     path: path.resolve('build'),
     filename: '[name].js',
     publicPath: '/',
+    devtoolNamespace: 'editor-devtools',
   },
   plugins: [
     new WebpackShellPlugin({ onBuildStart: [
