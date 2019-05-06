@@ -1,18 +1,19 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { sortBy, get } from 'lodash';
-import { withState, mapProps, compose, lifecycle } from 'recompose';
-import Divider from 'material-ui/Divider';
-import Menu from 'material-ui/Menu';
-import MenuItem from 'material-ui/MenuItem';
-import Subheader from 'material-ui/Subheader';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import AutoCompleteWithAction from '../components/AutoCompleteWithAction';
-import ButtonWithPopup from '../components/ButtonWithPopup';
-import Versions from '../components/Versions';
-import * as actionCreators from '../store/actions/index';
-import Impersonate from './Components/Impersonate';
-import ActionItems from './Components/ActionItems';
+import React from "react";
+import { connect } from "react-redux";
+import { sortBy, get } from "lodash";
+import { withState, mapProps, compose, lifecycle } from "recompose";
+import Divider from "material-ui/Divider";
+import Toggle from 'material-ui/Toggle';
+import Menu from "material-ui/Menu";
+import MenuItem from "material-ui/MenuItem";
+import Subheader from "material-ui/Subheader";
+import FloatingActionButton from "material-ui/FloatingActionButton";
+import AutoCompleteWithAction from "../components/AutoCompleteWithAction";
+import ButtonWithPopup from "../components/ButtonWithPopup";
+import Versions from "../components/Versions";
+import * as actionCreators from "../store/actions/index";
+import Impersonate from "./Components/Impersonate";
+import ActionItems from "./Components/ActionItems";
 
 const getBackgroundPage = () => {
   return new Promise(res => {
@@ -23,44 +24,54 @@ const getBackgroundPage = () => {
 };
 
 const applyOptions = {
-  ALL: 'All',
-  EXPERIMENTS: 'Experiments',
-  VERSIONS: 'Versions',
-  DEBUG: 'Debug',
-  SETTINGS: 'Settings',
-  PLATFORM: 'Platform',
+  ALL: "All",
+  EXPERIMENTS: "Experiments",
+  VERSIONS: "Versions",
+  DEBUG: "Debug",
+  SETTINGS: "Settings",
+  PLATFORM: "Platform",
 };
 
 const applySettings = option => () => {
-  getBackgroundPage()
-    .then(backgroundPage => {
-      backgroundPage.Utils.applySettings(option);
-      window.close();
-    });
+  getBackgroundPage().then(backgroundPage => {
+    backgroundPage.Utils.applySettings(option);
+    window.close();
+  });
 };
 
 const styles = {
   popup: { padding: 10 },
   divider: { marginTop: 10, marginBottom: 10 },
   impersonateImg: { height: 36, width: 36 },
-  impersonate: { padding: 10, paddingBottom: 0, cursor: 'pointer', display: 'inline-block' },
-  debug: { display: 'flex', alignItems: 'center' },
-  debugAll: { height: 36, marginLeft: 20, fontSize: 'smaller' },
-  debugAllText: { lineHeight: 'inherit' },
-  settings: { width: 30, height: 30, cursor: 'pointer' },
+  impersonate: {
+    padding: 10,
+    paddingBottom: 0,
+    cursor: "pointer",
+    display: "inline-block",
+  },
+  debug: { display: "flex", alignItems: "center" },
+  debugAll: { height: 36, marginLeft: 20, fontSize: "smaller" },
+  debugAllText: { lineHeight: "inherit" },
+  settings: { width: 30, height: 30, cursor: "pointer" },
+  useBolt: { marginRight: '10px' },
   fixed: {
-    position: 'fixed',
+    position: "fixed",
     right: 20,
     top: 20,
     width: 80,
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'row-reverse',
-    justifyContent: 'space-between',
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "row-reverse",
+    justifyContent: "space-between",
   },
-  buttons: { display: 'flex', flexDirection: 'row', marginTop: 15, marginBottom: 25 },
+  buttons: {
+    display: "flex",
+    flexDirection: "row",
+    marginTop: 15,
+    marginBottom: 25,
+  },
   button: { marginRight: 10 },
-  currentVersion: { fontWeight: 'bold', color: '#000' },
+  currentVersion: { fontWeight: "bold", color: "#000" },
 };
 
 const getPackages = packages => {
@@ -75,35 +86,45 @@ const getPackages = packages => {
     ),
   });
 
-  const allPackages = ['viewer', 'editor']
-          .reduce((acc, project) => {
-            return acc.concat(Object.keys(packages[project])
-                    .filter(pkg => pkg !== 'all' && !packages[project][pkg])
-                    .map(pkg => getPackageItem(project, pkg)));
-          }, []);
+  const allPackages = ["viewer", "editor"].reduce((acc, project) => {
+    return acc.concat(
+      Object.keys(packages[project])
+        .filter(pkg => pkg !== "all" && !packages[project][pkg])
+        .map(pkg => getPackageItem(project, pkg))
+    );
+  }, []);
 
-  return sortBy(allPackages, 'text');
+  return sortBy(allPackages, "text");
 };
 
 const getExperiments = experiments => {
   return []
-    .concat(Object.keys(experiments.editor.on).filter(exp => !experiments.editor.on[exp]))
-    .concat(Object.keys(experiments.viewer.on).filter(exp => !experiments.viewer.on[exp]))
+    .concat(
+      Object.keys(experiments.editor.on).filter(
+        exp => !experiments.editor.on[exp]
+      )
+    )
+    .concat(
+      Object.keys(experiments.viewer.on).filter(
+        exp => !experiments.viewer.on[exp]
+      )
+    )
     .sort();
 };
 
-const addPackage = (packageToAdd) => {
-  const [pkg, project] = packageToAdd.split('_');
+const addPackage = packageToAdd => {
+  const [pkg, project] = packageToAdd.split("_");
   getBackgroundPage().then(({ Utils }) => {
     Utils.debugPackage(project, pkg);
     window.close();
   });
 };
 
-const debugAll = () => getBackgroundPage().then(({ Utils }) => {
-  Utils.debugAll();
-  window.close();
-});
+const debugAll = () =>
+  getBackgroundPage().then(({ Utils }) => {
+    Utils.debugAll();
+    window.close();
+  });
 
 const CurrentVersions = ({ santa, editor }) => {
   if (!santa && !editor) {
@@ -113,8 +134,18 @@ const CurrentVersions = ({ santa, editor }) => {
   return (
     <div>
       <h3>Current Versions</h3>
-      {santa && <Subheader>Current Santa Version: <span style={styles.currentVersion}>{santa}</span></Subheader>}
-      {editor && <Subheader>Current Editor Version: <span style={styles.currentVersion}>{editor}</span></Subheader>}
+      {santa && (
+        <Subheader>
+          Current Santa Version:{" "}
+          <span style={styles.currentVersion}>{santa}</span>
+        </Subheader>
+      )}
+      {editor && (
+        <Subheader>
+          Current Editor Version:{" "}
+          <span style={styles.currentVersion}>{editor}</span>
+        </Subheader>
+      )}
       <Divider style={styles.divider} />
     </div>
   );
@@ -125,42 +156,85 @@ CurrentVersions.propTypes = {
   editor: React.PropTypes.string,
 };
 
-const Popup = (props) => {
+const Popup = props => {
   return (
     <div style={styles.popup}>
       <div style={styles.fixed}>
         <img
           style={styles.settings}
-          src={chrome.extension.getURL('assets/images/setting.png')}
+          src={chrome.extension.getURL("assets/images/setting.png")}
           alt="Settings"
           title="Settings"
-          onClick={() => getBackgroundPage().then(({ Utils }) => Utils.openOptionsPage())}
+          onClick={() =>
+            getBackgroundPage().then(({ Utils }) => Utils.openOptionsPage())
+          }
         />
+        <Toggle
+          style={styles.useBolt}
+          label={props.settings.useBolt ? "Bolt" : "Santa"}
+          labelPosition="left"
+          toggled={props.settings.useBolt}
+          onToggle={() =>
+            props.updateSettings({ useBolt: !props.settings.useBolt })
+          }
+        />
+
         <Impersonate username={props.settings.username} />
       </div>
       <h3>Change Version</h3>
       <Versions flat />
       <div style={styles.buttons}>
-        <ButtonWithPopup label="Apply" onClick={applySettings(applyOptions.ALL)} style={styles.button}>
+        <ButtonWithPopup
+          label="Apply"
+          onClick={applySettings(applyOptions.ALL)}
+          style={styles.button}
+        >
           <Menu>
-            <MenuItem primaryText="Apply All" onTouchTap={applySettings(applyOptions.ALL)} />
-            <MenuItem primaryText="Apply Experiments" onTouchTap={applySettings(applyOptions.EXPERIMENTS)} />
-            <MenuItem primaryText="Apply Versions" onTouchTap={applySettings(applyOptions.VERSIONS)} />
-            <MenuItem primaryText="Apply Debug" onTouchTap={applySettings(applyOptions.DEBUG)} />
-            <MenuItem primaryText="Apply Platform" onTouchTap={applySettings(applyOptions.PLATFORM)} />
-            <MenuItem primaryText="Apply Settings" onTouchTap={applySettings(applyOptions.SETTINGS)} />
+            <MenuItem
+              primaryText="Apply All"
+              onTouchTap={applySettings(applyOptions.ALL)}
+            />
+            <MenuItem
+              primaryText="Apply Experiments"
+              onTouchTap={applySettings(applyOptions.EXPERIMENTS)}
+            />
+            <MenuItem
+              primaryText="Apply Versions"
+              onTouchTap={applySettings(applyOptions.VERSIONS)}
+            />
+            <MenuItem
+              primaryText="Apply Debug"
+              onTouchTap={applySettings(applyOptions.DEBUG)}
+            />
+            <MenuItem
+              primaryText="Apply Platform"
+              onTouchTap={applySettings(applyOptions.PLATFORM)}
+            />
+            <MenuItem
+              primaryText="Apply Settings"
+              onTouchTap={applySettings(applyOptions.SETTINGS)}
+            />
           </Menu>
         </ButtonWithPopup>
         <ActionItems buttonStyle={styles.button} settings={props.settings} />
       </div>
       <Divider style={styles.divider} />
-      {props.settings.showCurrentVersions && <CurrentVersions santa={get(props.currentVersions, 'santa')} editor={get(props.currentVersions, 'editor')} />}
+      {props.settings.showCurrentVersions && (
+        <CurrentVersions
+          santa={get(props.currentVersions, "santa")}
+          editor={get(props.currentVersions, "editor")}
+        />
+      )}
       <h3>Quick Actions</h3>
       <div style={styles.debug}>
         <AutoCompleteWithAction
           floatingLabelText="Add Package to debug"
           dataSource={getPackages(props.packages)}
-          onNewRequest={pkg => props.setSelectedPackage(`${pkg.value.props.primaryText}_${pkg.value.props.secondaryText}`)}
+          onNewRequest={pkg =>
+            props.setSelectedPackage(
+              `${pkg.value.props.primaryText}_${pkg.value.props.secondaryText}`
+            )
+          }
           onActionClicked={() => addPackage(props.package)}
         />
         <FloatingActionButton mini onClick={debugAll} style={styles.debugAll}>
@@ -171,10 +245,12 @@ const Popup = (props) => {
         floatingLabelText="Add Experiment"
         dataSource={getExperiments(props.experiments)}
         onNewRequest={exp => props.setSelectedExperiment(exp)}
-        onActionClicked={() => getBackgroundPage().then(({ Utils }) => {
-          Utils.addExperiment(props.experiment);
-          window.close();
-        })}
+        onActionClicked={() =>
+          getBackgroundPage().then(({ Utils }) => {
+            Utils.addExperiment(props.experiment);
+            window.close();
+          })
+        }
       />
     </div>
   );
@@ -200,16 +276,22 @@ Popup.propTypes = {
   setSelectedPackage: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = ({ settings, packages, experiments }) => ({ settings, packages, experiments });
+const mapStateToProps = ({ settings, packages, experiments }) => ({
+  settings,
+  packages,
+  experiments,
+});
 
 const enhance = compose(
-  withState('experiment', 'setSelectedExperiment', ''),
-  withState('package', 'setSelectedPackage', ''),
-  mapProps(props => Object.assign(props, {
-    settings: props.settings.toJS(),
-    packages: props.packages.toJS(),
-    experiments: props.experiments.toJS(),
-  })),
+  withState("experiment", "setSelectedExperiment", ""),
+  withState("package", "setSelectedPackage", ""),
+  mapProps(props =>
+    Object.assign(props, {
+      settings: props.settings.toJS(),
+      packages: props.packages.toJS(),
+      experiments: props.experiments.toJS(),
+    })
+  ),
   lifecycle({
     componentWillMount() {
       getBackgroundPage().then(({ Utils }) => {
@@ -221,4 +303,7 @@ const enhance = compose(
   })
 );
 
-export default connect(mapStateToProps, actionCreators)(enhance(Popup));
+export default connect(
+  mapStateToProps,
+  actionCreators
+)(enhance(Popup));

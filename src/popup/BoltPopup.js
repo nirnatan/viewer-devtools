@@ -1,6 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import Toggle from 'material-ui/Toggle';
 import RaisedButton from 'material-ui/RaisedButton';
-import { lifecycle } from 'recompose';
+import { lifecycle, compose, mapProps } from 'recompose';
+import * as actionCreators from '../store/actions/index';
 
 const styles = {
   popup: { display: 'flex', flexDirection: 'row', padding: 10 },
@@ -11,6 +14,7 @@ const styles = {
   buttons: { display: 'flex', flexDirection: 'column', marginTop: 15, marginBottom: 25, marginLeft: 20 },
   button: { marginTop: 10 },
   settings: { width: 30, height: 30, cursor: 'pointer' },
+  useBolt: { marginRight: '10px' },
   fixed: {
     position: 'fixed',
     right: 20,
@@ -38,13 +42,7 @@ const applyOnClick = option => () => {
   });
 };
 
-const enhance = lifecycle({
-  componentWillMount() {
-    document.documentElement.style.height = '200px';
-  },
-});
-
-const BoltPopup = () => <div style={styles.popup}>
+const BoltPopup = (props) => <div style={styles.popup}>
   <div style={styles.fixed}>
     <img
       style={styles.settings}
@@ -53,6 +51,14 @@ const BoltPopup = () => <div style={styles.popup}>
       title="Settings"
       onClick={() => getBackgroundPage().then(({ Utils }) => Utils.openOptionsPage())}
     />
+    <Toggle
+      style={styles.useBolt}
+      label={props.settings.useBolt ? 'Bolt': 'Santa'}
+      labelPosition="left"
+      toggled={props.settings.useBolt}
+      onToggle={() => props.updateSettings({ useBolt: !props.settings.useBolt })}
+    />
+
   </div>
   <img alt="bolt" src="https://static.wixstatic.com/media/cadfaa_e3cf4de25b0a4a62b56cd0c7adab1893~mv2.jpeg/v1/fill/w_200,h_200,al_c,q_80,usm_0.66_1.00_0.01/boltSanta.webp" style={styles.image} />
   <div style={styles.buttons}>
@@ -68,4 +74,23 @@ const BoltPopup = () => <div style={styles.popup}>
   </div>
 </div>;
 
-export default enhance(BoltPopup);
+const { PropTypes } = React;
+BoltPopup.propTypes = {
+  settings: PropTypes.object.isRequired,
+  updateSettings: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = ({ settings }) => ({ settings });
+
+const enhance = compose(
+  lifecycle({
+    componentWillMount() {
+      document.documentElement.style.height = '200px';
+    },
+  }),
+  mapProps(props => Object.assign(props, {
+    settings: props.settings.toJS(),
+  })),
+);
+
+export default connect(mapStateToProps, actionCreators)(enhance(BoltPopup));
