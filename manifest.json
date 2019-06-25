@@ -1,6 +1,6 @@
 {
   "name": "SantaDevTools",
-  "version": "1.0.54",
+  "version": "1.0.56",
   "manifest_version": 2,
   "description": "Santa Devloper Tools",
   "icons": {
@@ -14,6 +14,36 @@
     },
     "default_title": "Santa DevTools",
     "default_popup": "popup.html"
+  },
+  "commands": {
+    "open-blank-editor": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+B",
+        "mac": "Command+Shift+B"
+      },
+      "description": "Open a new blank template editor"
+    },
+    "open-editor": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+E",
+        "mac": "Command+Shift+E"
+      },
+      "description": "Open the editor of the current viewer"
+    },
+    "debug-ssr": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S"
+      },
+      "description": "Start Bolt SSR debug of the current tab"
+    },
+    "debug-client": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+C",
+        "mac": "Command+Shift+C"
+      },
+      "description": "Start Bolt Client debug of the current tab"
+    }
   },
   "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'",
   "content_scripts": [
