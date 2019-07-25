@@ -18,9 +18,9 @@
         case 'santa':
           return `http://pullrequest-tc.dev.wixpress.com/project.html?projectId=Santa_Santa&branch_Santa_Santa=${pullRequestNumber}/merge`;
         case 'santa-editor':
-          return `http://pullrequest-tc.dev.wixpress.com/viewType.html?buildTypeId=MonoRepoTest_SantaEditor&branch_MonoRepoTest=${pullRequestNumber}&tab=buildTypeStatusDiv`;
+          return `http://pullrequest-tc.dev.wixpress.com/viewType.html?buildTypeId=MonoRepoTest_SantaEditor&branch_MonoRepoTest=${pullRequestNumber}/merge&tab=buildTypeStatusDiv`;
         case 'santa-core':
-          return `http://pullrequest-tc.dev.wixpress.com/viewType.html?buildTypeId=MonoRepoTest_SantaCore&branch_MonoRepoTest=${pullRequestNumber}&tab=buildTypeStatusDiv`;
+          return `http://pullrequest-tc.dev.wixpress.com/viewType.html?buildTypeId=MonoRepoTest_SantaCore&branch_MonoRepoTest=${pullRequestNumber}/merge&tab=buildTypeStatusDiv`;
         case 'bolt':
           return `http://pullrequest-tc.dev.wixpress.com/project.html?projectId=Bolt&branch_Bolt=${pullRequestNumber}/merge`;
         default:
