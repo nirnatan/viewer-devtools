@@ -6,7 +6,7 @@
     "start": "webpack-dev-server --content-base build/",
     "build": "webpack --progress --colors",
     "watch": "webpack -w --progress --colors",
-    "deploy": "npm run build && node ./scripts/deploy.js ./build ./target/editorDevTools.zip"
+    "deploy": "node ./scripts/updateManifestVersion.js && npm run build"
   },
   "dependencies": {
     "immutable": "^3.8.1",
