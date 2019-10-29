@@ -117,11 +117,31 @@
         "scripts/editorScriptInjector.js"
       ],
       "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "http://editor.wix.com/html/editor/web/renderer/*",
+        "https://editor.wix.com/html/editor/web/renderer/*"
+      ],
+      "js": [
+        "scripts/frameDataCheckerInjector.js"
+      ],
+      "all_frames": true
+    },
+    {
+      "matches": [
+        "http://editor.wix.com/html/editor/web/renderer/*",
+        "https://editor.wix.com/html/editor/web/renderer/*"
+      ],
+      "css": [
+        "boltIndicator.css"
+      ]
     }
   ],
   "web_accessible_resources": [
     "contentActions.js",
-    "editorHelper.js"
+    "editorHelper.js",
+    "frameDataChecker.js"
   ],
   "background": {
     "scripts": [

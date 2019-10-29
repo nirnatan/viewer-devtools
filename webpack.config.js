@@ -23,6 +23,7 @@ module.exports = {
     popup: path.resolve('src/popup', 'main.js'),
     contentActions: path.resolve('src/contentScripts', 'contentActions.js'),
     editorHelper: path.resolve('src/contentScripts', 'editorHelper.js'),
+    frameDataChecker: path.resolve('src/contentScripts', 'frameDataChecker.js'),
   },
   output: {
     path: path.resolve('build'),
