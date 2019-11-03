@@ -1,6 +1,6 @@
 {
   "name": "SantaDevTools",
-  "version": "1.0.58",
+  "version": "1.0.60",
   "manifest_version": 2,
   "description": "Santa Devloper Tools",
   "icons": {
@@ -124,8 +124,9 @@
         "https://editor.wix.com/html/editor/web/renderer/*"
       ],
       "js": [
-        "scripts/frameDataCheckerInjector.js"
+        "scripts/frameDataChecker.js"
       ],
+      "run_at": "document_end",
       "all_frames": true
     },
     {
@@ -140,8 +141,7 @@
   ],
   "web_accessible_resources": [
     "contentActions.js",
-    "editorHelper.js",
-    "frameDataChecker.js"
+    "editorHelper.js"
   ],
   "background": {
     "scripts": [
