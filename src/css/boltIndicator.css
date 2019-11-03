@@ -1,0 +1,10 @@
+.boltIndicator {
+  color: red;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  padding: 5px;
+  background: #eee;
+  border: 1px solid #aaa;
+  cursor: pointer;
+}
