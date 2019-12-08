@@ -21,7 +21,7 @@
         'santa-core': 'Santa_SantaCore',
       };
 
-      return `http://pullrequest-tc.dev.wixpress.com/project/${ciProjects[project]}?branch=${pullRequestNumber}/merge`;
+      return `http://pullrequest-tc.dev.wixpress.com/project/${ciProjects[project]}?branch=${pullRequestNumber}/head`;
     };
 
     const projectRegEx = /https:\/\/github.com\/wix-private\/(.*)\/pull\/(\d+)/;
