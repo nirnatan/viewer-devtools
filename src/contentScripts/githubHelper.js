@@ -18,10 +18,10 @@
         "bolt": 'Bolt',
         "santa": 'Santa_Santa',
         'santa-editor': 'Santa_SantaEditor',
-        'santa-core': 'Santa_SantaCore',
+        'santa-core': 'MonoRepoTest_SantaCore',
       };
 
-      return `http://pullrequest-tc.dev.wixpress.com/project/${ciProjects[project]}?branch=${pullRequestNumber}/merge`;
+      return `http://pullrequest-tc.dev.wixpress.com/project/${ciProjects[project]}?branch=${pullRequestNumber}/head`;
     };
 
     const projectRegEx = /https:\/\/github.com\/wix-private\/(.*)\/pull\/(\d+)/;
