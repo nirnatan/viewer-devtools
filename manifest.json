@@ -1,6 +1,6 @@
 {
   "name": "SantaDevTools",
-  "version": "1.0.63",
+  "version": "1.0.64",
   "manifest_version": 2,
   "description": "Santa Devloper Tools",
   "icons": {
@@ -70,7 +70,8 @@
         "https://github.com/wix-private/santa/pull/*",
         "https://github.com/wix-private/santa-core/pull/*",
         "https://github.com/wix-private/santa-editor/pull/*",
-        "https://github.com/wix-private/bolt/pull/*"
+        "https://github.com/wix-private/bolt/pull/*",
+        "https://github.com/wix-private/thunderbolt/pull/*"
       ],
       "js": [
         "scripts/githubHelper.js"
