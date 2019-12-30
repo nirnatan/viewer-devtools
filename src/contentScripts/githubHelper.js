@@ -21,6 +21,7 @@
         "santa-editor": "MonoRepoTest_SantaEditor",
         "santa-core": "MonoRepoTest_SantaCore",
         "thunderbolt": "ThunderboltThunderbolt_P_Parallel",
+        "document-management": "DocumentManagement"
       };
 
       return `http://pullrequest-tc.dev.wixpress.com/project/${
