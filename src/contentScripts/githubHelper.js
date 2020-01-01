@@ -21,12 +21,11 @@
         "santa-editor": "MonoRepoTest_SantaEditor",
         "santa-core": "MonoRepoTest_SantaCore",
         "thunderbolt": "ThunderboltThunderbolt_P_Parallel",
-        "document-management": "DocumentManagement"
+        "editor-elements": "Wix_Angular_EditorElements_O_Parallel_Tests",
+        "document-management": "DocumentManagement",
       };
 
-      return `http://pullrequest-tc.dev.wixpress.com/project/${
-        ciProjects[project]
-      }?branch=${pullRequestNumber}/head`;
+      return `http://pullrequest-tc.dev.wixpress.com/project/${ciProjects[project]}?branch=${pullRequestNumber}/head`;
     };
 
     const projectRegEx = /https:\/\/github.com\/wix-private\/(.*)\/pull\/(\d+)/;
