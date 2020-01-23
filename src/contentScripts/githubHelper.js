@@ -18,14 +18,22 @@
       const ciProjects = {
         "bolt": "Santa_BoltParallelProd_BoltParallel",
         "santa": "Santa_Santa",
-        "santa-editor": "MonoRepoTest_SantaEditor",
-        "santa-core": "MonoRepoTest_SantaCore",
         "thunderbolt": "ThunderboltThunderbolt_P_Parallel",
         "editor-elements": "Wix_Angular_EditorElements_O_Parallel_Tests",
         "document-management": "DocumentManagement",
       };
 
-      return `http://pullrequest-tc.dev.wixpress.com/project/${ciProjects[project]}?branch=${pullRequestNumber}/head`;
+      const ciMonoProjects = {
+        "santa-editor": "SantaEditor",
+        "santa-core": "SantaCore"
+      };
+
+      if (ciProjects[project])
+        return `http://pullrequest-tc.dev.wixpress.com/project/${ciProjects[project]}?branch=${pullRequestNumber}/head`;
+      if (ciMonoProjects[project])
+        return `http://pullrequest-tc.dev.wixpress.com/buildConfiguration/MonoRepoTest_${ciMonoProjects[project]}?branch=${pullRequestNumber}/head`;
+
+      return undefined
     };
 
     const projectRegEx = /https:\/\/github.com\/wix-private\/(.*)\/pull\/(\d+)/;
