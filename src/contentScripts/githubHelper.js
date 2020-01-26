@@ -25,15 +25,13 @@
 
       const ciMonoProjects = {
         "santa-editor": "SantaEditor",
-        "santa-core": "SantaCore"
+        "santa-core": "SantaCore",
       };
 
-      if (ciProjects[project])
-        return `http://pullrequest-tc.dev.wixpress.com/project/${ciProjects[project]}?branch=${pullRequestNumber}/head`;
-      if (ciMonoProjects[project])
-        return `http://pullrequest-tc.dev.wixpress.com/buildConfiguration/MonoRepoTest_${ciMonoProjects[project]}?branch=${pullRequestNumber}/head`;
+      if (ciProjects[project]) { return `http://pullrequest-tc.dev.wixpress.com/project/${ciProjects[project]}?branch=${pullRequestNumber}/head`; }
+      if (ciMonoProjects[project]) { return `http://pullrequest-tc.dev.wixpress.com/buildConfiguration/MonoRepoTest_${ciMonoProjects[project]}?branch=${pullRequestNumber}/head`; }
 
-      return undefined
+      return undefined;
     };
 
     const projectRegEx = /https:\/\/github.com\/wix-private\/(.*)\/pull\/(\d+)/;
