@@ -44,6 +44,7 @@ const Settings = (props) => {
         onBlur={evt => props.updateSettings({ username: evt.target.value })}
       /><br />
       {getToggle('Use Bolt', 'useBolt')}<br />
+      {getToggle('Use Thunderbolt', 'useThunderbolt')}<br />
       {getToggle('Disable NewRelic', 'disableNewRelic')}<br />
       {getToggle('Disable BI sample ratio', 'disableSampleRatio')}
       {getToggle('Disable hot reload', 'disableHotReload')}

@@ -139,7 +139,6 @@ const convertLocalDebugToSsrDebug = (parsedUrl) => {
   }
 
   if (parsedUrl.query.ssrDebug === 'true') {
-    debugger;
     parsedUrl.protocol = 'http';
     parsedUrl.query.ssrIndicator = 'true';
   }
@@ -147,11 +146,22 @@ const convertLocalDebugToSsrDebug = (parsedUrl) => {
   return parsedUrl.toString();
 };
 
+const buildThunderboltUrl = ({ queryObj, options }) => {
+  delete queryObj.ssrDebug;
+  delete queryObj.ssrIndicator;
+  delete queryObj.ssrOnly;
+
+  return Object.assign({}, queryObj, options);
+};
+
 export default (location, option) => {
   const parsedUrl = new URL(location, true);
   return getStoreData()
     .then(store => {
       let result = Promise.resolve(parsedUrl.query);
+      if (option === 'Thunderbolt') {
+        return buildThunderboltUrl({ options: store.settings.thunderbolt, queryObj: parsedUrl.query });
+      }
       if (option === 'All' || option === 'Debug') {
         result = result.then(queryObj => applyDebug(queryObj, store.packages));
       }

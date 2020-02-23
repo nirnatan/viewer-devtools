@@ -10,6 +10,10 @@ const DEFAULT_SETTINGS = Immutable.fromJS({
   showPreviewBtn: true,
   username: '',
   useBolt: false,
+  useThunderbolt: false,
+  thunderbolt: {
+    forceThunderbolt: 'true',
+  },
   showCurrentVersions: false,
 });
 
