@@ -1,5 +1,5 @@
 import URL from 'url-parse';
-import { pickBy, reduce, uniq } from 'lodash';
+import { pickBy, reduce, uniq, omit } from 'lodash';
 import { getStoreData } from '../store/localStorage';
 
 const getDebugPackages = projectsPackages => {
@@ -147,9 +147,18 @@ const convertLocalDebugToSsrDebug = (parsedUrl) => {
 };
 
 const buildThunderboltUrl = ({ queryObj, options }) => {
-  delete queryObj.ssrDebug;
-  delete queryObj.ssrIndicator;
-  delete queryObj.ssrOnly;
+  queryObj = omit(queryObj, [
+    'ssrDebug',
+    'ssrIndicator',
+    'ssrOnly',
+    'editor-elements-override',
+  ]);
+
+  if (!options.overrideThunderboltElements) {
+    options = omit(options, ['editor-elements-override']);
+  } else {
+    options = omit(options, ['overrideThunderboltElements']);
+  }
 
   return Object.assign({}, queryObj, options);
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Toggle from 'material-ui/Toggle';
+import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Checkbox from 'material-ui/Checkbox';
 import { lifecycle, compose, mapProps } from 'recompose';
@@ -37,9 +37,8 @@ const getBackgroundPage = () => {
   });
 };
 
-const onChecked = (option, settings, updateSettings) => (evt) => {
-  const thunderbolt = omit(settings.thunderbolt, [option]);
-  thunderbolt.forceThunderbolt = 'true';
+const onChecked = (option, thunderbolt, updateSettings) => (evt) => {
+  thunderbolt = omit(thunderbolt, [option]);
   if (evt.target.checked) {
     thunderbolt[option] = 'true';
   }
@@ -55,7 +54,9 @@ const applyOnClick = () => {
 };
 
 const ThunderPop = props => {
-  const thunderbolt = props.settings.thunderbolt || {};
+  const thunderbolt = props.settings.thunderbolt || {
+    forceThunderbolt: 'true',
+  };
   return (<div style={styles.popup}>
     <div style={styles.fixed}>
       <img
@@ -69,8 +70,10 @@ const ThunderPop = props => {
     <img alt="bolt" src="https://gifimage.net/wp-content/uploads/2017/10/monkey-cymbals-gif-1.gif" style={styles.image} />
     <div style={styles.buttons}>
       <div style={styles.button}>
-        <Checkbox label="ssrDebug" onCheck={onChecked('ssrDebug', props.settings, props.updateSettings)} checked={thunderbolt.ssrDebug === 'true'} />
-        <Checkbox label="ssrOnly" onCheck={onChecked('ssrOnly', props.settings, props.updateSettings)} checked={thunderbolt.ssrOnly === 'true'} />
+        <Checkbox label="ssrDebug" onCheck={onChecked('ssrDebug', thunderbolt, props.updateSettings)} checked={thunderbolt.ssrDebug === 'true'} />
+        <Checkbox label="ssrOnly" onCheck={onChecked('ssrOnly', thunderbolt, props.updateSettings)} checked={thunderbolt.ssrOnly === 'true'} />
+        <Checkbox label="overrideThunderboltElements" onCheck={onChecked('overrideThunderboltElements', thunderbolt, props.updateSettings)} checked={thunderbolt.overrideThunderboltElements === 'true'} />
+        <TextField style={{ display: thunderbolt.overrideThunderboltElements ? '' : 'none' }} disabled={!thunderbolt.overrideThunderboltElements} placeholder="Thunderbolt Elements Version" value={thunderbolt['editor-elements-override']} onChange={evt => props.updateSettings({ thunderbolt: Object.assign(thunderbolt, { 'editor-elements-override': evt.target.value }) })} />
         {/* <RaisedButton label="SSR Debug" onClick={applyOnClick('Thunderbolt_SSR_Debug')} /> */}
       </div>
       <div style={styles.button}>
