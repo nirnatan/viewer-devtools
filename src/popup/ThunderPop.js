@@ -39,6 +39,7 @@ const getBackgroundPage = () => {
 
 const onChecked = (option, settings, updateSettings) => (evt) => {
   const thunderbolt = omit(settings.thunderbolt, [option]);
+  thunderbolt.forceThunderbolt = 'true';
   if (evt.target.checked) {
     thunderbolt[option] = 'true';
   }
@@ -54,7 +55,7 @@ const applyOnClick = () => {
 };
 
 const ThunderPop = props => {
-  const { thunderbolt } = props.settings.thunderbolt || {};
+  const thunderbolt = props.settings.thunderbolt || {};
   return (<div style={styles.popup}>
     <div style={styles.fixed}>
       <img
