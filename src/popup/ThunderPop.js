@@ -53,28 +53,32 @@ const applyOnClick = () => {
   });
 };
 
-const ThunderPop = (props) => <div style={styles.popup}>
-  <div style={styles.fixed}>
-    <img
-      style={styles.settings}
-      src={chrome.extension.getURL('assets/images/setting.png')}
-      alt="Settings"
-      title="Settings"
-      onClick={() => getBackgroundPage().then(({ Utils }) => Utils.openOptionsPage())}
-    />
-  </div>
-  <img alt="bolt" src="https://gifimage.net/wp-content/uploads/2017/10/monkey-cymbals-gif-1.gif" style={styles.image} />
-  <div style={styles.buttons}>
-    <div style={styles.button}>
-      <Checkbox label="ssrDebug" onCheck={onChecked('ssrDebug', props.settings, props.updateSettings)} checked={props.settings.thunderbolt.ssrDebug === 'true'} />
-      <Checkbox label="ssrOnly" onCheck={onChecked('ssrOnly', props.settings, props.updateSettings)} checked={props.settings.thunderbolt.ssrOnly === 'true'} />
-      {/* <RaisedButton label="SSR Debug" onClick={applyOnClick('Thunderbolt_SSR_Debug')} /> */}
+const ThunderPop = props => {
+  const { thunderbolt } = props.settings.thunderbolt || {};
+  return (<div style={styles.popup}>
+    <div style={styles.fixed}>
+      <img
+        style={styles.settings}
+        src={chrome.extension.getURL('assets/images/setting.png')}
+        alt="Settings"
+        title="Settings"
+        onClick={() => getBackgroundPage().then(({ Utils }) => Utils.openOptionsPage())}
+      />
     </div>
-    <div style={styles.button}>
-      <RaisedButton primary label="Force Thunderbolt" onClick={applyOnClick} />
+    <img alt="bolt" src="https://gifimage.net/wp-content/uploads/2017/10/monkey-cymbals-gif-1.gif" style={styles.image} />
+    <div style={styles.buttons}>
+      <div style={styles.button}>
+        <Checkbox label="ssrDebug" onCheck={onChecked('ssrDebug', props.settings, props.updateSettings)} checked={thunderbolt.ssrDebug === 'true'} />
+        <Checkbox label="ssrOnly" onCheck={onChecked('ssrOnly', props.settings, props.updateSettings)} checked={thunderbolt.ssrOnly === 'true'} />
+        {/* <RaisedButton label="SSR Debug" onClick={applyOnClick('Thunderbolt_SSR_Debug')} /> */}
+      </div>
+      <div style={styles.button}>
+        <RaisedButton primary label="Force Thunderbolt" onClick={applyOnClick} />
+      </div>
     </div>
   </div>
-</div>;
+  );
+};
 
 const { PropTypes } = React;
 ThunderPop.propTypes = {
