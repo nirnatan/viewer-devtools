@@ -1,5 +1,5 @@
 import URL from 'url-parse';
-import { pickBy, reduce, uniq, omit } from 'lodash';
+import { pickBy, reduce, uniq, omit, pick } from 'lodash';
 import { getStoreData } from '../store/localStorage';
 
 const getDebugPackages = projectsPackages => {
@@ -146,6 +146,32 @@ const convertLocalDebugToSsrDebug = (parsedUrl) => {
   return parsedUrl.toString();
 };
 
+const parsePetriString = (petriString) => {
+  if (!petriString) {
+    return {};
+  }
+
+  return petriString.split(';').reduce((acc, specString) => {
+    const [specName, value] = specString.split(':');
+    acc[specName] = value;
+    return acc;
+  }, {});
+};
+
+const setPetriSpecs = (petriString, specs) => {
+  const petriObj = Object.entries(specs).reduce((obj, [specName, value]) => {
+    if (value) {
+      obj[specName] = value;
+    } else {
+      delete obj[specName];
+    }
+
+    return obj;
+  }, parsePetriString(petriString));
+
+  return Object.entries(petriObj).map(([key, val]) => `${key}:${val}`).join(';');
+};
+
 const buildThunderboltUrl = ({ queryObj, options }) => {
   queryObj = omit(queryObj, [
     'ssrDebug',
@@ -154,13 +180,29 @@ const buildThunderboltUrl = ({ queryObj, options }) => {
     'editor-elements-override',
   ]);
 
-  if (!options.overrideThunderboltElements) {
-    options = omit(options, ['editor-elements-override']);
-  } else {
-    options = omit(options, ['overrideThunderboltElements']);
+  if (options.overrideThunderboltElements) {
+    queryObj['editor-elements-override'] = options['editor-elements-override'];
   }
 
-  return Object.assign({}, queryObj, options);
+  if (options.fleet === 'ssrDebug') {
+    queryObj.ssrDebug = 'true';
+    const petriString = setPetriSpecs(queryObj.petri_ovr, {
+      "specs.RolloutThunderboltFleet": null,
+      "specs.ForceThunderboltSsr": null,
+    });
+    if (petriString) {
+      queryObj.petri_ovr = petriString;
+    } else {
+      delete queryObj.petri_ovr;
+    }
+  } else {
+    queryObj.petri_ovr = setPetriSpecs(queryObj.petri_ovr, {
+      'specs.RolloutThunderboltFleet': options.fleet || 'GA',
+      'specs.ForceThunderboltSsr': 'true',
+    });
+  }
+
+  return Object.assign({}, queryObj, pick(options, ['ssrOnly']));
 };
 
 export default (location, option) => {
