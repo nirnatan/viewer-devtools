@@ -1,7 +1,8 @@
 import Immutable from 'immutable';
-import viewer from '../../generated/viewer';
-import editor from '../../generated/editor';
-
+// import viewer from '../../generated/viewer';
+// import editor from '../../generated/editor';
+const viewer = { experiments: [] };
+const editor = { experiments: [] };
 const toObject = (array, value) => (array.reduce((acc, exp) => Object.assign(acc, { [exp]: value }), {}));
 
 const DEFAULT_STORE = Immutable.fromJS({

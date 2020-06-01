@@ -3,12 +3,15 @@ import { connect } from 'react-redux';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Checkbox from 'material-ui/Checkbox';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
 import { lifecycle, compose, mapProps } from 'recompose';
 import * as actionCreators from '../store/actions/index';
 import omit from 'lodash/omit';
+import defaults from 'lodash/defaults'
 
 const styles = {
-  popup: { display: 'flex', flexDirection: 'row', padding: 10 },
+  popup: { display: 'flex', flexDirection: 'row', padding: 10, fontFamily: 'Roboto, sans-serif', fontSize: '15px' },
   image: {
     width: 200,
     height: 200,
@@ -26,6 +29,11 @@ const styles = {
     alignItems: 'center',
     flexDirection: 'row-reverse',
     justifyContent: 'space-between',
+  },
+  label: {
+    display: 'inline-block',
+    lineHeight: '56px',
+    overflow: 'hidden',
   },
 };
 
@@ -46,6 +54,11 @@ const onChecked = (option, thunderbolt, updateSettings) => (evt) => {
   updateSettings({ thunderbolt });
 };
 
+const onSelectionChange = (option, thunderbolt, updateSettings) => (evt, index, value) => {
+  thunderbolt[option] = value;
+  updateSettings({ thunderbolt });
+};
+
 const applyOnClick = () => {
   getBackgroundPage().then(backgroundPage => {
     backgroundPage.Utils.applySettings('Thunderbolt');
@@ -54,9 +67,13 @@ const applyOnClick = () => {
 };
 
 const ThunderPop = props => {
-  const thunderbolt = props.settings.thunderbolt || {
-    forceThunderbolt: 'true',
-  };
+  const thunderbolt = defaults(
+    omit(props.settings.thunderbolt, ["forceThunderbolt", "ssrDebug"]),
+    {
+      fleet: "GA",
+    }
+  );
+
   return (<div style={styles.popup}>
     <div style={styles.fixed}>
       <img
@@ -70,11 +87,18 @@ const ThunderPop = props => {
     <img alt="bolt" src="https://gifimage.net/wp-content/uploads/2017/10/monkey-cymbals-gif-1.gif" style={styles.image} />
     <div style={styles.buttons}>
       <div style={styles.button}>
-        <Checkbox label="ssrDebug" onCheck={onChecked('ssrDebug', thunderbolt, props.updateSettings)} checked={thunderbolt.ssrDebug === 'true'} />
+        <label style={styles.label}>Thunderbolt Version:</label>
+        <DropDownMenu value={thunderbolt.fleet} onChange={onSelectionChange('fleet', thunderbolt, props.updateSettings)}>
+          <MenuItem value={'GA'} primaryText="GA" />
+          <MenuItem value={'Canary'} primaryText="Latest (Canary)" />
+          <MenuItem value={'ssrDebug'} primaryText="Local (ssrDebug)" />
+        </DropDownMenu>
         <Checkbox label="ssrOnly" onCheck={onChecked('ssrOnly', thunderbolt, props.updateSettings)} checked={thunderbolt.ssrOnly === 'true'} />
+        {/* <RaisedButton label="SSR Debug" onClick={applyOnClick('Thunderbolt_SSR_Debug')} /> */}
+      </div>
+      <div style={styles.button}>
         <Checkbox label="overrideThunderboltElements" onCheck={onChecked('overrideThunderboltElements', thunderbolt, props.updateSettings)} checked={thunderbolt.overrideThunderboltElements === 'true'} />
         <TextField style={{ display: thunderbolt.overrideThunderboltElements ? '' : 'none' }} disabled={!thunderbolt.overrideThunderboltElements} placeholder="Thunderbolt Elements Version" value={thunderbolt['editor-elements-override']} onChange={evt => props.updateSettings({ thunderbolt: Object.assign(thunderbolt, { 'editor-elements-override': evt.target.value }) })} />
-        {/* <RaisedButton label="SSR Debug" onClick={applyOnClick('Thunderbolt_SSR_Debug')} /> */}
       </div>
       <div style={styles.button}>
         <RaisedButton primary label="Force Thunderbolt" onClick={applyOnClick} />

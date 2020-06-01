@@ -32,10 +32,10 @@ module.exports = {
     devtoolNamespace: 'editor-devtools',
   },
   plugins: [
-    new WebpackShellPlugin({ onBuildStart: [
-      'node scripts/utils.js editor.js santa-editor/santa-editor',
-      'node scripts/utils.js viewer.js santa',
-    ] }),
+    // new WebpackShellPlugin({ onBuildStart: [
+    //   'node scripts/utils.js editor.js santa-editor/santa-editor',
+    //   'node scripts/utils.js viewer.js santa',
+    // ] }),
     new CopyWebpackPlugin([
       {
         from: 'src/**/*.css',
