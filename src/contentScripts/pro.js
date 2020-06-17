@@ -38,7 +38,87 @@ function getCompRef(editorAPI, id) {
   return _.isString(id) ? editorAPI.components.get.byId(id) : id;
 }
 
-function init({ editorAPI, editorModel }) {
+function loadEditorShortcuts(window) {
+  function loadPreviewFrame() {
+    if (window.previewFrame) {
+      return true;
+    }
+
+    try {
+      const previewFrame = Array.from(frames).find(f => { try { return !!f.documentServices; } catch (e) { return false; } });
+
+      if (previewFrame) {
+        window.previewFrame = previewFrame;
+        window.documentServices = previewFrame.documentServices;
+        window.boltInstance = previewFrame.boltInstance;
+        if (!window.boltInstance) {
+          window.siteData = previewFrame.rendered.props.siteData;
+        }
+      }
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  const withPreviewFrameLoader = method => (...args) => {
+    if (loadPreviewFrame()) {
+      return method(...args);
+    }
+
+    return undefined;
+  };
+
+  Object.defineProperty(window, '$e0', {
+    get() {
+      const selected = _.cloneDeep(window.editorAPI.selection.getSelectedComponents()[0]);
+
+      if (selected) {
+        const serialized = _.cloneDeep(window.editorAPI.components.serialize(selected));
+
+        Object.defineProperty(serialized, 'p', {
+          get() {
+            return selected;
+          },
+          configurable: false,
+          enumerable: false,
+        });
+
+        return serialized;
+      }
+
+      return undefined;
+    },
+    configurable: true,
+  });
+
+  Object.defineProperty(window, '$ds', {
+    get: withPreviewFrameLoader(() => window.documentServices),
+    configurable: true,
+  });
+
+  Object.defineProperty(window, '$bolt', {
+    get: withPreviewFrameLoader(() => window.boltInstance),
+    configurable: true,
+  });
+
+  Object.defineProperty(window, '$site', {
+    get: withPreviewFrameLoader(() => window.siteData),
+    configurable: true,
+  });
+
+  Object.defineProperty(window, '$pf', {
+    get: withPreviewFrameLoader(() => window.previewFrame),
+    configurable: true,
+  });
+}
+
+function init(window) {
+  const { editorAPI, editorModel } = window;
+
+  loadEditorShortcuts(window);
+
   const getAllComps = () => getAllComponents(editorAPI);
 
   const getAllPages = () => getAllPagesInEditor(editorAPI);
