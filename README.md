@@ -1,9 +1,4 @@
-# WebpackBin project
+## Editor / Viewer DevTools Extenssion
 
-## Start
+For updating the pullrequest liks you should go to [here](https://www.wix.com/dashboard/f83cc25f-b93f-45e0-9073-9e52ae523a37/database/)
 
-`npm install`
-
-`npm start`
-
-Go to `localhost:8080`
