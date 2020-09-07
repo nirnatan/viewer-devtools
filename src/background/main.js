@@ -18,7 +18,7 @@ const getActiveTab = () => {
 };
 
 chrome.webRequest.onBeforeRequest.addListener(({ url }) => {
-  if (url.includes('ssrDebug=true') && url.startsWith('https://')) {
+  if (url.includes('ssrDebug') && url.startsWith('https://')) {
     return { redirectUrl: url.replace('https://', 'http://') };
   }
 
