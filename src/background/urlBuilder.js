@@ -140,7 +140,6 @@ const convertLocalDebugToSsrDebug = (parsedUrl) => {
 
   if (parsedUrl.query.ssrDebug === 'true') {
     parsedUrl.protocol = 'http';
-    parsedUrl.query.ssrIndicator = 'true';
   }
 
   return parsedUrl.toString();
@@ -172,7 +171,7 @@ const setPetriSpecs = (petriString, specs) => {
   return Object.entries(petriObj).map(([key, val]) => `${key}:${val}`).join(';');
 };
 
-const buildThunderboltUrl = ({ queryObj, options }) => {
+const buildThunderboltUrl = ({ queryObj, options, forceClient = false }) => {
   queryObj = omit(queryObj, [
     'ssrDebug',
     'ssrIndicator',
@@ -180,15 +179,16 @@ const buildThunderboltUrl = ({ queryObj, options }) => {
     'editor-elements-override',
   ]);
 
-  if (options.overrideThunderboltElements) {
-    queryObj['editor-elements-override'] = options['editor-elements-override'];
+  const { overrideThunderboltElements, fleet, ['editor-elements-override']: editorElementsOverride, ssrOnly } = options
+  if (overrideThunderboltElements) {
+    queryObj['editor-elements-override'] = editorElementsOverride;
   }
 
-  if (options.fleet === 'ssrDebug') {
+  if (fleet === 'ssrDebug') {
     queryObj.ssrDebug = 'true';
     const petriString = setPetriSpecs(queryObj.petri_ovr, {
       "specs.RolloutThunderboltFleet": null,
-      "specs.ForceThunderboltSsr": null,
+      "specs.ForceThunderboltSsr": forceClient ? 'false' : null,
     });
     if (petriString) {
       queryObj.petri_ovr = petriString;
@@ -197,12 +197,12 @@ const buildThunderboltUrl = ({ queryObj, options }) => {
     }
   } else {
     queryObj.petri_ovr = setPetriSpecs(queryObj.petri_ovr, {
-      'specs.RolloutThunderboltFleet': options.fleet || 'GA',
+      'specs.RolloutThunderboltFleet': fleet || 'GA',
       'specs.ForceThunderboltSsr': 'true',
     });
   }
 
-  return Object.assign({}, queryObj, pick(options, ['ssrOnly']));
+  return ssrOnly ? {...queryObj, ssrOnly} : queryObj;
 };
 
 export default (location, option) => {
@@ -212,6 +212,12 @@ export default (location, option) => {
       let result = Promise.resolve(parsedUrl.query);
       if (option === 'Thunderbolt') {
         return buildThunderboltUrl({ options: store.settings.thunderbolt, queryObj: parsedUrl.query });
+      }
+      if (option === 'Thunderbolt_SSR_Debug') {
+        return buildThunderboltUrl({ options: { fleet: 'ssrDebug', overrideThunderboltElements: false }, queryObj: parsedUrl.query });
+      }
+      if (option === 'Thunderbolt_Client_Debug') {
+        return buildThunderboltUrl({ options: { fleet: 'ssrDebug', overrideThunderboltElements: false }, queryObj: parsedUrl.query, forceClient: true })
       }
       if (option === 'All' || option === 'Debug') {
         result = result.then(queryObj => applyDebug(queryObj, store.packages));
@@ -227,29 +233,6 @@ export default (location, option) => {
       }
       if (option === 'All' || option === 'Settings') {
         result = result.then(queryObj => applySettings(queryObj, store.settings, parsedUrl.protocol));
-      }
-      if (option === 'Bolt_SSR_Debug') {
-        result = result.then(queryObj => {
-          delete queryObj.BoltSource;
-
-          return Object.assign({}, queryObj, {
-            forceBolt: 'true',
-            ssrDebug: 'true',
-            petri_ovr: 'specs.ForceSsrWebWorker:local',
-          });
-        });
-      }
-      if (option === 'Bolt_Client_Debug') {
-        result = result.then(queryObj => {
-          delete queryObj.ssrDebug;
-
-          return Object.assign({}, queryObj, {
-            carmiDebug: 'true',
-            forceBolt: 'true',
-            petri_ovr: 'specs.ExcludeSiteFromSsr:true',
-            BoltSource: 'https://localhost:8081',
-          });
-        });
       }
       if (option === 'Bolt_Force_Santa') {
         result = result.then(queryObj => {

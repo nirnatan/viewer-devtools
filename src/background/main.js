@@ -200,25 +200,14 @@ const openEditor = () => {
 };
 
 const BLANK_TEMPLATE_URL = 'https://editor.wix.com/html/editor/web/renderer/new?siteId=9e02c429-1e9f-4155-b083-05b3988ad94e&metaSiteId=8e64be00-3fd1-491d-800f-9509eadd08bb&editorSessionId=B32BCCDD-9757-4635-B813-450BD81FDDD1';
+const commands = {
+  'debug-ssr': () => applySettings('Thunderbolt_SSR_Debug'),
+  'debug-client': () => applySettings('Thunderbolt_Client_Debug'),
+  'open-editor': () => openEditor(),
+  'open-blank-editor': () => window.open(BLANK_TEMPLATE_URL),
+};
 chrome.commands.onCommand.addListener(command => {
-  switch (command) {
-    case 'debug-ssr': {
-      applySettings('Bolt_SSR_Debug');
-      break;
-    }
-    case 'debug-client': {
-      applySettings('Bolt_Client_Debug');
-      break;
-    }
-    case 'open-editor': {
-      openEditor();
-      break;
-    }
-    case 'open-blank-editor': {
-      window.open(BLANK_TEMPLATE_URL);
-      break;
-    }
-  }
+  commands[command]();
 });
 
 /**

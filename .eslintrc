@@ -1,22 +1,49 @@
 {
   "extends": "airbnb",
   "parserOptions": {
-    "ecmaVersion": 8,
+    "ecmaVersion": 2020,
     "sourceType": "module"
   },
   "rules": {
-    "max-len": [0, 120, 2, {"ignoreComments": true}],
+    "max-len": [
+      0,
+      120,
+      2,
+      {
+        "ignoreComments": true
+      }
+    ],
     "arrow-body-style": 0,
-    "quote-props": [1, "consistent-as-needed"],
-    "no-cond-assign": [2, "except-parens"],
+    "quote-props": [
+      1,
+      "consistent-as-needed"
+    ],
+    "no-cond-assign": [
+      2,
+      "except-parens"
+    ],
     "radix": 0,
     "space-infix-ops": 0,
-    "no-unused-vars": [1, {"vars": "local", "args": "none"}],
+    "no-unused-vars": [
+      1,
+      {
+        "vars": "local",
+        "args": "none"
+      }
+    ],
     "default-case": 0,
     "no-else-return": 0,
     "no-param-reassign": 0,
     "quotes": 0,
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [
+          ".js",
+          ".jsx"
+        ]
+      }
+    ],
   },
   "globals": {
     "chrome": true,
