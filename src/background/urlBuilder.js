@@ -234,6 +234,29 @@ export default (location, option) => {
       if (option === 'All' || option === 'Settings') {
         result = result.then(queryObj => applySettings(queryObj, store.settings, parsedUrl.protocol));
       }
+      if (option === 'Bolt_SSR_Debug') {
+        result = result.then(queryObj => {
+          delete queryObj.BoltSource;
+
+          return Object.assign({}, queryObj, {
+            forceBolt: 'true',
+            ssrDebug: 'true',
+            petri_ovr: 'specs.ForceSsrWebWorker:local',
+          });
+        });
+      }
+      if (option === 'Bolt_Client_Debug') {
+        result = result.then(queryObj => {
+          delete queryObj.ssrDebug;
+
+          return Object.assign({}, queryObj, {
+            carmiDebug: 'true',
+            forceBolt: 'true',
+            petri_ovr: 'specs.ExcludeSiteFromSsr:true',
+            BoltSource: 'https://localhost:8081',
+          });
+        });
+      }
       if (option === 'Bolt_Force_Santa') {
         result = result.then(queryObj => {
           delete queryObj.forceBolt;
