@@ -7,4 +7,5 @@
   background: #eee;
   border: 1px solid #aaa;
   cursor: pointer;
+  z-index: 9999;
 }
