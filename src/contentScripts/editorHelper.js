@@ -3,7 +3,7 @@ import pro from './pro';
 
 (() => {
   const loadEditorAPI = () => {
-    window.editorAPI = window.editorAPI || _.get(window, 'rendered.props.children.props.editorAPI') || _.get(window, 'testApi.editorAPI;');
+    window.editorAPI = window.editorAPI || _.get(window, 'rendered.props.children.props.children.props.children.props.editorAPI') || _.get(window, 'testApi.editorAPI;');
   };
 
   const loadEditorProDebugger = () => {
