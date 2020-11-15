@@ -1,22 +1,22 @@
 /* global _ */
 (() => {
   const createIndicator = event => {
-    if (event.data === "bolt" || event.data === "santa") {
+    if (["bolt", "santa", "thunderbolt"].includes(event.data)) {
       const isBolt = event.data === "bolt";
-      const boltItitle = `Click will switch experiment to ${
-        isBolt ? "Santa" : "Bolt"
+      const viewerItitle = `Click will switch experiment to ${
+        isBolt ? "viewer by default" : "Bolt"
       }`;
-      let boltI = document.querySelector("div.boltIndicator");
-      if (boltI) {
-        document.body.removeChild(boltI);
+      let viewerI = document.querySelector("div.boltIndicator");
+      if (viewerI) {
+        document.body.removeChild(viewerI);
       }
 
-      boltI = document.createElement("div");
-      boltI.classList.add("boltIndicator");
-      boltI.setAttribute("alt", boltItitle);
-      boltI.setAttribute("title", boltItitle);
-      boltI.textContent = event.data;
-      boltI.addEventListener("click", () => {
+      viewerI = document.createElement("div");
+      viewerI.classList.add("boltIndicator");
+      viewerI.setAttribute("alt", viewerItitle);
+      viewerI.setAttribute("title", viewerItitle);
+      viewerI.textContent = event.data;
+      viewerI.addEventListener("click", () => {
         let url = location.href;
         const isBoltString = isBolt ? "false" : "true";
         const petriOverrides = `specs.UseBoltInPreview:${isBoltString};specs.useBoltInAppBuilderPreview:${isBoltString}`;
@@ -29,7 +29,7 @@
         location.assign(url);
       });
 
-      document.body.appendChild(boltI);
+      document.body.appendChild(viewerI);
       window.removeEventListener("message", createIndicator);
     }
   };
@@ -42,16 +42,30 @@
     }
   }
 
+  function getViewerName() {
+    const boltScript = document.querySelector(
+      'script[src*="bolt-main/app/main-r.min.js"]'
+    );
+
+    if (boltScript) {
+      return "bolt";
+    }
+
+    const thunderboltScript = document.querySelector(
+      'script[src*="tb-main/dist/tb-main.js"]'
+    );
+
+    if (thunderboltScript) {
+      return "thunderbolt";
+    }
+
+    return "santa"
+  }
+
   if (inIframe()) {
-    const boltScript = document.querySelector(
-      'script[src*="bolt-main/app/main-r.min.js"]'
-    );
-    window.parent.postMessage(boltScript ? "bolt" : "santa", "*");
+    window.parent.postMessage(getViewerName(), "*");
   } else {
-    const boltScript = document.querySelector(
-      'script[src*="bolt-main/app/main-r.min.js"]'
-    );
-    createIndicator({ data: boltScript ? "bolt" : "santa" });
+    createIndicator({ data: getViewerName() });
     window.addEventListener("message", createIndicator);
   }
 })();
