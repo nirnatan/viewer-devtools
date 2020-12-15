@@ -181,9 +181,21 @@ const buildThunderboltUrl = ({ queryObj, options }) => {
     'editor-elements-override',
     'disableHtmlEmbeds',
     'petri_ovr',
+    'disablePlatformApps',
+    'ssrIndicator',
   ]);
 
-  const { overrideThunderboltElements, shouldDisablePlatformApps, disablePlatformApps, fleet, editorElementsOverride, ssrOnly, excludeFromSsr, disableHtmlEmbeds } = options
+  const {
+    overrideThunderboltElements,
+    shouldDisablePlatformApps,
+    disablePlatformApps,
+    fleet,
+    editorElementsOverride,
+    ssrOnly,
+    excludeFromSsr,
+    disableHtmlEmbeds,
+    ssrIndicator,
+  } = options
 
   const rolloutThunderboltFleet = fleet !== 'ssrDebug' ? fleet : null
 
@@ -196,6 +208,7 @@ const buildThunderboltUrl = ({ queryObj, options }) => {
     ...queryObj,
     ...ssrOnly ? { ssrOnly } : {},
     ...fleet === 'ssrDebug' ? { ssrDebug: 'true' } : {},
+    ...ssrIndicator === 'true' ? { ssrIndicator: 'true' } : {},
     ...disableHtmlEmbeds === 'true' ? { disableHtmlEmbeds: true } : {},
     ...petriString ? { petri_ovr: petriString } : {},
     ...overrideThunderboltElements ? { ['editor-elements-override']: editorElementsOverride } : {},

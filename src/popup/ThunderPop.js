@@ -95,6 +95,7 @@ const ThunderPop = props => {
           <MenuItem value={'ssrDebug'} primaryText="Local (ssrDebug)" />
         </DropDownMenu>
         <Checkbox label="ssrOnly" onCheck={onChecked('ssrOnly', thunderbolt, props.updateSettings)} checked={thunderbolt.ssrOnly === 'true'} />
+        <Checkbox label="ssrIndicator" onCheck={onChecked('ssrIndicator', thunderbolt, props.updateSettings)} checked={thunderbolt.ssrIndicator === 'true'} />
         <Checkbox label="Exclude From SSR" onCheck={onChecked('excludeFromSsr', thunderbolt, props.updateSettings)} checked={thunderbolt.excludeFromSsr === 'true'} />
         <Checkbox label="Disable Html Embeds" onCheck={onChecked('disableHtmlEmbeds', thunderbolt, props.updateSettings)} checked={thunderbolt.disableHtmlEmbeds === 'true'} />
         {/* <RaisedButton label="SSR Debug" onClick={applyOnClick('Thunderbolt_SSR_Debug')} /> */}
@@ -104,7 +105,7 @@ const ThunderPop = props => {
         <TextField style={{ display: thunderbolt.shouldDisablePlatformApps ? '' : 'none' }} disabled={!thunderbolt.shouldDisablePlatformApps} placeholder="Platform Apps to Disable" value={thunderbolt.disablePlatformApps} onChange={evt => props.updateSettings({ thunderbolt: Object.assign(thunderbolt, { disablePlatformApps: evt.target.value }) })} />
       </div>
       <div style={styles.button}>
-        <RaisedButton primary label="Force Thunderbolt" onClick={applyOnClick} />
+        <RaisedButton primary label="Apply Options" onClick={applyOnClick} />
       </div>
     </div>
   </div>
