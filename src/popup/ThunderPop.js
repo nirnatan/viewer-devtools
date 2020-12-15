@@ -101,6 +101,7 @@ const ThunderPop = props => {
         {/* <RaisedButton label="SSR Debug" onClick={applyOnClick('Thunderbolt_SSR_Debug')} /> */}
         <Checkbox label="Override thunderbolt-elements" onCheck={onChecked('overrideThunderboltElements', thunderbolt, props.updateSettings)} checked={thunderbolt.overrideThunderboltElements === 'true'} />
         <TextField style={{ display: thunderbolt.overrideThunderboltElements ? '' : 'none' }} disabled={!thunderbolt.overrideThunderboltElements} placeholder="Thunderbolt Elements Version" value={thunderbolt.editorElementsOverride} onChange={evt => props.updateSettings({ thunderbolt: Object.assign(thunderbolt, { editorElementsOverride: evt.target.value }) })} />
+        <Checkbox label="Disable Platform" onCheck={onChecked('disablePlatform', thunderbolt, props.updateSettings)} checked={thunderbolt.disablePlatform === 'true'} />
         <Checkbox label="Disable Platform Apps" onCheck={onChecked('shouldDisablePlatformApps', thunderbolt, props.updateSettings)} checked={thunderbolt.shouldDisablePlatformApps === 'true'} />
         <TextField style={{ display: thunderbolt.shouldDisablePlatformApps ? '' : 'none' }} disabled={!thunderbolt.shouldDisablePlatformApps} placeholder="Platform Apps to Disable" value={thunderbolt.disablePlatformApps} onChange={evt => props.updateSettings({ thunderbolt: Object.assign(thunderbolt, { disablePlatformApps: evt.target.value }) })} />
       </div>

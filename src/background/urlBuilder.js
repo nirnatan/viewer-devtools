@@ -175,26 +175,28 @@ const buildThunderboltUrl = ({ queryObj, options }) => {
   const currentPetriOvr = queryObj.petri_ovr
 
   queryObj = omit(queryObj, [
+    'disableHtmlEmbeds',
+    'disablePlatform',
+    'disablePlatformApps',
+    'editor-elements-override',
+    'petri_ovr',
     'ssrDebug',
     'ssrIndicator',
-    'ssrOnly',
-    'editor-elements-override',
-    'disableHtmlEmbeds',
-    'petri_ovr',
-    'disablePlatformApps',
     'ssrIndicator',
+    'ssrOnly',
   ]);
 
   const {
+    disableHtmlEmbeds,
+    disablePlatform,
+    disablePlatformApps,
+    editorElementsOverride,
+    excludeFromSsr,
+    fleet,
     overrideThunderboltElements,
     shouldDisablePlatformApps,
-    disablePlatformApps,
-    fleet,
-    editorElementsOverride,
-    ssrOnly,
-    excludeFromSsr,
-    disableHtmlEmbeds,
     ssrIndicator,
+    ssrOnly,
   } = options
 
   const rolloutThunderboltFleet = fleet !== 'ssrDebug' ? fleet : null
@@ -206,13 +208,14 @@ const buildThunderboltUrl = ({ queryObj, options }) => {
 
   return {
     ...queryObj,
-    ...ssrOnly ? { ssrOnly } : {},
+    ...disableHtmlEmbeds ? { disableHtmlEmbeds: 'true' } : {},
+    ...disablePlatform ? { disablePlatform: 'true' } : {},
     ...fleet === 'ssrDebug' ? { ssrDebug: 'true' } : {},
-    ...ssrIndicator === 'true' ? { ssrIndicator: 'true' } : {},
-    ...disableHtmlEmbeds === 'true' ? { disableHtmlEmbeds: true } : {},
-    ...petriString ? { petri_ovr: petriString } : {},
     ...overrideThunderboltElements ? { ['editor-elements-override']: editorElementsOverride } : {},
-    ...shouldDisablePlatformApps ? { ['disablePlatformApps']: disablePlatformApps } : {}
+    ...petriString ? { petri_ovr: petriString } : {},
+    ...shouldDisablePlatformApps ? { ['disablePlatformApps']: disablePlatformApps } : {},
+    ...ssrIndicator ? { ssrIndicator: 'true' } : {},
+    ...ssrOnly ? { ssrOnly } : {},
   };
 };
 
