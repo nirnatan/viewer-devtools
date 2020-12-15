@@ -171,38 +171,36 @@ const setPetriSpecs = (petriString, specs) => {
   return Object.entries(petriObj).map(([key, val]) => `${key}:${val}`).join(';');
 };
 
-const buildThunderboltUrl = ({ queryObj, options, forceClient = false }) => {
+const buildThunderboltUrl = ({ queryObj, options }) => {
+  const currentPetriOvr = queryObj.petri_ovr
+
   queryObj = omit(queryObj, [
     'ssrDebug',
     'ssrIndicator',
     'ssrOnly',
     'editor-elements-override',
+    'disableHtmlEmbeds',
+    'petri_ovr',
   ]);
 
-  const { overrideThunderboltElements, fleet, ['editor-elements-override']: editorElementsOverride, ssrOnly } = options
-  if (overrideThunderboltElements) {
-    queryObj['editor-elements-override'] = editorElementsOverride;
-  }
+  const { overrideThunderboltElements, shouldDisablePlatformApps, disablePlatformApps, fleet, editorElementsOverride, ssrOnly, excludeFromSsr, disableHtmlEmbeds } = options
 
-  if (fleet === 'ssrDebug') {
-    queryObj.ssrDebug = 'true';
-    const petriString = setPetriSpecs(queryObj.petri_ovr, {
-      "specs.RolloutThunderboltFleet": null,
-      "specs.ForceThunderboltSsr": forceClient ? 'false' : null,
-    });
-    if (petriString) {
-      queryObj.petri_ovr = petriString;
-    } else {
-      delete queryObj.petri_ovr;
-    }
-  } else {
-    queryObj.petri_ovr = setPetriSpecs(queryObj.petri_ovr, {
-      'specs.RolloutThunderboltFleet': fleet || 'GA',
-      'specs.ForceThunderboltSsr': 'true',
-    });
-  }
+  const rolloutThunderboltFleet = fleet !== 'ssrDebug' ? fleet : null
 
-  return ssrOnly ? {...queryObj, ssrOnly} : queryObj;
+  const petriString = setPetriSpecs(currentPetriOvr, {
+    "specs.RolloutThunderboltFleet": rolloutThunderboltFleet,
+    "specs.ExcludeSiteFromSsr": excludeFromSsr === 'true' ? 'true' : null,
+  });
+
+  return {
+    ...queryObj,
+    ...ssrOnly ? { ssrOnly } : {},
+    ...fleet === 'ssrDebug' ? { ssrDebug: 'true' } : {},
+    ...disableHtmlEmbeds === 'true' ? { disableHtmlEmbeds: true } : {},
+    ...petriString ? { petri_ovr: petriString } : {},
+    ...overrideThunderboltElements ? { ['editor-elements-override']: editorElementsOverride } : {},
+    ...shouldDisablePlatformApps ? { ['disablePlatformApps']: disablePlatformApps } : {}
+  };
 };
 
 export default (location, option) => {
@@ -215,9 +213,6 @@ export default (location, option) => {
       }
       if (option === 'Thunderbolt_SSR_Debug') {
         return buildThunderboltUrl({ options: { fleet: 'ssrDebug', overrideThunderboltElements: false }, queryObj: parsedUrl.query });
-      }
-      if (option === 'Thunderbolt_Client_Debug') {
-        return buildThunderboltUrl({ options: { fleet: 'ssrDebug', overrideThunderboltElements: false }, queryObj: parsedUrl.query, forceClient: true })
       }
       if (option === 'All' || option === 'Debug') {
         result = result.then(queryObj => applyDebug(queryObj, store.packages));

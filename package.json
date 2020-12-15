@@ -6,7 +6,8 @@
     "start": "webpack-dev-server --content-base build/",
     "build": "webpack --progress --colors",
     "watch": "webpack -w --progress --colors",
-    "deploy": "node ./scripts/updateManifestVersion.js && npm run build"
+    "open-dashboard": "open https://chrome.google.com/webstore/devconsole/668cb2ff-2b78-49a3-a7bd-4257b2545885/aahcojdfiikihlpfamimldmionifllkl/edit/package?hl=en_US",
+    "deploy": "node ./scripts/updateManifestVersion.js && npm run build && npm run open-dashboard"
   },
   "dependencies": {
     "immutable": "^3.8.1",

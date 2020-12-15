@@ -1,6 +1,6 @@
 {
   "name": "SantaDevTools",
-  "version": "1.0.83",
+  "version": "1.0.84",
   "manifest_version": 2,
   "description": "Santa Devloper Tools",
   "icons": {
@@ -36,13 +36,6 @@
         "mac": "Command+Shift+S"
       },
       "description": "Start Thunderbolt SSR debug of the current tab"
-    },
-    "debug-client": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+C",
-        "mac": "Command+Shift+C"
-      },
-      "description": "Start Thunderbolt debug of the current tab (Client Fallback)"
     }
   },
   "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'",

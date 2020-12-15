@@ -16,7 +16,7 @@ const styles = {
     width: 200,
     height: 200,
   },
-  buttons: { display: 'flex', flexDirection: 'column', marginTop: 15, marginBottom: 25, marginLeft: 20 },
+  buttons: { display: 'flex', flexDirection: 'column', marginTop: 15, marginBottom: 25, marginLeft: 20, flex: 1 },
   button: { marginTop: 10 },
   settings: { width: 30, height: 30, cursor: 'pointer' },
   useBolt: { marginRight: '10px' },
@@ -89,16 +89,19 @@ const ThunderPop = props => {
       <div style={styles.button}>
         <label style={styles.label}>Thunderbolt Version:</label>
         <DropDownMenu value={thunderbolt.fleet} onChange={onSelectionChange('fleet', thunderbolt, props.updateSettings)}>
+          <MenuItem value={''} primaryText="None" />
           <MenuItem value={'GA'} primaryText="GA" />
           <MenuItem value={'Canary'} primaryText="Latest (Canary)" />
           <MenuItem value={'ssrDebug'} primaryText="Local (ssrDebug)" />
         </DropDownMenu>
         <Checkbox label="ssrOnly" onCheck={onChecked('ssrOnly', thunderbolt, props.updateSettings)} checked={thunderbolt.ssrOnly === 'true'} />
+        <Checkbox label="Exclude From SSR" onCheck={onChecked('excludeFromSsr', thunderbolt, props.updateSettings)} checked={thunderbolt.excludeFromSsr === 'true'} />
+        <Checkbox label="Disable Html Embeds" onCheck={onChecked('disableHtmlEmbeds', thunderbolt, props.updateSettings)} checked={thunderbolt.disableHtmlEmbeds === 'true'} />
         {/* <RaisedButton label="SSR Debug" onClick={applyOnClick('Thunderbolt_SSR_Debug')} /> */}
-      </div>
-      <div style={styles.button}>
-        <Checkbox label="overrideThunderboltElements" onCheck={onChecked('overrideThunderboltElements', thunderbolt, props.updateSettings)} checked={thunderbolt.overrideThunderboltElements === 'true'} />
-        <TextField style={{ display: thunderbolt.overrideThunderboltElements ? '' : 'none' }} disabled={!thunderbolt.overrideThunderboltElements} placeholder="Thunderbolt Elements Version" value={thunderbolt['editor-elements-override']} onChange={evt => props.updateSettings({ thunderbolt: Object.assign(thunderbolt, { 'editor-elements-override': evt.target.value }) })} />
+        <Checkbox label="Override thunderbolt-elements" onCheck={onChecked('overrideThunderboltElements', thunderbolt, props.updateSettings)} checked={thunderbolt.overrideThunderboltElements === 'true'} />
+        <TextField style={{ display: thunderbolt.overrideThunderboltElements ? '' : 'none' }} disabled={!thunderbolt.overrideThunderboltElements} placeholder="Thunderbolt Elements Version" value={thunderbolt.editorElementsOverride} onChange={evt => props.updateSettings({ thunderbolt: Object.assign(thunderbolt, { editorElementsOverride: evt.target.value }) })} />
+        <Checkbox label="Disable Platform Apps" onCheck={onChecked('shouldDisablePlatformApps', thunderbolt, props.updateSettings)} checked={thunderbolt.shouldDisablePlatformApps === 'true'} />
+        <TextField style={{ display: thunderbolt.shouldDisablePlatformApps ? '' : 'none' }} disabled={!thunderbolt.shouldDisablePlatformApps} placeholder="Platform Apps to Disable" value={thunderbolt.disablePlatformApps} onChange={evt => props.updateSettings({ thunderbolt: Object.assign(thunderbolt, { disablePlatformApps: evt.target.value }) })} />
       </div>
       <div style={styles.button}>
         <RaisedButton primary label="Force Thunderbolt" onClick={applyOnClick} />
