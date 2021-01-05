@@ -66,6 +66,11 @@ const applyOnClick = () => {
   });
 };
 
+const openPreview = async () => {
+  const {Utils} = await getBackgroundPage()
+  Utils.openPreview();
+}
+
 const ThunderPop = props => {
   const thunderbolt = defaults(
     omit(props.settings.thunderbolt, ["forceThunderbolt", "ssrDebug"]),
@@ -107,6 +112,7 @@ const ThunderPop = props => {
       </div>
       <div style={styles.button}>
         <RaisedButton primary label="Apply Options" onClick={applyOnClick} />
+        <RaisedButton style={{marginLeft: 10}} primary label="Open Preview" onClick={openPreview} />
       </div>
     </div>
   </div>
