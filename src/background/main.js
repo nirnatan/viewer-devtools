@@ -1,21 +1,8 @@
-import { startsWith } from 'lodash';
 import URL from 'url-parse';
 import buildUrl from './urlBuilder';
 import { openThunderboltPreview, openEditor } from './editor'
 import { debugPackage, debugAll } from './bolt'
-
-const getActiveTab = async () => {
-  const tab = await new Promise(res => {
-    chrome.tabs.query({ active: true, currentWindow: true }, t => res(t[0]));
-  });
-
-  if (tab) {
-    return tab;
-  }
-
-  await new Promise(res => setTimeout(res, 100))
-  return getActiveTab()
-};
+import { executeScript, getActiveTab } from './utils'
 
 chrome.webRequest.onBeforeRequest.addListener(({ url }) => {
   if (url.includes('ssrDebug') && url.startsWith('https://')) {
@@ -24,20 +11,6 @@ chrome.webRequest.onBeforeRequest.addListener(({ url }) => {
 
   return {};
 }, { urls: ['<all_urls>'] }, ['blocking']);
-
-
-const executeScript = async script => {
-  const { id, url } = await getActiveTab();
-  if (startsWith(url, 'chrome')) {
-    return Promise.resolve();
-  }
-
-  const results = await new Promise(res => chrome.tabs.executeScript(id, {
-    code: script,
-  }, res))
-
-  return results && results[0]
-};
 
 const isViewer = () => executeScript("!!Array.from(document.getElementsByTagName('meta')).find(e => e.httpEquiv.indexOf('X-Wix') !== -1)");
 

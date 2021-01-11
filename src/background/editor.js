@@ -1,5 +1,6 @@
 import { getStoreData } from '../store/localStorage';
 import buildUrl from './urlBuilder';
+import { executeScript } from './utils'
 
 const getSiteIds = async () => {
   const getMetaContent = meta => {
