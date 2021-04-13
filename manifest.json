@@ -1,6 +1,6 @@
 {
   "name": "SantaDevTools",
-  "version": "1.0.88",
+  "version": "1.0.89",
   "manifest_version": 2,
   "description": "Santa Devloper Tools",
   "icons": {
@@ -82,7 +82,9 @@
         "https://pullrequest-tc.dev.wixpress.com/login.html",
         "http://pullrequest-tc.dev.wixpress.com/login.html",
         "https://tc.dev.wixpress.com/login.html",
-        "http://tc.dev.wixpress.com/login.html"
+        "http://tc.dev.wixpress.com/login.html",
+        "https://falcon.dev.wixpress.com/login.html",
+        "http://falcon.dev.wixpress.com/login.html"
       ],
       "js": [
         "scripts/teamcityLoginHelper.js"
