@@ -6,3 +6,4 @@ generated
 target
 .vscode/
 yarn.lock
+.DS_Store
