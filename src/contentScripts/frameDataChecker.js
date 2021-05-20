@@ -2,9 +2,9 @@
 (() => {
   const createIndicator = event => {
     if (["bolt", "santa", "thunderbolt"].includes(event.data)) {
-      const isBolt = event.data === "bolt";
+      const isThunderbolt = event.data === "thunderbolt";
       const viewerItitle = `Click will switch experiment to ${
-        isBolt ? "viewer by default" : "Bolt"
+        isThunderbolt ? "viewer by default" : "thunderbolt"
       }`;
       let viewerI = document.querySelector("div.boltIndicator");
       if (viewerI) {
@@ -18,8 +18,8 @@
       viewerI.textContent = event.data;
       viewerI.addEventListener("click", () => {
         let url = location.href;
-        const isBoltString = isBolt ? "false" : "true";
-        const petriOverrides = `specs.UseBoltInPreview:${isBoltString};specs.useBoltInAppBuilderPreview:${isBoltString}`;
+        const isThunderboltString = isThunderbolt ? "false" : "true";
+        const petriOverrides = `specs.UseTBAsMainRScript:${isThunderboltString}`;
         if (!url.toLowerCase().includes("petri_ovr")) {
           url = `${url}&petri_ovr=${petriOverrides}`;
         } else {
