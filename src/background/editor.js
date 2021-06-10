@@ -38,8 +38,6 @@ export const openEditor = async () => {
 export const openThunderboltPreview = async () => {
     const { settings: { thunderbolt: { fleet } } } = await getStoreData();
     const {metaSiteId, siteId} = await getSiteIds()
-    // Remove once we have thunderbolt-ds in CI
-    const forceLocal = true
 
     const searchParams = new URLSearchParams({
       isEdited: 'true',
@@ -48,7 +46,7 @@ export const openThunderboltPreview = async () => {
       metaSiteId,
       disableSave: 'true',
       petri_ovr: 'specs.UseTBAsMainRScript:true',
-      ...(forceLocal || fleet === 'ssrDebug' ? {viewerSource: 'https://localhost:4200'} : {})
+      ...fleet === 'ssrDebug' ? {viewerSource: 'https://localhost:4200'} : {}
     })
     const url = `https://editor.wix.com/html/editor/web/renderer/render/document/${siteId}?${searchParams.toString()}`
     chrome.tabs.query({ url, currentWindow: true }, tabs => {

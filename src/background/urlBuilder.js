@@ -171,10 +171,27 @@ const setPetriSpecs = (petriString, specs) => {
   return Object.entries(petriObj).map(([key, val]) => `${key}:${val}`).join(';');
 };
 
-const buildThunderboltUrl = ({ queryObj, options }) => {
+
+const buildThunderboltEditorUrl = ({ queryObj, options }) => {
+  const currentPetriOvr = queryObj.petri_ovr
+  queryObj = omit(queryObj, [
+    'disableHtmlEmbeds',
+    'disablePlatform',
+    'disablePlatformApps',
+    'editor-elements-override',
+    'petri_ovr',
+    'ssrDebug',
+    'ssrIndicator',
+    'ssrIndicator',
+    'ssrOnly',
+  ]);
+
+}
+const buildThunderboltUrl = ({ queryObj, options, editor }) => {
   const currentPetriOvr = queryObj.petri_ovr
 
   queryObj = omit(queryObj, [
+    'viewerSource',
     'disableHtmlEmbeds',
     'disablePlatform',
     'disablePlatformApps',
@@ -201,21 +218,25 @@ const buildThunderboltUrl = ({ queryObj, options }) => {
 
   const rolloutThunderboltFleet = fleet !== 'ssrDebug' ? fleet : null
 
-  const petriString = setPetriSpecs(currentPetriOvr, {
+  const petriString = setPetriSpecs(currentPetriOvr, editor ? {
+    "specs.UseTBAsMainRScript": 'true'
+  } : {
     "specs.RolloutThunderboltFleet": rolloutThunderboltFleet,
     "specs.ExcludeSiteFromSsr": excludeFromSsr === 'true' ? 'true' : null,
   });
+
+  const debugOption = editor ? { viewerSource: 'https://localhost:4200' } : { ssrDebug: 'true' }
 
   return {
     ...queryObj,
     ...disableHtmlEmbeds ? { disableHtmlEmbeds: 'true' } : {},
     ...disablePlatform ? { disablePlatform: 'true' } : {},
-    ...fleet === 'ssrDebug' ? { ssrDebug: 'true' } : {},
+    ...fleet === 'ssrDebug' ? debugOption : {},
     ...overrideThunderboltElements ? { ['editor-elements-override']: editorElementsOverride } : {},
     ...petriString ? { petri_ovr: petriString } : {},
     ...shouldDisablePlatformApps ? { ['disablePlatformApps']: disablePlatformApps } : {},
-    ...ssrIndicator ? { ssrIndicator: 'true' } : {},
-    ...ssrOnly ? { ssrOnly } : {},
+    ...ssrIndicator && !editor ? { ssrIndicator: 'true' } : {},
+    ...ssrOnly && !editor ? { ssrOnly } : {},
   };
 };
 
@@ -225,10 +246,11 @@ export default (location, option) => {
     .then(store => {
       let result = Promise.resolve(parsedUrl.query);
       if (option === 'Thunderbolt') {
-        return buildThunderboltUrl({ options: store.settings.thunderbolt, queryObj: parsedUrl.query });
+        const options = { options: store.settings.thunderbolt, queryObj: parsedUrl.query, editor: true };
+        return buildThunderboltUrl(options)
       }
       if (option === 'Thunderbolt_SSR_Debug') {
-        return buildThunderboltUrl({ options: { fleet: 'ssrDebug', overrideThunderboltElements: false }, queryObj: parsedUrl.query });
+        return buildThunderboltUrl({ options: { fleet: 'ssrDebug', overrideThunderboltElements: false }, queryObj: parsedUrl.query, editor: false });
       }
       if (option === 'All' || option === 'Debug') {
         result = result.then(queryObj => applyDebug(queryObj, store.packages));
