@@ -18,8 +18,9 @@
       viewerI.textContent = event.data;
       viewerI.addEventListener("click", () => {
         let url = location.href;
-        const isThunderboltString = isThunderbolt ? "false" : "true";
-        const petriOverrides = `specs.UseTBAsMainRScript:${isThunderboltString}`;
+        const petriOverrides = isThunderbolt ?
+          'specs.UseTbInPreview:false' : // Force bolt
+          'specs.UseTBAsMainRScript:true'; // Force thunderbolt
         if (!url.toLowerCase().includes("petri_ovr")) {
           url = `${url}&petri_ovr=${petriOverrides}`;
         } else {
