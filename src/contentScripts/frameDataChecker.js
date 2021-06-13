@@ -1,10 +1,10 @@
 /* global _ */
 (() => {
-  const createIndicator = event => {
-    if (["bolt", "santa", "thunderbolt"].includes(event.data)) {
+  const createIndicator = async event => {
+    if (['bolt', 'thunderbolt'].includes(event.data)) {
       const isThunderbolt = event.data === "thunderbolt";
-      const viewerItitle = `Click will switch experiment to ${
-        isThunderbolt ? "viewer by default" : "thunderbolt"
+      const viewerItitle = `Click will switch editor to ${
+        isThunderbolt ? "bolt" : "thunderbolt"
       }`;
       let viewerI = document.querySelector("div.boltIndicator");
       if (viewerI) {
@@ -15,7 +15,9 @@
       viewerI.classList.add("boltIndicator");
       viewerI.setAttribute("alt", viewerItitle);
       viewerI.setAttribute("title", viewerItitle);
-      viewerI.textContent = event.data;
+      const viewerSource = new URL(window.location.href).searchParams.get('viewerSource')
+      const version = viewerSource && viewerSource.includes('localhost') ? 'local' : viewerSource
+      viewerI.textContent = version && isThunderbolt ? `${event.data} (${version})` : event.data;
       viewerI.addEventListener("click", () => {
         let url = location.href;
         const petriOverrides = isThunderbolt ?
@@ -44,29 +46,16 @@
   }
 
   function getViewerName() {
-    const boltScript = document.querySelector(
-      'script[src*="bolt-main/app/main-r.min.js"]'
-    );
-
-    if (boltScript) {
-      return "bolt";
-    }
-
     const thunderboltScript = document.querySelector(
       'script[src*="tb-main/dist/tb-main.js"]'
     );
 
-    if (thunderboltScript) {
-      return "thunderbolt";
-    }
-
-    return "santa"
+    return thunderboltScript ? 'thunderbolt' : 'bolt'
   }
 
   if (inIframe()) {
     window.parent.postMessage(getViewerName(), "*");
   } else {
-    createIndicator({ data: getViewerName() });
     window.addEventListener("message", createIndicator);
   }
 })();
