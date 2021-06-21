@@ -1,8 +1,10 @@
 {
-  "extends": "airbnb",
   "parserOptions": {
     "ecmaVersion": 2020,
-    "sourceType": "module"
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
   },
   "rules": {
     "max-len": [
@@ -34,16 +36,7 @@
     "default-case": 0,
     "no-else-return": 0,
     "no-param-reassign": 0,
-    "quotes": 0,
-    "react/jsx-filename-extension": [
-      1,
-      {
-        "extensions": [
-          ".js",
-          ".jsx"
-        ]
-      }
-    ],
+    "quotes": 0
   },
   "globals": {
     "chrome": true,

@@ -1,7 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const WebpackShellPlugin = require('webpack-shell-plugin');
 
 const rules = [
   {
@@ -32,10 +31,6 @@ module.exports = {
     devtoolNamespace: 'editor-devtools',
   },
   plugins: [
-    // new WebpackShellPlugin({ onBuildStart: [
-    //   'node scripts/utils.js editor.js santa-editor/santa-editor',
-    //   'node scripts/utils.js viewer.js santa',
-    // ] }),
     new CopyWebpackPlugin([
       {
         from: 'src/**/*.css',
