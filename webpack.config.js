@@ -8,18 +8,24 @@ const rules = [
     use: [{ loader: 'json-loader' }],
   },
   {
-    test: /\.jsx??$/,
+    test: /\.jsx?$/,
     exclude: /node_modules/,
-    use: [{ loader: 'babel-loader' }],
+    use: [{
+      loader: 'babel-loader',
+      options: {
+        presets: ['@babel/preset-env']
+      }
+    }],
   },
 ];
 
 module.exports = {
+  mode: process.env.NODE_ENV !== 'production' ? 'development' : 'production',
   devtool: 'inline-source-map',
   entry: {
     background: path.resolve('src/background', 'main.js'),
-    options: path.resolve('src/options', 'main.js'),
-    popup: path.resolve('src/popup', 'main.js'),
+    options: path.resolve('src/options', 'main.jsx'),
+    popup: path.resolve('src/popup', 'main.jsx'),
     contentActions: path.resolve('src/contentScripts', 'contentActions.js'),
     editorHelper: path.resolve('src/contentScripts', 'editorHelper.js'),
     frameDataChecker: path.resolve('src/contentScripts', 'frameDataChecker.js'),
@@ -69,6 +75,9 @@ module.exports = {
   ],
   module: {
     rules,
+  },
+  resolve: {
+    extensions: ['.js', '.jsx']
   },
   devServer: {
     contentBase: './build',
