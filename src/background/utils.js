@@ -25,3 +25,7 @@ export const executeScript = async script => {
 
     return results && results[0]
   };
+
+export const isViewer = () => executeScript("!!Array.from(document.getElementsByTagName('meta')).find(e => e.httpEquiv.indexOf('X-Wix') !== -1)");
+
+export const isEditor = () => getActiveTab().then(tab => tab.url.indexOf('editor.wix.com') !== -1 || tab.url.indexOf('create.editorx.com') !== -1);

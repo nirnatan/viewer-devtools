@@ -152,11 +152,11 @@ export default (location, option) => {
     .then(store => {
       let result = Promise.resolve(parsedUrl.query);
       if (option === 'Thunderbolt') {
-        const options = { options: store.settings.thunderbolt, queryObj: parsedUrl.query, editor: true };
+        const options = { options: store.settings.thunderbolt, queryObj: parsedUrl.query };
         return buildThunderboltUrl(options)
       }
       if (option === 'Thunderbolt_SSR_Debug') {
-        return buildThunderboltUrl({ options: { fleet: 'ssrDebug', overrideThunderboltElements: false }, queryObj: parsedUrl.query, editor: false });
+        return buildThunderboltUrl({ options: { fleet: 'ssrDebug', overrideThunderboltElements: false }, queryObj: parsedUrl.query });
       }
       if (option === 'All' || option === 'Debug') {
         result = result.then(queryObj => applyDebug(queryObj, store.packages));
