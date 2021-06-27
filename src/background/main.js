@@ -2,7 +2,7 @@ import URL from 'url-parse';
 import buildUrl from './urlBuilder';
 import { openThunderboltPreview, openEditor } from './editor'
 import { debugPackage, debugAll } from './bolt'
-import { executeScript, getActiveTab } from './utils'
+import { getActiveTab, isEditor, isViewer } from './utils'
 
 chrome.webRequest.onBeforeRequest.addListener(({ url }) => {
   if (url.includes('ssrDebug') && url.startsWith('https://')) {
@@ -11,10 +11,6 @@ chrome.webRequest.onBeforeRequest.addListener(({ url }) => {
 
   return {};
 }, { urls: ['<all_urls>'] }, ['blocking']);
-
-const isViewer = () => executeScript("!!Array.from(document.getElementsByTagName('meta')).find(e => e.httpEquiv.indexOf('X-Wix') !== -1)");
-
-const isEditor = () => getActiveTab().then(tab => tab.url.indexOf('editor.wix.com') !== -1);
 
 const updateBrowserActionIcon = () => {
   Promise.all([isEditor(), isViewer()]).then(([editor, viewer]) => {
