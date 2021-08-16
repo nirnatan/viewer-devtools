@@ -115,7 +115,11 @@
         "http://editor.wix.com/html/editor/web/renderer/*",
         "https://editor.wix.com/html/editor/web/renderer/*",
         "http://editor.wix.com/html/app-builder/web/renderer/*",
-        "https://editor.wix.com/html/app-builder/web/renderer/*"
+        "https://editor.wix.com/html/app-builder/web/renderer/*",
+        "http://create.editorx.com/html/editor/web/renderer/*",
+        "https://create.editorx.com/html/editor/web/renderer/*",
+        "http://blocks.wix.com/html/blocks/web/renderer/*",
+        "https://blocks.wix.com/html/blocks/web/renderer/*"
       ],
       "js": [
         "scripts/frameDataChecker.js"
@@ -128,7 +132,12 @@
         "http://editor.wix.com/html/editor/web/renderer/*",
         "https://editor.wix.com/html/editor/web/renderer/*",
         "http://editor.wix.com/html/app-builder/web/renderer/*",
-        "https://editor.wix.com/html/app-builder/web/renderer/*"
+        "https://editor.wix.com/html/app-builder/web/renderer/*",
+        "https://editor.wix.com/html/app-builder/web/renderer/*",
+        "http://create.editorx.com/html/editor/web/renderer/*",
+        "https://create.editorx.com/html/editor/web/renderer/*",
+        "http://blocks.wix.com/html/blocks/web/renderer/*",
+        "https://blocks.wix.com/html/blocks/web/renderer/*"
       ],
       "css": [
         "boltIndicator.css"
