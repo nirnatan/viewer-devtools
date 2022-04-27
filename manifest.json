@@ -118,6 +118,8 @@
         "https://editor.wix.com/html/app-builder/web/renderer/*",
         "http://create.editorx.com/html/editor/web/renderer/*",
         "https://create.editorx.com/html/editor/web/renderer/*",
+        "http://create.editorx.com/edit/editor-x/*",
+        "https://create.editorx.com/edit/editor-x/*",
         "http://blocks.wix.com/html/blocks/web/renderer/*",
         "https://blocks.wix.com/html/blocks/web/renderer/*"
       ],
@@ -136,6 +138,8 @@
         "https://editor.wix.com/html/app-builder/web/renderer/*",
         "http://create.editorx.com/html/editor/web/renderer/*",
         "https://create.editorx.com/html/editor/web/renderer/*",
+        "http://create.editorx.com/edit/editor-x/*",
+        "https://create.editorx.com/edit/editor-x/*",
         "http://blocks.wix.com/html/blocks/web/renderer/*",
         "https://blocks.wix.com/html/blocks/web/renderer/*"
       ],
