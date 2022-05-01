@@ -1,8 +1,8 @@
 {
-  "name": "SantaDevTools",
-  "version": "1.0.95",
+  "name": "Viewer DevTools",
+  "version": "1.0.97",
   "manifest_version": 2,
-  "description": "Santa Devloper Tools",
+  "description": "Viewer Helpers for internal usage",
   "icons": {
     "16": "assets/images/icon-16.png",
     "128": "assets/images/icon-128.png"
@@ -12,7 +12,7 @@
       "19": "assets/images/icon-19.png",
       "38": "assets/images/icon-38.png"
     },
-    "default_title": "Santa DevTools",
+    "default_title": "Viewer DevTools",
     "default_popup": "popup.html"
   },
   "commands": {
@@ -112,36 +112,15 @@
     },
     {
       "matches": [
-        "http://editor.wix.com/html/editor/web/renderer/*",
-        "https://editor.wix.com/html/editor/web/renderer/*",
-        "http://editor.wix.com/html/app-builder/web/renderer/*",
-        "https://editor.wix.com/html/app-builder/web/renderer/*",
-        "http://create.editorx.com/html/editor/web/renderer/*",
-        "https://create.editorx.com/html/editor/web/renderer/*",
-        "http://blocks.wix.com/html/blocks/web/renderer/*",
-        "https://blocks.wix.com/html/blocks/web/renderer/*"
+        "https://editor.wix.com/*",
+        "https://create.editorx.com/*",
+        "https://blocks.wix.com/*"
       ],
       "js": [
         "scripts/frameDataChecker.js"
       ],
       "run_at": "document_end",
       "all_frames": true
-    },
-    {
-      "matches": [
-        "http://editor.wix.com/html/editor/web/renderer/*",
-        "https://editor.wix.com/html/editor/web/renderer/*",
-        "http://editor.wix.com/html/app-builder/web/renderer/*",
-        "https://editor.wix.com/html/app-builder/web/renderer/*",
-        "https://editor.wix.com/html/app-builder/web/renderer/*",
-        "http://create.editorx.com/html/editor/web/renderer/*",
-        "https://create.editorx.com/html/editor/web/renderer/*",
-        "http://blocks.wix.com/html/blocks/web/renderer/*",
-        "https://blocks.wix.com/html/blocks/web/renderer/*"
-      ],
-      "css": [
-        "boltIndicator.css"
-      ]
     }
   ],
   "web_accessible_resources": [

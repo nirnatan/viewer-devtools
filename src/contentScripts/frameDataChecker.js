@@ -1,61 +1,94 @@
 /* global _ */
 (() => {
-  const createIndicator = async event => {
-    if (['bolt', 'thunderbolt'].includes(event.data)) {
-      const isThunderbolt = event.data === "thunderbolt";
-      const viewerItitle = `Click will switch editor to ${
-        isThunderbolt ? "bolt" : "thunderbolt"
-      }`;
-      let viewerI = document.querySelector("div.boltIndicator");
-      if (viewerI) {
-        document.body.removeChild(viewerI);
-      }
-
-      viewerI = document.createElement("div");
-      viewerI.classList.add("boltIndicator");
-      viewerI.setAttribute("alt", viewerItitle);
-      viewerI.setAttribute("title", viewerItitle);
-      const viewerSource = new URL(window.location.href).searchParams.get('viewerSource')
-      const version = viewerSource && viewerSource.includes('localhost') ? 'local' : viewerSource
-      viewerI.textContent = version && isThunderbolt ? `${event.data} (${version})` : event.data;
-      viewerI.addEventListener("click", () => {
-        let url = location.href;
-        const petriOverrides = isThunderbolt ?
-          'specs.UseTbInPreview:false' : // Force bolt
-          'specs.UseTBAsMainRScript:true'; // Force thunderbolt
-        if (!url.toLowerCase().includes("petri_ovr")) {
-          url = `${url}&petri_ovr=${petriOverrides}`;
-        } else {
-          url = url.replace(/(petri_ovr=).*?(&|$)/, `$1${petriOverrides}$2`);
-        }
-
-        location.assign(url);
-      });
-
-      document.body.appendChild(viewerI);
-      window.removeEventListener("message", createIndicator);
-    }
-  };
-
-  function inIframe() {
-    try {
-      return window !== window.top;
-    } catch (e) {
-      return true;
-    }
+  const getIndicatorStyle = () => {
+    const style = document.createElement("style")
+    style.innerHTML = `
+  .boltIndicator {
+    color: red;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    padding: 5px;
+    background: #eee;
+    border: 1px solid #aaa;
+    cursor: pointer;
+    z-index: 9999;
+  }
+  `
+    return style
   }
 
-  function getViewerName() {
-    const thunderboltScript = document.querySelector(
-      'script[src*="tb-main/dist/tb-main.js"]'
-    );
+  const getIndicator = (viewerName) => {
+    const isThunderbolt = viewerName === 'thunderbolt'
+    const viewerI = document.createElement("div")
+    viewerI.classList.add("boltIndicator")
 
-    return thunderboltScript ? 'thunderbolt' : 'bolt'
+    const viewerItitle = `Click will switch editor to ${ isThunderbolt ? "bolt" : "thunderbolt" }`
+    viewerI.setAttribute("alt", viewerItitle)
+    viewerI.setAttribute("title", viewerItitle)
+    const viewerSource = new URL(window.location.href).searchParams.get('viewerSource')
+    const version = viewerSource && viewerSource.includes('localhost') ? 'local' : viewerSource
+    viewerI.textContent = version && isThunderbolt ? `${event.data} (${version})` : event.data
+    document.body.appendChild(viewerI)
+
+    return viewerI
+  }
+
+  const bc = new BroadcastChannel('indicator')
+
+  const petri_ovrs = {
+    'editor.wix.com': 'specs.UseTbInPreview',
+    'create.editorx.com': 'specs.UseTbInPreviewForResponsive',
+    'blocks.wix.com': 'specs.UseTbInPreviewForBlocks',
+  }
+
+  const experiment = petri_ovrs[window.location.host]
+  /**
+   *
+   * @param {MessageEvent<string>} event
+   */
+  const createIndicator = async event => {
+    const style = getIndicatorStyle()
+    const indicator = getIndicator(event.data)
+    indicator.addEventListener("click", () => {
+      let url = location.href
+      const petriOverrides = event.data === 'thunderbolt' ?
+        `${experiment}:false` : // Use Bolt
+        `${experiment}:true`; // Force thunderbolt
+      if (!url.toLowerCase().includes("petri_ovr")) {
+        url = `${url}&petri_ovr=${petriOverrides}`
+      } else {
+        url = url.replace(/(petri_ovr=).*?(&|$)/, `$1${petriOverrides}$2`)
+      }
+
+      location.assign(url)
+    })
+
+    document.head.appendChild(style)
+    document.body.appendChild(indicator)
+    bc.close()
+  }
+
+  const inIframe = () => {
+    try {
+      return window !== window.top
+    } catch (e) {
+      return true
+    }
   }
 
   if (inIframe()) {
-    window.parent.postMessage(getViewerName(), "*");
+    console.log(`iframe detected - ${window.location.href}`)
+    const thunderboltScript = document.querySelector(
+      'script[src*="tb-main/dist/tb-main.js"]'
+    )
+
+    const viewerName = thunderboltScript ? 'thunderbolt' : 'bolt'
+
+    bc.postMessage(viewerName)
+    bc.close()
   } else {
-    window.addEventListener("message", createIndicator);
+    console.log(`main window - ${window.location.href}`)
+    bc.addEventListener("message", createIndicator)
   }
-})();
+})()

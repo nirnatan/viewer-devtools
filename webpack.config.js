@@ -72,13 +72,13 @@ module.exports = {
       }),
     new HtmlWebpackPlugin({
       chunks: ['options'],
-      title: 'SantaDevTools Options',
+      title: 'ViewerDevTools Options',
       filename: 'options.html',
       template: path.resolve('src', 'index.html'),
     }),
     new HtmlWebpackPlugin({
       chunks: ['popup'],
-      title: 'SantaDevTools Popup',
+      title: 'ViewerDevTools Popup',
       filename: 'popup.html',
       template: path.resolve('src', 'index.html'),
       css: 'popup.css',
