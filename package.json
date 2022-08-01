@@ -1,14 +1,14 @@
 {
   "name": "viewer-devtools",
   "displayName": "Viewer devtools",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A basic Plasmo extension.",
   "author": "nirn",
   "scripts": {
     "dev": "plasmo dev",
     "build": "plasmo build",
     "deploy": "yarn version patch && git add . && yarn build && zip -r build/prod.zip build/chrome-mv3-prod && yarn open-dashboard && open build",
-    "open-dashboard": "open https://chrome.google.com/webstore/devconsole/668cb2ff-2b78-49a3-a7bd-4257b2545885/aahcojdfiikihlpfamimldmionifllkl/edit/package?hl=en_US"
+    "open-dashboard": "open 'https://chrome.google.com/webstore/devconsole/668cb2ff-2b78-49a3-a7bd-4257b2545885/aahcojdfiikihlpfamimldmionifllkl/edit/package?hl=en_US'"
   },
   "dependencies": {
     "@babel/core": "^7.0.0",
