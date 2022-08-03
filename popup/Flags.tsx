@@ -10,6 +10,7 @@ export const Flags = () => {
       <StoreSwitch storeKey="ssrOnly" label="SSR Only" />
       <StoreSwitch storeKey="clientOnly" label="Client Only" />
       <StoreSwitch storeKey="forceCache" label="Force SSR Cache" />
+      <StoreSwitch storeKey="suppressBI" label="Suppress BI" />
     </BoxWithLabel>
   )
 }

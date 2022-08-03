@@ -56,6 +56,8 @@ export class ExtensionStorage {
       isqa: await this.get('isqa'),
       queryParams: await this.get('queryParams'),
       forceCache: await this.get('forceCache'),
+      suppressBI: await this.get('suppressBI'),
+      version: await this.get('version'),
     }
   }
 
