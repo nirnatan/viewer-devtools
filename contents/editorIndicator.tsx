@@ -1,6 +1,6 @@
-import { Box } from '@mui/material'
+import { Box } from '@mui/material';
 import type { PlasmoContentScript } from 'plasmo'
-import { Storage, useStorage } from '@plasmohq/storage'
+import { useEffect, useState } from 'react'
 import { createSetPetriOvr } from '~utils/urlManager'
 
 export const config: PlasmoContentScript = {
@@ -43,10 +43,13 @@ const addStyleElement = () => {
   window.document.head.appendChild(style)
 }
 
+const bc = new BroadcastChannel('editor-indicator')
 if (window.top !== window) {
-  // Update the storage with the current viewer name
-  const thunderboltScript = document.querySelector('script[src*="tb-main/dist/tb-main.js"]')
-  new Storage().set('editor-indicator', thunderboltScript ? 'Thunderbolt' : 'Bolt')
+  // Wait for message from the main window and send the viewer name back
+  bc.addEventListener('message', () => {
+    const thunderboltScript = document.querySelector('script[src*="tb-main/dist/tb-main.js"]')
+    return bc.postMessage({ viewerName: thunderboltScript ? 'Thunderbolt' : 'Bolt' })
+  })
 } else {
   addStyleElement()
   // Add indicator element and the css of it to the document
@@ -74,11 +77,20 @@ const Indicator = () => {
     window.location.href = url.href
   }
 
-  const [viewerName] = useStorage('editor-indicator')
+  const [currentViewName, updateViewerName] = useState('')
+  useEffect(() => {
+    // When message received from the iframe update the viewer name
+    bc.addEventListener('message', ({ data }) => updateViewerName(data.viewerName))
+    // Send dummy message to the iframe to get the viewer name
+    bc.postMessage({})
+  }, [])
+
   return (
-    <Box onClick={() => onClick(viewerName)} className="indicator">
-      {viewerName}
-    </Box>
+    currentViewName && (
+      <Box onClick={() => onClick(currentViewName)} className="indicator">
+        {currentViewName}
+      </Box>
+    )
   )
 }
 
