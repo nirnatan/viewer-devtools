@@ -1,7 +1,8 @@
 import { Box } from '@mui/material';
-import type { PlasmoContentScript } from 'plasmo'
-import { useEffect, useState } from 'react'
-import { createSetPetriOvr } from '~utils/urlManager'
+import type { PlasmoContentScript } from 'plasmo';
+import { useEffect, useState } from 'react';
+import { createSetPetriOvr } from '~utils/urlManager';
+
 
 export const config: PlasmoContentScript = {
   matches: ['https://editor.wix.com/*', 'https://create.editorx.com/*', 'https://blocks.wix.com/*'],
@@ -46,10 +47,14 @@ const addStyleElement = () => {
 const bc = new BroadcastChannel('editor-indicator')
 if (window.top !== window) {
   // Wait for message from the main window and send the viewer name back
-  bc.addEventListener('message', () => {
-    const thunderboltScript = document.querySelector('script[src*="tb-main/dist/tb-main.js"]')
-    return bc.postMessage({ viewerName: thunderboltScript ? 'Thunderbolt' : 'Bolt' })
-  })
+  bc.addEventListener(
+    'message',
+    () => {
+      const thunderboltScript = document.querySelector('script[src*="tb-main/dist/tb-main.js"]')
+      return bc.postMessage({ viewerName: thunderboltScript ? 'Thunderbolt' : 'Bolt' })
+    },
+    { once: true }
+  )
 } else {
   addStyleElement()
   // Add indicator element and the css of it to the document
@@ -80,7 +85,14 @@ const Indicator = () => {
   const [currentViewName, updateViewerName] = useState('')
   useEffect(() => {
     // When message received from the iframe update the viewer name
-    bc.addEventListener('message', ({ data }) => updateViewerName(data.viewerName))
+    bc.addEventListener(
+      'message',
+      ({ data }) => {
+        bc.close()
+        return updateViewerName(data.viewerName)
+      },
+      { once: true }
+    )
     // Send dummy message to the iframe to get the viewer name
     bc.postMessage({})
   }, [])
