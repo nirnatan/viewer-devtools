@@ -44,7 +44,7 @@ const updateFleet = (url: URL, fleet: Fleet, version: string) => {
   const isEditor = isEditorUrl(url)
 
   if (fleet === 'Local') {
-    setParam(isEditor, 'viewerSource', 'https://localhost:4200/')
+    setParam(isEditor, 'viewerSource', 'https://localhost:5200/')
     setParam(!isEditor, 'ssrDebug', 'true')
   } else if (fleet === 'Custom') {
     setParam(isEditor, 'viewerSource', version)
@@ -148,14 +148,14 @@ export const updateStoreFromUrl = async (href: string) => {
       }
       const viewerSource = readParam('viewerSource')
       if (viewerSource) {
-        return viewerSource === 'https://localhost:4200/' ? 'Local' : 'Custom'
+        return viewerSource === 'https://localhost:5200/' ? 'Local' : 'Custom'
       }
       return 'None'
     },
     version: () => {
       if (isEditor) {
         const viewerSource = readParam('viewerSource') || ''
-        return viewerSource === 'https://localhost:4200' ? '' : viewerSource
+        return viewerSource === 'https://localhost:5200' ? '' : viewerSource
       }
       return readParam('thunderboltTag') || ''
     },
