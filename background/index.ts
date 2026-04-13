@@ -1,5 +1,5 @@
 import { isWix } from '~utils/urlManager'
-import { useHttpForSsrDebug } from './debugRedirect'
+import { cleanupSsrDebugRedirectRule } from './debugRedirect'
 import { initProxy } from './proxy'
 
 // Update the badge of the extension according to whether the current tab is a Wix URL
@@ -14,6 +14,6 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
 })
 
 initProxy()
-useHttpForSsrDebug()
+cleanupSsrDebugRedirectRule()
 
 export {}
