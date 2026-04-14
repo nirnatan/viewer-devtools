@@ -1,9 +1,10 @@
 import { Storage } from '@plasmohq/storage'
 import { pacScript } from './pac_script.mjs'
+import { useHttpForSsrDebug } from './debugRedirect'
 
 const storage = new Storage()
 
-const handleProxyChange = (proxy) => {
+const handleProxyChange = async (proxy: boolean) => {
   if (proxy) {
     chrome.proxy.settings.set({
       value: {
@@ -14,6 +15,7 @@ const handleProxyChange = (proxy) => {
       },
       scope: 'regular',
     })
+    await useHttpForSsrDebug()
   } else {
     chrome.proxy.settings.clear({})
   }
